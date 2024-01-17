@@ -1,15 +1,19 @@
-package com.ssafy.PuzzlePop.engine;
+package com.ssafy.puzzlepop.engine;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.HashMap;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class PuzzleBoard {
     private Picture picture;
+    private HashMap<Integer, int[]> coordinate;
     private Piece[][] pieces;
+    private boolean[][] isCombinated;
     private int pieceSize;
     private int widthCnt;
     private int lengthCnt;
@@ -28,10 +32,14 @@ public class PuzzleBoard {
         //고유 인덱스 할당
         //고유 인덱스로 정답 판별할 수 있도록, 상하좌우 주변 퍼즐에 대한 고유 인덱스 정보를 포함하여 초기화
         pieces = new Piece[lengthCnt][widthCnt];
+        isCombinated = new boolean[lengthCnt][widthCnt];
         int cnt = 0;
         for (int i = 0; i < lengthCnt; i++) {
             for (int j = 0; j < widthCnt; j++) {
                 pieces[i][j] = new Piece(cnt);
+                pieces[i][j].getSet().add(pieces[i][j]);
+                coordinate.put(cnt, new int[]{i, j});
+
                 if (cnt+1 >= widthCnt*(i+1)) {
                     pieces[i][j].setCorrectRightIndex(-1);
                 } else {
@@ -153,8 +161,19 @@ public class PuzzleBoard {
             }
         }
 
-
         return pieces;
+    }
+    
+    //TODO
+    //퍼즐 조각 결합 짜기
+    public void addPiece(Piece a, Piece b) {
+        for (Piece p : a.getSet()) {
+            p.getSet().add(b);
+        }
+
+        for (Piece p : b.getSet()) {
+            p.getSet().add(a);
+        }
     }
 
     public int random(int range) {

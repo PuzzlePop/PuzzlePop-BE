@@ -1,5 +1,6 @@
-package com.ssafy.PuzzlePop.engine;
+package com.ssafy.puzzlepop.engine;
 
+import java.util.*;
 import lombok.*;
 
 @Getter
@@ -7,18 +8,17 @@ import lombok.*;
 @ToString
 public class Piece {
     private int index;
-//    private int correctX;
-//    private int correctY;
-//    private int nowX;
-//    private int nowY;
-//    private int type;
     private int correctTopIndex;
     private int correctBottomIndex;
     private int correctLeftIndex;
     private int correctRightIndex;
     private int[] type;
+    private Set<Piece> set = new HashSet<>();
+
 
     public Piece(int index) {
         this.index = index;
     }
+
+
 }
