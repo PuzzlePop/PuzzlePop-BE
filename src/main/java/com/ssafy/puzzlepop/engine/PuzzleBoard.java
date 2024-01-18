@@ -4,19 +4,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashMap;
+import java.util.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class PuzzleBoard {
     private Picture picture;
     private HashMap<Integer, int[]> coordinate;
-    private Piece[][] pieces;
+    private Piece[][] board;
     private boolean[][] isCombinated;
     private int pieceSize;
     private int widthCnt;
     private int lengthCnt;
+    private List<Set<Piece>> bundles = new LinkedList<>();
 
     public Piece[][] init(Picture p) {
         picture = p;
@@ -31,37 +31,39 @@ public class PuzzleBoard {
         //퍼즐 조각 초기화
         //고유 인덱스 할당
         //고유 인덱스로 정답 판별할 수 있도록, 상하좌우 주변 퍼즐에 대한 고유 인덱스 정보를 포함하여 초기화
-        pieces = new Piece[lengthCnt][widthCnt];
+        board = new Piece[lengthCnt][widthCnt];
         isCombinated = new boolean[lengthCnt][widthCnt];
+        coordinate = new HashMap<>();
+
         int cnt = 0;
         for (int i = 0; i < lengthCnt; i++) {
             for (int j = 0; j < widthCnt; j++) {
-                pieces[i][j] = new Piece(cnt);
-                pieces[i][j].getSet().add(pieces[i][j]);
+                board[i][j] = new Piece(cnt);
+
                 coordinate.put(cnt, new int[]{i, j});
 
                 if (cnt+1 >= widthCnt*(i+1)) {
-                    pieces[i][j].setCorrectRightIndex(-1);
+                    board[i][j].setCorrectRightIndex(-1);
                 } else {
-                    pieces[i][j].setCorrectRightIndex(cnt+1);
+                    board[i][j].setCorrectRightIndex(cnt+1);
                 }
 
                 if (cnt-1 < i*widthCnt) {
-                    pieces[i][j].setCorrectLeftIndex(-1);
+                    board[i][j].setCorrectLeftIndex(-1);
                 } else {
-                    pieces[i][j].setCorrectLeftIndex(cnt-1);
+                    board[i][j].setCorrectLeftIndex(cnt-1);
                 }
 
                 if (cnt-widthCnt < 0) {
-                    pieces[i][j].setCorrectTopIndex(-1);
+                    board[i][j].setCorrectTopIndex(-1);
                 } else {
-                    pieces[i][j].setCorrectTopIndex(cnt-widthCnt);
+                    board[i][j].setCorrectTopIndex(cnt-widthCnt);
                 }
 
                 if (cnt+widthCnt >= widthCnt*lengthCnt) {
-                    pieces[i][j].setCorrectBottomIndex(-1);
+                    board[i][j].setCorrectBottomIndex(-1);
                 } else {
-                    pieces[i][j].setCorrectBottomIndex(cnt+widthCnt);
+                    board[i][j].setCorrectBottomIndex(cnt+widthCnt);
                 }
 
                 cnt++;
@@ -74,7 +76,7 @@ public class PuzzleBoard {
         //값 0 : 평면, 값 1 : 들어간 형태, 값 2 : 튀어나온 형태
         for (int i = 0; i < lengthCnt; i++) {
             for (int j = 0; j < widthCnt; j++) {
-                Piece now = pieces[i][j];
+                Piece now = board[i][j];
                 int[] type = new int[4];
 
                 //상단 변
@@ -95,7 +97,7 @@ public class PuzzleBoard {
                         type[1] = 0;
 
                         type[2] = random(2);
-                        type[3] = pieces[i][j-1].getType()[1] == 2 ? 1 : 2;
+                        type[3] = board[i][j-1].getType()[1] == 2 ? 1 : 2;
                     }
                     //그 외 변
                     else {
@@ -103,7 +105,7 @@ public class PuzzleBoard {
 
                         type[1] = random(2);
                         type[2] = random(2);
-                        type[3] = pieces[i][j-1].getType()[1] == 2 ? 1 : 2;
+                        type[3] = board[i][j-1].getType()[1] == 2 ? 1 : 2;
                     }
                 }
                 //하단 변
@@ -113,29 +115,29 @@ public class PuzzleBoard {
                         //기본 값
                         type[2] = 0;
                         type[3] = 0;
-                        type[0] = pieces[i-1][j].getType()[2] == 2 ? 1 : 2;
+                        type[0] = board[i-1][j].getType()[2] == 2 ? 1 : 2;
 
                         type[1] = random(2);
                     }
                     //우하단 꼭짓점
                     else if (j == widthCnt-1) {
-                        type[0] = pieces[i-1][j].getType()[2] == 2 ? 1 : 2;
+                        type[0] = board[i-1][j].getType()[2] == 2 ? 1 : 2;
                         type[1] = 0;
                         type[2] = 0;
-                        type[3] = pieces[i][j-1].getType()[1] == 2 ? 1 : 2;
+                        type[3] = board[i][j-1].getType()[1] == 2 ? 1 : 2;
                     }
                     //그 외 변
                     else {
-                        type[0] = pieces[i-1][j].getType()[2] == 2 ? 1 : 2;
+                        type[0] = board[i-1][j].getType()[2] == 2 ? 1 : 2;
                         type[1] = random(2);
                         type[2] = 0;
-                        type[3] = pieces[i][j-1].getType()[1] == 2 ? 1 : 2;
+                        type[3] = board[i][j-1].getType()[1] == 2 ? 1 : 2;
                     }
                 }
 
                 //꼭짓점을 제외한 좌측 변
                 else if (j == 0) {
-                    type[0] = pieces[i-1][j].getType()[2] == 2 ? 1 : 2;
+                    type[0] = board[i-1][j].getType()[2] == 2 ? 1 : 2;
                     type[1] = random(2);
                     type[2] = random(2);
                     type[3] = 0;
@@ -143,37 +145,44 @@ public class PuzzleBoard {
 
                 //꼭짓점을 제외한 우측 변
                 else if (j == widthCnt-1) {
-                    type[0] = pieces[i-1][j].getType()[2] == 2 ? 1 : 2;
+                    type[0] = board[i-1][j].getType()[2] == 2 ? 1 : 2;
                     type[1] = 0;
                     type[2] = random(2);
-                    type[3] = pieces[i][j-1].getType()[1] == 2 ? 1 : 2;
+                    type[3] = board[i][j-1].getType()[1] == 2 ? 1 : 2;
                 }
 
                 //그 외 가운데 부분
                 else {
-                    type[0] = pieces[i-1][j].getType()[2] == 2 ? 1 : 2;
+                    type[0] = board[i-1][j].getType()[2] == 2 ? 1 : 2;
                     type[1] = random(2);
                     type[2] = random(2);
-                    type[3] = pieces[i][j-1].getType()[1] == 2 ? 1 : 2;
+                    type[3] = board[i][j-1].getType()[1] == 2 ? 1 : 2;
                 }
 
                 now.setType(type);
             }
         }
 
-        return pieces;
+        return board;
     }
     
     //TODO
     //퍼즐 조각 결합 짜기
-    public void addPiece(Piece a, Piece b) {
-        for (Piece p : a.getSet()) {
-            p.getSet().add(b);
+    public void addPiece(List<Integer> list) {
+        Set<Piece> set = new HashSet<>();
+        for (int i = 0; i < list.size(); i++) {
+            int pieceIdx = list.get(i);
+            Piece x = board[coordinate.get(pieceIdx)[0]][coordinate.get(pieceIdx)[1]];
+
+            for (int j = bundles.size()-1; j >= 0; j--) {
+                if (bundles.get(j).contains(x)) {
+                    bundles.remove(j);
+                }
+            }
+            set.add(x);
         }
 
-        for (Piece p : b.getSet()) {
-            p.getSet().add(a);
-        }
+        bundles.add(set);
     }
 
     public int random(int range) {

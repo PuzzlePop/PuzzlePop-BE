@@ -13,7 +13,6 @@ public class Piece {
     private int correctLeftIndex;
     private int correctRightIndex;
     private int[] type;
-    private Set<Piece> set = new HashSet<>();
 
 
     public Piece(int index) {
