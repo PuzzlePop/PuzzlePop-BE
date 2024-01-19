@@ -5,11 +5,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Team {
@@ -18,4 +20,8 @@ public class Team {
     private Long id;
     private Long gameId;
     private Integer assembledPieceCount;
+
+    public void updatePieceCount(Integer pieceCount) {
+        this.assembledPieceCount = pieceCount;
+    }
 }
