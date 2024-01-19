@@ -2,7 +2,7 @@ package com.ssafy.puzzlepop.team.controller;
 
 import com.ssafy.puzzlepop.team.domain.TeamDto;
 import com.ssafy.puzzlepop.team.exception.TeamNotFoundException;
-import com.ssafy.puzzlepop.team.service.TeamService;
+import com.ssafy.puzzlepop.team.service.TeamServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 public class TeamController {
-    private final TeamService teamService;
+    private final TeamServiceImpl teamService;
 
     @GetMapping("/team")
     public ResponseEntity<?> getTeamById(@RequestBody TeamDto requestDto) {
