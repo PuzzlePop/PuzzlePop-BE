@@ -204,6 +204,8 @@ public class PuzzleBoard {
 
     //퍼즐 조각 결합 짜기
     //파라미터 정보(pieceList) : 게임 관련 소켓에서 결합하는 조각들을 하나의 리스트로 만들어서 파라미터로 입력
+    //TODO
+    //다 맞췄을 때 조건 추가하기
     public void addPiece(List<Integer> pieceList) {
         //이번 결합으로 생기는 조각 뭉탱이들
         Set<Piece> set = new HashSet<>();
@@ -319,8 +321,6 @@ public class PuzzleBoard {
         System.out.println("---------------------------------------");
     }
 
-    //TODO
-    //null 들어가니까 에러나서, 이거 처리해야함.
     public void randomArrange() {
         LinkedList<Piece> list = new LinkedList<>();
         for (int i = 0; i < lengthCnt; i++) {

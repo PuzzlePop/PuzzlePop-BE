@@ -71,7 +71,34 @@ public class ItemTest {
 
         System.out.println("redPuzzle");
         redPuzzle.print();
-        System.out.println("bluePuzzle");
+
+        bluePuzzle.addItem(new Item(Long.parseLong(String.valueOf(4))));
+        bluePuzzle.useItem(1, bluePuzzle);
+        System.out.println("bluePuzzle 액자 아이템 사용");
+        bluePuzzle.print();
+
+        bluePuzzle.addItem(new Item(Long.parseLong(String.valueOf(6))));
+        bluePuzzle.useItem(1, bluePuzzle);
+
+        bluePuzzle.print();
+    }
+
+    @Test
+    @DisplayName("자석 테스트")
+    void magnetTest() {
+        Picture p = new Picture(64, 48, "String");
+
+        Game game = new Game();
+        game.gameStart(p);
+        PuzzleBoard redPuzzle = new PuzzleBoard();
+        PuzzleBoard bluePuzzle = new PuzzleBoard();
+
+        redPuzzle.init(p);
+        bluePuzzle.init(p);
+
+        bluePuzzle.addItem(new Item(Long.parseLong(String.valueOf(6))));
+        bluePuzzle.useItem(1, bluePuzzle);
+
         bluePuzzle.print();
     }
 }
