@@ -1,7 +1,6 @@
 package com.ssafy.puzzlepop.engine;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Item {
     private Long id;
@@ -144,8 +143,58 @@ public class Item {
 
                 break;
 
+            //로켓
+            case 8:
+
+                break;
+
             //불지르기
             case 9:
+                if (puzzle.getBundles().isEmpty())
+                    return;
+
+                //조각 개수가 많은 덩어리 순으로 정렬해서 그 덩어리 해체하기
+                List<Set<Piece>> bundles = puzzle.getBundles();
+                Collections.sort(bundles, (o1, o2) -> {
+                    return o2.size() - o1.size();
+                });
+                Set<Piece> mostManyBundle = bundles.get(0);
+                int size = mostManyBundle.size();
+
+                //위에서 뽑은 덩어리에서 조각 하나 뽑기
+                int randomIdx = puzzle.random(size-1);
+                List<Integer> setToList = new LinkedList<>();
+                for (Piece p : mostManyBundle) {
+                    setToList.add(p.getIndex());
+                }
+                Piece target = puzzle.getBoard()[0][puzzle.getIdxToCoordinate().get(setToList.get(randomIdx))[0]][puzzle.getIdxToCoordinate().get(setToList.get(randomIdx))[1]];
+
+                List<Integer> targetsList = new LinkedList<>();
+                targetsList.add(target.getIndex());
+
+                if (setToList.contains(target.getCorrectBottomIndex())) {
+                    targetsList.add(target.getCorrectBottomIndex());
+                }
+
+                if (setToList.contains(target.getCorrectTopIndex())) {
+                    targetsList.add(target.getCorrectTopIndex());
+                }
+
+                if (setToList.contains(target.getCorrectLeftIndex())) {
+                    targetsList.add(target.getCorrectLeftIndex());
+                }
+
+                if (setToList.contains(target.getCorrectRightIndex())) {
+                    targetsList.add(target.getCorrectRightIndex());
+                }
+
+                for (int targetIdx : targetsList) {
+                    puzzle.deletePiece(targetIdx);
+                }
+
+                System.out.println(targetsList);
+
+                puzzle.searchForGroupDisbandment();
 
                 break;
         }
