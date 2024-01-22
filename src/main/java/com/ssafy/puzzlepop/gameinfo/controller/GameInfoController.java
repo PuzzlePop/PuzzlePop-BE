@@ -1,8 +1,8 @@
-package com.ssafy.puzzlepop.game.controller;
+package com.ssafy.puzzlepop.gameinfo.controller;
 
-import com.ssafy.puzzlepop.game.domain.GameDto;
-import com.ssafy.puzzlepop.game.exception.GameNotFoundException;
-import com.ssafy.puzzlepop.game.service.GameService;
+import com.ssafy.puzzlepop.gameinfo.domain.GameInfoDto;
+import com.ssafy.puzzlepop.gameinfo.exception.GameInfoNotFoundException;
+import com.ssafy.puzzlepop.gameinfo.service.GameInfoService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +12,15 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-public class GameController {
-    private final GameService gameService;
+public class GameInfoController {
+    private final GameInfoService gameService;
 
     @GetMapping("/game")
-    public ResponseEntity<?> getGameById(@RequestBody GameDto requestDto) {
+    public ResponseEntity<?> getGameById(@RequestBody GameInfoDto requestDto) {
         try {
-            GameDto responseDto = gameService.getGameById(requestDto.getId());
+            GameInfoDto responseDto = gameService.getGameById(requestDto.getId());
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
-        } catch (GameNotFoundException e) {
+        } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -28,11 +28,11 @@ public class GameController {
     }
 
     @PostMapping("/game")
-    public ResponseEntity<?> createGame(@RequestBody GameDto requestDto) {
+    public ResponseEntity<?> createGame(@RequestBody GameInfoDto requestDto) {
         try {
             Long id = gameService.createGame(requestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(id);
-        } catch (GameNotFoundException e) {
+        } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -40,11 +40,11 @@ public class GameController {
     }
 
     @PutMapping("/game")
-    public ResponseEntity<?> updateGame(@RequestBody GameDto requestDto) {
+    public ResponseEntity<?> updateGame(@RequestBody GameInfoDto requestDto) {
         try {
             Long id = gameService.updateGame(requestDto);
             return ResponseEntity.status(HttpStatus.OK).body(id);
-        } catch (GameNotFoundException e) {
+        } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -52,11 +52,11 @@ public class GameController {
     }
 
     @DeleteMapping("/game")
-    public ResponseEntity<?> deleteGame(@RequestBody GameDto requestDto) {
+    public ResponseEntity<?> deleteGame(@RequestBody GameInfoDto requestDto) {
         try {
             gameService.deleteGame(requestDto.getId());
             return ResponseEntity.status(HttpStatus.OK).body(null);
-        } catch (GameNotFoundException e) {
+        } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -67,9 +67,9 @@ public class GameController {
     @GetMapping("/game/list")
     public ResponseEntity<?> findAllGames() {
         try {
-            List<GameDto> responseDtos = gameService.getAllGames();
+            List<GameInfoDto> responseDtos = gameService.getAllGames();
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
-        } catch (GameNotFoundException e) {
+        } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -77,11 +77,11 @@ public class GameController {
     }
 
     @GetMapping("/game/search")
-    public ResponseEntity<?> findGamesByType(@RequestBody GameDto requestDto) {
+    public ResponseEntity<?> findGamesByType(@RequestBody GameInfoDto requestDto) {
         try {
-            List<GameDto> responseDtos = gameService.findAllByType(requestDto.getType());
+            List<GameInfoDto> responseDtos = gameService.findAllByType(requestDto.getType());
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
-        } catch (GameNotFoundException e) {
+        } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

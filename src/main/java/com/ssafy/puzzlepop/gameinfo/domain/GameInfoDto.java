@@ -1,4 +1,4 @@
-package com.ssafy.puzzlepop.game.domain;
+package com.ssafy.puzzlepop.gameinfo.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GameDto {
+public class GameInfoDto {
     private Long id;
     private String type;
     private Boolean isCleared;
@@ -27,25 +27,25 @@ public class GameDto {
 //    추후 Image 개발 완료 시 주석해제
 //    private Long puzzleImageId;
     @Builder
-    public GameDto(Game game) {
-        this.id = game.getId();
-        this.type = game.getType();
+    public GameInfoDto(GameInfo gameInfo) {
+        this.id = gameInfo.getId();
+        this.type = gameInfo.getType();
 
-        this.curPlayerCount = game.getCurPlayerCount();
-        this.maxPlayerCount = game.getMaxPlayerCount();
-        this.totalPieceCount = game.getTotalPieceCount();
+        this.curPlayerCount = gameInfo.getCurPlayerCount();
+        this.maxPlayerCount = gameInfo.getMaxPlayerCount();
+        this.totalPieceCount = gameInfo.getTotalPieceCount();
 
-        this.limitTime = game.getLimitTime();
-        this.passedTime = game.getPassedTime();
-        this.startedTime = game.getStartedTime();
-        this.finishedTime = game.getFinishedTime();
+        this.limitTime = gameInfo.getLimitTime();
+        this.passedTime = gameInfo.getPassedTime();
+        this.startedTime = gameInfo.getStartedTime();
+        this.finishedTime = gameInfo.getFinishedTime();
 
 //        추후 Image 개발 완료 시 주석해제
 //        this.puzzleImageId = game.getPuzzleImageId();
     }
 
-    public Game toEntity() {
-        return Game.builder()
+    public GameInfo toEntity() {
+        return GameInfo.builder()
                 .id(this.id)
                 .type(this.type)
                 .limitTime(this.limitTime)

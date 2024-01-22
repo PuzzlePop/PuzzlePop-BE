@@ -1,4 +1,4 @@
-package com.ssafy.puzzlepop.game.domain;
+package com.ssafy.puzzlepop.gameinfo.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Game {
+public class GameInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,18 +35,18 @@ public class Game {
 //    추후 Image 개발 완료 시 주석해제
 //    private Long puzzleImageId;
 
-    public Long update(GameDto gameDto) {
-        this.type = gameDto.getType();
-        this.isCleared = gameDto.getIsCleared();
+    public Long update(GameInfoDto gameInfoDto) {
+        this.type = gameInfoDto.getType();
+        this.isCleared = gameInfoDto.getIsCleared();
 
-        this.curPlayerCount = gameDto.getCurPlayerCount();
-        this.maxPlayerCount = gameDto.getMaxPlayerCount();
-        this.totalPieceCount = gameDto.getTotalPieceCount();
+        this.curPlayerCount = gameInfoDto.getCurPlayerCount();
+        this.maxPlayerCount = gameInfoDto.getMaxPlayerCount();
+        this.totalPieceCount = gameInfoDto.getTotalPieceCount();
 
-        this.limitTime = gameDto.getLimitTime();
-        this.passedTime = gameDto.getPassedTime();
-        this.startedTime = gameDto.getStartedTime();
-        this.finishedTime = gameDto.getFinishedTime();
+        this.limitTime = gameInfoDto.getLimitTime();
+        this.passedTime = gameInfoDto.getPassedTime();
+        this.startedTime = gameInfoDto.getStartedTime();
+        this.finishedTime = gameInfoDto.getFinishedTime();
 
 //        추후 Image 개발 완료 시 주석해제
 //        this.puzzleImageId = gameDto.getPuzzleImageId();
