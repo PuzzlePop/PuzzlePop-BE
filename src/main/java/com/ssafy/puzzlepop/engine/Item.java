@@ -1,39 +1,39 @@
 package com.ssafy.puzzlepop.engine;
 
+import lombok.Data;
+import lombok.Getter;
+
 import java.util.*;
 
+@Getter
 public class Item {
     private Long id;
     private String name;
     private String description;
     private String img_path;
 
-    public Item (Long id) {
-        this.id = id;
-        if (id == 1) {
-            this.name = "힌트";
+    public Item (String name) {
+        this.name = name;
+        if (name.equals("hint")) {
+            this.id = 1L;
             this.description = "이 아이템을 클릭하면, 아직 맞추지 않은 2조각을 맞출 수 있어요!";
             this.img_path = "path";
-        } else if (id == 2) {
-            this.name = "지진";
+        } else if (name.equals("earthquake")) {
+            this.id = 2L;
             this.description = "이 아이템을 클릭하면, 상대방의 아직 맞추지 않은 퍼즐들이 섞여요!";
             this.img_path = "path";
-        } else if (id == 3) {
-            this.name = "거울";
-        } else if (id == 4) {
-            this.name = "액자";
-        } else if (id == 5) {
-            this.name = "쉴드";
-        } else if (id == 6) {
-            this.name = "자석";
-        } else if (id == 7) {
-            this.name = "주사위";
-        } else if (id == 8) {
-            this.name = "로켓";
-        } else if (id == 9) {
-            this.name = "불지르기";
-        } else if (id == 10) {
-
+        } else if (name.equals("mirror")) {
+            this.id = 3L;
+        } else if (name.equals("frame")) {
+            this.id = 4L;
+        } else if (name.equals("shield")) {
+            this.id = 5L;
+        } else if (name.equals("magnet")) {
+            this.id = 6L;
+        } else if (name.equals("rocket")) {
+            this.id = 7L;
+        } else if (name.equals("fire")) {
+            this.id = 8L;
         }
     }
 
@@ -53,7 +53,6 @@ public class Item {
                 break;
 
             case 2:
-                System.out.println(puzzle + "에 지진 아이템 효과 발동~");
                 puzzle.randomArrange();
                 break;
 
@@ -88,6 +87,7 @@ public class Item {
                     }
                 }
 
+                System.out.println("액자 효과 대상 : " + list);
                 puzzle.addPiece(list);
                 break;
 
@@ -135,6 +135,7 @@ public class Item {
                                 }
                             }
 
+                            System.out.println("자석 효과 대상 : " + targets);
                             puzzle.addPiece(targets);
                             return;
                         }
@@ -144,12 +145,12 @@ public class Item {
                 break;
 
             //로켓
-            case 8:
+            case 7:
 
                 break;
 
             //불지르기
-            case 9:
+            case 8:
                 if (puzzle.getBundles().isEmpty())
                     return;
 
@@ -192,7 +193,7 @@ public class Item {
                     puzzle.deletePiece(targetIdx);
                 }
 
-                System.out.println(targetsList);
+                System.out.println("불 지르기 효과 대상 : " + targetsList);
 
                 puzzle.searchForGroupDisbandment();
 
