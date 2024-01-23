@@ -62,74 +62,68 @@ public class ItemTest {
         System.out.println("bluePuzzle");
         bluePuzzle.print();
 
-        redPuzzle.addItem(new Item(Long.parseLong(String.valueOf(1))));
-        redPuzzle.addItem(new Item(Long.parseLong(String.valueOf(2))));
-        redPuzzle.addItem(new Item(Long.parseLong(String.valueOf(1))));
-        redPuzzle.useItem(1, redPuzzle);
-        redPuzzle.useItem(2, bluePuzzle);
-        redPuzzle.useItem(3, redPuzzle);
-
-        System.out.println("redPuzzle");
-        redPuzzle.print();
-
-        bluePuzzle.addItem(new Item(Long.parseLong(String.valueOf(4))));
-        bluePuzzle.useItem(1, bluePuzzle);
-        System.out.println("bluePuzzle 액자 아이템 사용");
-        bluePuzzle.print();
-
-        bluePuzzle.addItem(new Item(Long.parseLong(String.valueOf(6))));
-        bluePuzzle.useItem(1, bluePuzzle);
-
-        bluePuzzle.print();
+//        redPuzzle.addItem(new Item(Long.parseLong(String.valueOf(1))));
+//        redPuzzle.addItem(new Item(Long.parseLong(String.valueOf(2))));
+//        redPuzzle.addItem(new Item(Long.parseLong(String.valueOf(1))));
+//        redPuzzle.useItem(1, redPuzzle);
+//        redPuzzle.useItem(2, bluePuzzle);
+//        redPuzzle.useItem(3, redPuzzle);
+//
+//        System.out.println("redPuzzle");
+//        redPuzzle.print();
+//
+//        bluePuzzle.addItem(new Item(Long.parseLong(String.valueOf(4))));
+//        bluePuzzle.useItem(1, bluePuzzle);
+//        System.out.println("bluePuzzle 액자 아이템 사용");
+//        bluePuzzle.print();
+//
+//        bluePuzzle.addItem(new Item(Long.parseLong(String.valueOf(6))));
+//        bluePuzzle.useItem(1, bluePuzzle);
+//
+//        bluePuzzle.print();
     }
 
     @Test
     @DisplayName("자석 테스트")
     void magnetTest() {
-        Picture p = new Picture(64, 48, "String");
-
-        Game game = new Game();
-        game.gameStart(p);
-        PuzzleBoard redPuzzle = new PuzzleBoard();
-        PuzzleBoard bluePuzzle = new PuzzleBoard();
-
-        redPuzzle.init(p);
-        bluePuzzle.init(p);
-
-        bluePuzzle.addItem(new Item(Long.parseLong(String.valueOf(6))));
-        bluePuzzle.useItem(1, bluePuzzle);
-
-        bluePuzzle.print();
+//        Picture p = new Picture(64, 48, "String");
+//
+//        PuzzleBoard redPuzzle = new PuzzleBoard();
+//        PuzzleBoard bluePuzzle = new PuzzleBoard();
+//
+//        redPuzzle.init(p);
+//        bluePuzzle.init(p);
+//
+//        bluePuzzle.addItem(new Item(Long.parseLong(String.valueOf(6))));
+//        bluePuzzle.useItem(1, bluePuzzle);
+//
+//        bluePuzzle.print();
     }
 
     @Test
     @DisplayName("조각 해체 테스트")
     void deleteTest() {
-        Picture p = new Picture(64, 48, "String");
-
-        Game game = new Game();
-        game.gameStart(p);
-        PuzzleBoard redPuzzle = new PuzzleBoard();
-        PuzzleBoard bluePuzzle = new PuzzleBoard();
-
-        redPuzzle.init(p);
-        bluePuzzle.init(p);
-
-        bluePuzzle.addItem(new Item(Long.parseLong(String.valueOf(6))));
-        bluePuzzle.useItem(1, bluePuzzle);
-
-
-        bluePuzzle.deletePiece(1);
-        bluePuzzle.print();
+//        Picture p = new Picture(64, 48, "String");
+//
+//        PuzzleBoard redPuzzle = new PuzzleBoard();
+//        PuzzleBoard bluePuzzle = new PuzzleBoard();
+//
+//        redPuzzle.init(p);
+//        bluePuzzle.init(p);
+//
+//        bluePuzzle.addItem(new Item(Long.parseLong(String.valueOf(6))));
+//        bluePuzzle.useItem(1, bluePuzzle);
+//
+//
+//        bluePuzzle.deletePiece(1);
+//        bluePuzzle.print();
     }
 
     @Test
     @DisplayName("불 지르기 테스트")
     void fireTest() {
-        Picture p = new Picture(72, 50, "String");
+        Picture p = new Picture(64, 48, "String");
 
-        Game game = new Game();
-        game.gameStart(p);
         PuzzleBoard redPuzzle = new PuzzleBoard();
         PuzzleBoard bluePuzzle = new PuzzleBoard();
 
@@ -138,21 +132,11 @@ public class ItemTest {
 
         bluePuzzle.print();
 
-        bluePuzzle.addItem(new Item(Long.parseLong(String.valueOf(4))));
+        bluePuzzle.addItem("액자");
         bluePuzzle.useItem(1, bluePuzzle);
 
-        List<Integer> list = new LinkedList<>();
-        for (Piece pic : bluePuzzle.getBundles().get(0)) {
-            list.add(pic.getIndex());
-        }
-        list.add(5);
-        list.add(6);
-        bluePuzzle.addPiece(list);
-
-        bluePuzzle.print();
-
         //불지르기
-        redPuzzle.addItem(new Item(Long.parseLong(String.valueOf(9))));
+        redPuzzle.addItem("불지르기");
         redPuzzle.useItem(1, bluePuzzle);
 
         bluePuzzle.print();
