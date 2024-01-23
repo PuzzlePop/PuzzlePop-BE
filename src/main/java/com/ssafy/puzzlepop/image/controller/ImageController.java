@@ -54,6 +54,16 @@ public class ImageController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findImageById(@PathVariable int id) {
+        try {
+            ImageDto image = imageService.getImageById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(image);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/list")
     public ResponseEntity<?> findAllImages() {
 
@@ -65,4 +75,13 @@ public class ImageController {
         }
     }
 
+    @GetMapping("/list/{type}")
+    public ResponseEntity<?> findImagesByType(@PathVariable String type) {
+        try {
+            List<ImageDto> imageList = imageService.getImagesByType(type);
+            return ResponseEntity.status(HttpStatus.OK).body(imageList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }

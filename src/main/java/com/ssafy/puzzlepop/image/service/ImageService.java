@@ -7,12 +7,15 @@ import java.util.List;
 
 public interface ImageService {
 
-
     int createImage(ImageDto imageDto) throws ImageException;
 
     int updateImage(ImageDto imageDto) throws ImageException;
 
-    boolean deleteImage(int id) throws ImageException;
+    void deleteImage(int id) throws ImageException;
 
     List<ImageDto> getAllImages() throws ImageException;
+
+    List<ImageDto> getImagesByType(String type) throws ImageException;
+
+    ImageDto getImageById(int id) throws ImageException;
 }
