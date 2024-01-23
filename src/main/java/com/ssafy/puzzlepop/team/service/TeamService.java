@@ -11,4 +11,5 @@ public interface TeamService {
     public Long updateTeam(TeamDto teamDto);
     public void deleteTeam(Long id);
     public List<TeamDto> findAllByGameId(Long gameId);
+    public Long updateMatchedPieceCount(TeamDto teamDto);
 }
