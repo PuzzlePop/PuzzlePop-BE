@@ -21,7 +21,7 @@ public class ImageServiceImpl implements ImageService {
         this.imageRepository = imageRepository;
     }
 
-    ////////////////////
+    ///////////
 
     @Override
     public int createImage(ImageDto imageDto) throws ImageException {
