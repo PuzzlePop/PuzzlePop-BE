@@ -32,11 +32,12 @@ public class PuzzleBoard {
     private int itemCount = 0;
     private boolean[][] visited;
 
-    public void addItem(Item item) {
+    public void addItem(String itemName) {
         if (itemCount > 5) {
             return;
         }
 
+        Item item = new Item(itemName);
         itemList[itemCount++] = item;
     }
 
@@ -223,13 +224,22 @@ public class PuzzleBoard {
                 }
             }
 
-//            for (int j = 0; i < lengthCnt; i++) {
-//                for (int k = 0; k < widthCnt; k++) {
-//                    if (board[1][j][k].getIndex() == x.getIndex()) {
-//                        board[1][j][k] = null;
-//                    }
-//                }
-//            }
+            boolean flag = false;
+            for (int j = 0; j < lengthCnt; j++) {
+                for (int k = 0; k < widthCnt; k++) {
+                    if (board[1][j][k] == null)
+                        continue;
+
+                    if (board[1][j][k].getIndex() == x.getIndex()) {
+                        board[1][j][k] = null;
+                        flag = true;
+                        break;
+                    }
+                }
+
+                if (flag)
+                    break;
+            }
 
             //결합됨을 표시
             isCorrected[idxToCoordinate.get(pieceIdx)[0]][idxToCoordinate.get(pieceIdx)[1]] = true;
@@ -399,6 +409,9 @@ public class PuzzleBoard {
         for (Set<Piece> set : bundles) {
             System.out.println(set);
         }
+
+        System.out.println("아이템 리스트");
+        System.out.println(Arrays.toString(itemList));
         System.out.println("---------------------------------------");
     }
 
