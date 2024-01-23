@@ -7,6 +7,7 @@ import com.ssafy.puzzlepop.item.repository.ItemRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,5 +54,12 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> findAllByType(String type) {
         List<Item> items = itemRepository.findAllByType(type);
         return items.stream().map(ItemDto::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ItemDto> extractRandom(String type, Integer limit) {
+        List<Item> items = itemRepository.findAllByType(type);
+        Collections.shuffle(items);
+        return items.subList(0, limit).stream().map(ItemDto::new).collect(Collectors.toList());
     }
 }
