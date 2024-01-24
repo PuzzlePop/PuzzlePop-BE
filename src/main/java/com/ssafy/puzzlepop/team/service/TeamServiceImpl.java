@@ -35,7 +35,7 @@ public class TeamServiceImpl implements TeamService {
     public Long updateTeam(TeamDto teamDto) {
         Team team = teamRepository.findById(teamDto.getId()).orElseThrow(
                 () -> new TeamNotFoundException("Team not found with id: " + teamDto.getId()));
-        team.updatePieceCount(teamDto.getAssembledPieceCount());
+        team.update(teamDto);
         return teamRepository.save(team).getId();
     }
 
@@ -49,6 +49,13 @@ public class TeamServiceImpl implements TeamService {
     public List<TeamDto> findAllByGameId(Long gameId) {
         List<Team> teams = teamRepository.findAllByGameId(gameId);
         return teams.stream().map(TeamDto::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public Long updateMatchedPieceCount(TeamDto teamDto) {
+        Team team = teamRepository.findById(teamDto.getId()).orElseThrow(
+                () -> new TeamNotFoundException("Team not found with id: " + teamDto.getId()));
+        return team.updateMatchedPieceCount(teamDto.getMatchedPieceCount());
     }
 
 }

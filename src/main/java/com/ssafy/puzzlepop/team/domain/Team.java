@@ -19,9 +19,16 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long gameId;
-    private Integer assembledPieceCount;
+    private Integer matchedPieceCount;
 
-    public void updatePieceCount(Integer pieceCount) {
-        this.assembledPieceCount = pieceCount;
+    public void update(TeamDto teamDto) {
+        this.id = teamDto.getId();
+        this.gameId = teamDto.getGameId();
+        this.matchedPieceCount = teamDto.getMatchedPieceCount();
+    }
+
+    public Long updateMatchedPieceCount(Integer count) {
+        this.matchedPieceCount = count;
+        return this.id;
     }
 }

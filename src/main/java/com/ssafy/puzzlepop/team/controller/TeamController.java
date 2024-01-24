@@ -64,7 +64,7 @@ public class TeamController {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    @GetMapping("/team/list")
+    @GetMapping("/team/all")
     public ResponseEntity<?> findAllTeams() {
         try {
             List<TeamDto> responseDtos = teamService.getAllTeams();
@@ -77,10 +77,22 @@ public class TeamController {
     }
 
     @GetMapping("/team/search")
-    public ResponseEntity<?> findTeamByGameId(@RequestBody TeamDto requestDto) {
+    public ResponseEntity<?> findTeamByGameId(@RequestParam(value = "gameId") Long gameId) {
         try {
-            List<TeamDto> responseDtos = teamService.findAllByGameId(requestDto.getGameId());
+            List<TeamDto> responseDtos = teamService.findAllByGameId(gameId);
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+        } catch (TeamNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @PutMapping("/team/update")
+    public ResponseEntity<?> updateMatchedPieceCount(@RequestBody TeamDto requestDto) {
+        try {
+            Long id = teamService.updateMatchedPieceCount(requestDto);
+            return ResponseEntity.status(HttpStatus.OK).body(id);
         } catch (TeamNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
