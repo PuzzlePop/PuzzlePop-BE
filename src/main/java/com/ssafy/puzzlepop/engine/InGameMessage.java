@@ -1,10 +1,18 @@
 package com.ssafy.puzzlepop.engine;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class InGameMessage {
+
+    public enum MessageType {
+        ENTER, TALK
+    }
 
     private MessageType type;
 

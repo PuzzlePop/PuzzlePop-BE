@@ -59,6 +59,7 @@
                 } else {
                     var params = new URLSearchParams();
                     params.append("name",this.room_name);
+                    params.append("userid", 1);
                     axios.post('/game/room', params)
                         .then(
                             response => {
@@ -75,7 +76,7 @@
                 if(sender !== "") {
                     localStorage.setItem('wschat.sender',sender);
                     localStorage.setItem('wschat.roomId',roomId);
-                    location.href="/chat/room/enter/"+roomId;
+                    location.href="/game/room/enter/"+roomId;
                 }
             }
         }
