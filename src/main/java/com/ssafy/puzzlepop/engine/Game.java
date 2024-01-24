@@ -1,17 +1,30 @@
 package com.ssafy.puzzlepop.engine;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
+@Getter
 @NoArgsConstructor
 public class Game {
     private Team redTeam;
     private Team blueTeam;
     private PuzzleBoard redPuzzle;
     private PuzzleBoard bluePuzzle;
+
+    private String gameId;
+    private String gameName;
+
+    public static Game create(String name) {
+        Game game = new Game();
+        String uuid = UUID.randomUUID().toString();
+        game.gameId = uuid;
+        game.gameName = name;
+
+        System.out.println(name + "방 생성 / id = " + uuid);
+        return game;
+    }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
