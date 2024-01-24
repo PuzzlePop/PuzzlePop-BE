@@ -19,16 +19,16 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String description;
-    private String imagePath;
-    private Integer price;
     private String type;
+    private String description;
+    private Integer price;
+    private Long imageId;
 
     public void update(ItemDto itemDto) {
         this.name = itemDto.getName();
-        this.description = itemDto.getDescription();
-        this.imagePath = itemDto.getImagePath();
-        this.price = itemDto.getPrice();
         this.type = itemDto.getType();
+        this.price = itemDto.getPrice();
+        this.description = itemDto.getDescription();
+        this.imageId = itemDto.getImageId();
     }
 }

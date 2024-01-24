@@ -11,17 +11,17 @@ import lombok.NoArgsConstructor;
 public class ItemDto {
     private Long id;
     private String name;
-    private String description;
-    private String imagePath;
-    private Integer price;
     private String type;
+    private String description;
+    private Integer price;
+    private Long imageId;
 
     @Builder
     public ItemDto(Item item) {
         this.id = item.getId();
         this.name = item.getName();
         this.description = item.getDescription();
-        this.imagePath = item.getImagePath();
+        this.imageId = item.getImageId();
         this.price = item.getPrice();
         this.type = item.getType();
     }
@@ -31,7 +31,7 @@ public class ItemDto {
                 .id(this.id)
                 .name(this.name)
                 .description(this.description)
-                .imagePath(this.imagePath)
+                .imageId(this.imageId)
                 .price(this.price)
                 .type(this.type)
                 .build();

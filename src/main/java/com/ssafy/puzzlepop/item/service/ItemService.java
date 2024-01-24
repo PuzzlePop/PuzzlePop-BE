@@ -12,4 +12,5 @@ public interface ItemService {
     public void deleteItem(Long id);
 
     public List<ItemDto> findAllByType(String type);
+    public List<ItemDto> extractRandom(String type, Integer limit);
 }

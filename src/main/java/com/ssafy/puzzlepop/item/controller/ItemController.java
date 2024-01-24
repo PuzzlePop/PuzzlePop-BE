@@ -87,4 +87,17 @@ public class ItemController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @GetMapping("/item/random")
+    public ResponseEntity<?> extractRandomItemsByType(@RequestParam("type") String type,
+                                             @RequestParam("limit") Integer limit) {
+        try {
+            List<ItemDto> responseDtos = itemService.extractRandom(type, limit);
+            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+        } catch (ItemNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }
