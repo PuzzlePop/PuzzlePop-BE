@@ -18,7 +18,7 @@ public class GameInfoController {
     @GetMapping("/game")
     public ResponseEntity<?> getGameById(@RequestBody GameInfoDto requestDto) {
         try {
-            GameInfoDto responseDto = gameService.getGameById(requestDto.getId());
+            GameInfoDto responseDto = gameService.getGameInfoById(requestDto.getId());
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
         } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
