@@ -30,7 +30,7 @@ public class GameInfoController {
     @PostMapping("/game")
     public ResponseEntity<?> createGame(@RequestBody GameInfoDto requestDto) {
         try {
-            Long id = gameService.createGame(requestDto);
+            Long id = gameService.createGameInfo(requestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(id);
         } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -42,7 +42,7 @@ public class GameInfoController {
     @PutMapping("/game")
     public ResponseEntity<?> updateGame(@RequestBody GameInfoDto requestDto) {
         try {
-            Long id = gameService.updateGame(requestDto);
+            Long id = gameService.updateGameInfo(requestDto);
             return ResponseEntity.status(HttpStatus.OK).body(id);
         } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -54,7 +54,7 @@ public class GameInfoController {
     @DeleteMapping("/game")
     public ResponseEntity<?> deleteGame(@RequestBody GameInfoDto requestDto) {
         try {
-            gameService.deleteGame(requestDto.getId());
+            gameService.deleteGameInfo(requestDto.getId());
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -67,7 +67,7 @@ public class GameInfoController {
     @GetMapping("/game/list")
     public ResponseEntity<?> findAllGames() {
         try {
-            List<GameInfoDto> responseDtos = gameService.getAllGames();
+            List<GameInfoDto> responseDtos = gameService.getAllGameInfos();
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
         } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
