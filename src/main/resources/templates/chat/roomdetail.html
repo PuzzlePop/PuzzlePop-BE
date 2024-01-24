@@ -34,6 +34,7 @@
         </li>
     </ul>
     <div></div>
+    <button class="btn btn-primary" type="button" @click="gameStart">게임시작</button>
 </div>
 <!-- JavaScript -->
 <script src="/webjars/vue/2.5.16/dist/vue.min.js"></script>
@@ -66,11 +67,16 @@
                 axios.get('/game/room/'+this.roomId).then(response => { this.room = response.data; });
             },
             sendMessage: function() {
-                ws.send("/app/game/message", {}, JSON.stringify({type:'TALK', roomId:this.roomId, sender:this.sender, message:this.message}));
+                ws.send("/app/game/message", {}, JSON.stringify({type:'GAME', roomId:this.roomId, sender:this.sender, message:this.message}));
                 this.message = '';
             },
             recvMessage: function(recv) {
                 this.messages.unshift({"type":recv.type,"sender":recv.type=='ENTER'?'[알림]':recv.sender,"message":recv.message})
+                console.log(JSON.parse(recv.message));
+            },
+            gameStart: function() {
+                ws.send("/app/game/message", {}, JSON.stringify({type:'GAME', roomId:this.roomId, sender:this.sender, message:this.message}));
+                this.message = 'gameStart';
             }
         }
     });

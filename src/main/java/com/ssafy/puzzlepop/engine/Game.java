@@ -8,25 +8,58 @@ import java.util.*;
 @Getter
 @NoArgsConstructor
 public class Game {
+    private String gameId;
+    private String gameName;
+
+    private User admin;
+
     private Team redTeam;
     private Team blueTeam;
     private PuzzleBoard redPuzzle;
     private PuzzleBoard bluePuzzle;
 
-    private User admin;
-    private String gameId;
-    private String gameName;
 
-    public static Game create(String name, int userid) {
+
+//    public Game(String gameName, int userid) {
+//        this.redTeam = new Team(new LinkedList<>());
+//        this.blueTeam = new Team(new LinkedList<>());
+//
+//        this.admin = new User(userid);
+//        this.gameId = UUID.randomUUID().toString();
+//        this.gameName = gameName;
+//    }
+
+    public static Game create(String name, String userid) {
         User user = new User(userid);
         Game game = new Game();
         String uuid = UUID.randomUUID().toString();
+        Team red = new Team(new LinkedList<>());
+        Team blue = new Team(new LinkedList<>());
+
+        game.redTeam = red;
+        game.blueTeam = blue;
+
+        game.redTeam.addPlayer(user);
+
         game.gameId = uuid;
         game.gameName = name;
         game.admin = user;
 
-        System.out.println(name + "방 생성 / id = " + uuid + "방장 id = " + user.getId());
+
+        System.out.println(name + "방 생성 / id = " + uuid + " / 방장 id = " + user.getId());
         return game;
+    }
+
+    public void start() {
+        Picture picture = new Picture(64, 48, ".");
+        redPuzzle = new PuzzleBoard();
+        bluePuzzle = new PuzzleBoard();
+        redPuzzle.init(picture);
+        bluePuzzle.init(picture);
+
+        System.out.println("------------------게임 시작-------------------");
+        redPuzzle.print();
+        bluePuzzle.print();
     }
 
 //    public static void main(String[] args) {

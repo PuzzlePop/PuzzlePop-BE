@@ -32,9 +32,20 @@ public class GameService {
     }
 
     //채팅방 생성
-    public Game createRoom(String name, int userid) {
+    public Game createRoom(String name, String userid) {
         Game game = Game.create(name, userid);
         gameRooms.put(game.getGameId(), game);
+        return game;
+    }
+
+    public Game startGame(String roomId) {
+        Game game = findById(roomId);
+        game.start();
+        return game;
+    }
+
+    public Game playGame(String roomId, String message) {
+        Game game = findById(roomId);
         return game;
     }
 }
