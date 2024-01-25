@@ -22,6 +22,6 @@ public class InGameMessage {
     private String sender;
     //내용
     private String message;
-    //명령어
-    private String command;
+
+    private String targets;
 }

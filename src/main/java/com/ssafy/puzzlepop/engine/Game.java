@@ -3,6 +3,7 @@ package com.ssafy.puzzlepop.engine;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Getter
@@ -18,7 +19,9 @@ public class Game {
     private PuzzleBoard redPuzzle;
     private PuzzleBoard bluePuzzle;
 
+    private Date startTime;
 
+    private boolean isStarted = false;
 
 //    public Game(String gameName, int userid) {
 //        this.redTeam = new Team(new LinkedList<>());
@@ -57,9 +60,21 @@ public class Game {
         redPuzzle.init(picture);
         bluePuzzle.init(picture);
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        startTime = new Date();
+        System.out.println(startTime);
+        isStarted = true;
         System.out.println("------------------게임 시작-------------------");
         redPuzzle.print();
         bluePuzzle.print();
+    }
+
+    //초 단위 경과 시간
+    public long getTime() {
+        Date nowTime = new Date();
+        long start = startTime.getTime();
+        long now = nowTime.getTime();
+        return (now-start)/1000;
     }
 
 //    public static void main(String[] args) {

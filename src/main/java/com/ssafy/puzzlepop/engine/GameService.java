@@ -44,8 +44,15 @@ public class GameService {
         return game;
     }
 
-    public Game playGame(String roomId, String message) {
+    public Game playGame(String roomId, String message, String targets) {
         Game game = findById(roomId);
+
+        //TODO
+        //게임 진행 로직
+        if (message.equals("add piece")) {
+
+        }
+
         return game;
     }
 }
