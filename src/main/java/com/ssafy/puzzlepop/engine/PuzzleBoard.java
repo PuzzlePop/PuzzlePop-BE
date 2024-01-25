@@ -20,13 +20,13 @@ public class PuzzleBoard {
     private List<Set<Piece>> bundles = new LinkedList<>(); //조합된 퍼즐 뭉탱이들
     private boolean[][] isCorrected; //조합된 퍼즐인지 확인하는 2차원 배열
 
+    private int correctedCount;
+
     //랜덤 타입 적용에 쓰일 인덱스 상수
     private final int TOP = 0;
     private final int RIGHT = 1;
     private final int BOTTOM = 2;
     private final int LEFT = 3;
-
-
 
     private Item[] itemList = new Item[5];
     private int itemCount = 0;
@@ -197,6 +197,7 @@ public class PuzzleBoard {
             }
         }
 
+        correctedCount = 0;
         randomArrange();
         return board;
     }
@@ -249,8 +250,17 @@ public class PuzzleBoard {
 
         //뭉탱이들 리스트에 이번 결합을 통해 나온 뭉탱이 추가
         bundles.add(set);
+        updatePieceCount();
     }
 
+    public void updatePieceCount() {
+        int cnt = 0;
+        for (Set<Piece> bundle : bundles) {
+            cnt += bundle.size();
+        }
+
+        correctedCount = cnt;
+    }
 
 
     //결합된 조각 삭제
@@ -268,10 +278,12 @@ public class PuzzleBoard {
                     it.remove();
                     isCorrected[r][c] = false;
                     extracted(r,c);
+                    updatePieceCount();
                     return;
                 }
             }
         }
+
 
     }
 
@@ -376,6 +388,7 @@ public class PuzzleBoard {
 
     public void print() {
         System.out.println("---------------------------------------");
+        System.out.println("진행률 : " + (((double)correctedCount/(double)pieceSize)*100) + "%");
         System.out.println("퍼즐 판 정보");
         for (int i = 0; i < lengthCnt; i++) {
             for (int j = 0; j < widthCnt; j++) {
