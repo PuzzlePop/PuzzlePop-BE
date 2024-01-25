@@ -31,10 +31,10 @@ public class Image {
     private String filename; // 원본파일명
 
     @NotNull
-    private String filepath; // 서버파일경로/UUID_원본파일명
+    private String filepath; // 서버파일경로/UUID_원본파일명.png
 
     @NotNull
-    private String filenameExtension; // 파일 확장자
+    private String filenameExtension; // 파일 확장자 png
 
     @NotNull
     private String userId; // 업로드한 유저 id (기본이미지: admin)

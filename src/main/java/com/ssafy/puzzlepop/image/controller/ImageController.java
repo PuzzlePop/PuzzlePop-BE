@@ -2,8 +2,10 @@ package com.ssafy.puzzlepop.image.controller;
 
 import com.ssafy.puzzlepop.image.domain.ImageCreateDto;
 import com.ssafy.puzzlepop.image.domain.ImageDto;
+import com.ssafy.puzzlepop.image.domain.ImageResponseDto;
 import com.ssafy.puzzlepop.image.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +29,8 @@ public class ImageController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createImage(@RequestParam MultipartFile file, @RequestParam String type, @RequestParam String userId) {
+    public ResponseEntity<?> createImage(@RequestParam MultipartFile file, @RequestParam String type) {
+        String userId = "admin"; // TODO: accessToken의 userId를 넣어야 함
         ImageCreateDto imageCreateDto = new ImageCreateDto(type, userId);
 
         try {
@@ -38,8 +41,7 @@ public class ImageController {
         }
     }
 
-    // 수정 기능의 역할이 명확하지 않음
-    // 이름만 수정? 이미지 파일 자체를 수정?
+    // 보류
     @PutMapping
     public ResponseEntity<?> updateImage(@RequestBody ImageDto imageDto) {
 
@@ -52,12 +54,12 @@ public class ImageController {
 
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteImage(@RequestBody int id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteImage(@PathVariable int id) {
 
         try {
             imageService.deleteImage(id);
-            return ResponseEntity.status(HttpStatus.OK).body(null);
+            return ResponseEntity.status(HttpStatus.OK).body("delete ok");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -66,8 +68,8 @@ public class ImageController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findImageById(@PathVariable int id) {
         try {
-            ImageDto image = imageService.getImageById(id);
-            return ResponseEntity.status(HttpStatus.OK).body(image);
+            ImageDto imageDto = imageService.getImageById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(imageDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

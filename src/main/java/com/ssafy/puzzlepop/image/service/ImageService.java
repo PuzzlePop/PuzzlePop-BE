@@ -2,6 +2,7 @@ package com.ssafy.puzzlepop.image.service;
 
 import com.ssafy.puzzlepop.image.domain.ImageCreateDto;
 import com.ssafy.puzzlepop.image.domain.ImageDto;
+import com.ssafy.puzzlepop.image.domain.ImageResponseDto;
 import com.ssafy.puzzlepop.image.exception.ImageException;
 import org.springframework.web.multipart.MultipartFile;
 
