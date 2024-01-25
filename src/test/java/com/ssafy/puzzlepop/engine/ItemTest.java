@@ -3,10 +3,8 @@ package com.ssafy.puzzlepop.engine;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 public class ItemTest {
     @Test
@@ -137,6 +135,30 @@ public class ItemTest {
 
         //불지르기
         redPuzzle.addItem("불지르기");
+        redPuzzle.useItem(1, bluePuzzle);
+
+        bluePuzzle.print();
+    }
+
+    @Test
+    @DisplayName("로켓 테스트")
+    void rocketTest() {
+        Picture p = new Picture(64, 48, "String");
+
+        PuzzleBoard redPuzzle = new PuzzleBoard();
+        PuzzleBoard bluePuzzle = new PuzzleBoard();
+
+        redPuzzle.init(p);
+        bluePuzzle.init(p);
+
+
+
+        bluePuzzle.addItem("frame");
+        bluePuzzle.useItem(1, bluePuzzle);
+        bluePuzzle.print();
+
+        //로켓
+        redPuzzle.addItem("rocket");
         redPuzzle.useItem(1, bluePuzzle);
 
         bluePuzzle.print();

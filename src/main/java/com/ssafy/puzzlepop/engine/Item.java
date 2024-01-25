@@ -1,6 +1,5 @@
 package com.ssafy.puzzlepop.engine;
 
-import lombok.Data;
 import lombok.Getter;
 
 import java.util.*;
@@ -38,6 +37,10 @@ public class Item {
     }
 
     public void run(PuzzleBoard puzzle) {
+        List<Set<Piece>> bundles;
+        Set<Piece> mostManyBundle;
+        List<Integer> targets;
+
         switch (this.id.intValue()) {
             case 1:
                 System.out.println(puzzle + "에 힌트 아이템 효과 발동~");
@@ -97,7 +100,7 @@ public class Item {
 
             //자석
             case 6:
-                List<Integer> targets = new LinkedList<>();
+                targets = new LinkedList<>();
                 for (int i = 0; i < puzzle.getLengthCnt(); i++) {
                     for (int j = 0; j < puzzle.getWidthCnt(); j++) {
                         if (!puzzle.getIsCorrected()[i][j]) {
@@ -146,6 +149,25 @@ public class Item {
 
             //로켓
             case 7:
+                if (puzzle.getBundles().isEmpty())
+                    return;
+                bundles = puzzle.getBundles();
+                Collections.sort(bundles, (o1, o2) -> {
+                    return o2.size() - o1.size();
+                });
+                mostManyBundle = bundles.get(0);
+
+                targets = new LinkedList<>();
+                for (Piece p : mostManyBundle) {
+                    targets.add(p.getIndex());
+                }
+                List<Integer> deletedPieces = new LinkedList<>();
+                for (int t : targets) {
+                    deletedPieces.add(t);
+                    puzzle.deletePiece(t);
+                }
+
+                System.out.println("로켓 대상 : " + deletedPieces);
 
                 break;
 
@@ -155,11 +177,11 @@ public class Item {
                     return;
 
                 //조각 개수가 많은 덩어리 순으로 정렬해서 그 덩어리 해체하기
-                List<Set<Piece>> bundles = puzzle.getBundles();
+                bundles = puzzle.getBundles();
                 Collections.sort(bundles, (o1, o2) -> {
                     return o2.size() - o1.size();
                 });
-                Set<Piece> mostManyBundle = bundles.get(0);
+                mostManyBundle = bundles.get(0);
                 int size = mostManyBundle.size();
 
                 //위에서 뽑은 덩어리에서 조각 하나 뽑기
