@@ -4,10 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Controller;
 
-@RestController
+import java.util.List;
+
+@Controller
 @RequiredArgsConstructor
+@EnableScheduling
 public class MessageController {
 
     @Autowired
@@ -25,19 +30,30 @@ public class MessageController {
             gameService.findById(message.getRoomId()).getRedTeam().addPlayer(new User(message.getSender()));
             sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(),message);
         } else {
-            System.out.println("게임 명령어");
-            System.out.println(message.getMessage());
-
             if (message.getMessage().equals("gameStart")) {
+                System.out.println("game start");
                 Game game = gameService.startGame(message.getRoomId());
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
             } else {
-                Game game = gameService.playGame(message.getRoomId(), message.getMessage());
+                System.out.println("명령어 : " + message.getTargets());
+                Game game = gameService.playGame(message.getRoomId(), message.getMessage(), message.getTargets());
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
             }
         }
 
 
     }
+
+    @Scheduled(fixedRate = 1000)
+    public void sendServerTime() {
+        List<Game> allRoom = gameService.findAllRoom();
+        for (int i = 0; i < allRoom.size(); i++) {
+            if (allRoom.get(i).isStarted()) {
+                sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), allRoom.get(i).getTime());
+                System.out.println(allRoom.get(i).getGameName() + "에 " + allRoom.get(i).getTime() + "초 라고 보냈음");
+            }
+        }
+    }
+
 }
 
