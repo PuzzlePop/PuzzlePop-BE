@@ -1,13 +1,13 @@
 package com.ssafy.puzzlepop.item.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.ssafy.puzzlepop.teamitem.domain.TeamItem;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -23,6 +23,9 @@ public class Item {
     private String description;
     private Integer price;
     private Long imageId;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
+    List<TeamItem> teamItems;
 
     public void update(ItemDto itemDto) {
         this.name = itemDto.getName();
