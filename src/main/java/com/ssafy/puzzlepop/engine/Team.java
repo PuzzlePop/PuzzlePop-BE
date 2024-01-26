@@ -10,6 +10,14 @@ import java.util.List;
 public class Team {
     private List<User> players;
 
+    public boolean isIn(User user) {
+        if (players.contains(user)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public void addPlayer(User user) {
         players.add(user);
     }

@@ -12,6 +12,8 @@ public class Game {
     private String gameId;
     private String gameName;
 
+    private GameType gameType;
+
     private User admin;
 
     private Team redTeam;
@@ -32,24 +34,53 @@ public class Game {
 //        this.gameName = gameName;
 //    }
 
-    public static Game create(String name, String userid) {
+    public void changeTeam(User user) {
+        if (redTeam.isIn((user))) {
+            redTeam.deletePlayer(user);
+            blueTeam.addPlayer(user);
+        } else {
+            blueTeam.deletePlayer(user);
+            redTeam.addPlayer(user);
+        }
+
+    }
+
+    public static Game create(String name, String userid, GameType type) {
         User user = new User(userid);
         Game game = new Game();
         String uuid = UUID.randomUUID().toString();
-        Team red = new Team(new LinkedList<>());
-        Team blue = new Team(new LinkedList<>());
 
-        game.redTeam = red;
-        game.blueTeam = blue;
+        if (type == GameType.BATTLE) {
+            Team red = new Team(new LinkedList<>());
+            Team blue = new Team(new LinkedList<>());
 
-        game.redTeam.addPlayer(user);
+            game.redTeam = red;
+            game.blueTeam = blue;
 
-        game.gameId = uuid;
-        game.gameName = name;
-        game.admin = user;
+            game.gameType = GameType.BATTLE;
+
+            game.redTeam.addPlayer(user);
+
+            game.gameId = uuid;
+            game.gameName = name;
+            game.admin = user;
 
 
-        System.out.println(name + "방 생성 / id = " + uuid + " / 방장 id = " + user.getId());
+            System.out.println(name + "배틀 방 생성 / id = " + uuid + " / 방장 id = " + user.getId());
+        } else {
+            Team red = new Team(new LinkedList<>());
+
+            game.redTeam = red;
+
+            game.gameType = GameType.TEAM;
+            game.redTeam.addPlayer(user);
+            game.gameId = uuid;
+            game.gameName = name;
+            game.admin = user;
+
+            System.out.println(name + "협동 방 생성 / id = " + uuid + " / 방장 id = " + user.getId());
+        }
+
         return game;
     }
 

@@ -34,8 +34,8 @@ public class GameRoomController {
     // 채팅방 생성
     @PostMapping("/room")
     @ResponseBody
-    public Game createRoom(@RequestParam String name, @RequestParam String userid) {
-        return gameService.createRoom(name, userid);
+    public Game createRoom(@RequestParam String name, @RequestParam String userid, @RequestParam GameType type) {
+        return gameService.createRoom(name, userid, type);
     }
 
     // 채팅방 입장 화면
