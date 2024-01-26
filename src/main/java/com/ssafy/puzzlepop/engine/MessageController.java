@@ -18,6 +18,7 @@ public class MessageController {
     @Autowired
     private GameService gameService;
     private final SimpMessageSendingOperations sendingOperations;
+    private final int BATTLE_TIMER = 5;
 
     @MessageMapping("/game/message")
     public void enter(InGameMessage message) {
@@ -44,12 +45,17 @@ public class MessageController {
 
     }
 
+    //서버 타이머  제공
     @Scheduled(fixedRate = 1000)
     public void sendServerTime() {
         List<Game> allRoom = gameService.findAllRoom();
         for (int i = 0; i < allRoom.size(); i++) {
             if (allRoom.get(i).isStarted()) {
-                sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), allRoom.get(i).getTime());
+                long time = allRoom.get(i).getTime();
+                if (allRoom.get(i).getGameType() == GameType.BATTLE) {
+                    time = BATTLE_TIMER-time;
+                }
+                sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), time);
                 System.out.println(allRoom.get(i).getGameName() + "에 " + allRoom.get(i).getTime() + "초 라고 보냈음");
             }
         }
