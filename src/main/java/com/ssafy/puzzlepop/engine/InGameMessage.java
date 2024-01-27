@@ -24,4 +24,6 @@ public class InGameMessage {
     private String message;
 
     private String targets;
+
+    private Game game;
 }
