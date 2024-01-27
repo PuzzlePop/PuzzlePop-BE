@@ -1,5 +1,10 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.controller;
 
+import com.ssafy.puzzlepop.engine.domain.GameType;
+import com.ssafy.puzzlepop.engine.InGameMessage;
+import com.ssafy.puzzlepop.engine.domain.Game;
+import com.ssafy.puzzlepop.engine.domain.User;
+import com.ssafy.puzzlepop.engine.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;

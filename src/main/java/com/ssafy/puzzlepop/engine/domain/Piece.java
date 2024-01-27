@@ -1,4 +1,4 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.domain;
 
 import java.util.*;
 import lombok.*;

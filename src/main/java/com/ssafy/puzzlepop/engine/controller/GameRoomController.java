@@ -1,5 +1,7 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.controller;
 
+import com.ssafy.puzzlepop.engine.service.GameService;
+import com.ssafy.puzzlepop.engine.domain.Game;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

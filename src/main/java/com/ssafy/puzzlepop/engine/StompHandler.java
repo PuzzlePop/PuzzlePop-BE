@@ -1,5 +1,6 @@
 package com.ssafy.puzzlepop.engine;
 
+import jdk.swing.interop.SwingInterOpUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
@@ -18,7 +19,6 @@ public class StompHandler implements ChannelInterceptor {
         System.out.println("StompHandler.preSend");
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         System.out.println(accessor.getCommand());
-
         return message;
     }
 }

@@ -1,8 +1,7 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.*;
 

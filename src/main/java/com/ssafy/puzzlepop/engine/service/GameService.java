@@ -1,5 +1,6 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.service;
 
+import com.ssafy.puzzlepop.engine.domain.Game;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

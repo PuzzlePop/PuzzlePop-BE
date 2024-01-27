@@ -1,5 +1,6 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.domain;
 
+import com.ssafy.puzzlepop.engine.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
