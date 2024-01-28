@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -149,60 +150,65 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
+
     @Override
-    public ImageDto getImageById(int id) throws ImageException {
-        return null;
+    public UrlResource getImageById(int id) throws ImageException {
+        Image image;
+
+        try {
+            image = imageRepository.findById(id).orElse(null);
+            if (image == null) { // 존재하는 id에 대한 요청만 허용한다고 가정. 필요 시 수정
+                throw new ImageException("존재하지 않는 이미지");
+            }
+
+            Path imagePath = Paths.get(image.getFilepath() + "." + image.getFilenameExtension());
+            UrlResource imageResource = new UrlResource(imagePath.toUri());
+
+            if (imageResource.exists()) {
+                return imageResource;
+            } else {
+                throw new ImageException("이미지 파일이 존재하지 않습니다...");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ImageException(e.getMessage());
+        }
     }
 
-//    @Override
-//    public ImageResponseDto getImageById(int id) throws ImageException {
-//        Image image;
-//
-//        try {
-//            image = imageRepository.findById(id).orElse(null);
-//            if (image == null) { // 존재하는 id에 대한 요청만 허용한다고 가정. 필요 시 수정
-//                throw new ImageException("존재하지 않는 이미지");
-//            }
-//
-//            ImageResponseDto imageResponseDto = new ImageResponseDto();
-//            imageResponseDto.setId(image.getId());
-//            imageResponseDto.setFilename(image.getFilename());
-//            Path imagePath = Path.of(image.getFilepath()+"."+image.getFilenameExtension());
-//            UrlResource imageUrl = new UrlResource(imagePath.toUri());
-//            imageResponseDto.setImageUrl(imageUrl);
-//
-//            return imageResponseDto;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new ImageException(e.getMessage());
-//        }
-//    }
-
     @Override
-    public List<ImageDto> getAllImages() throws ImageException {
+    public List<ImageResponseDto> getAllImages() throws ImageException {
 
         List<Image> imageList;
+        List<ImageResponseDto> imageResponseDtoList = new LinkedList<>();
 
         try {
             imageList = imageRepository.findAll();
-            return imageList.stream().map(ImageDto::new).collect(Collectors.toList());
+            for(Image image : imageList) {
+                imageResponseDtoList.add(new ImageResponseDto(image.getId(), image.getType(), image.getFilename(), image.getUserId()));
+            }
+
+            return imageResponseDtoList;
         } catch (Exception e) {
             throw new ImageException("failed to get all images");
         }
     }
 
     @Override
-    public List<ImageDto> getImagesByType(String type) throws ImageException {
+    public List<ImageResponseDto> getImagesByType(String type) throws ImageException {
         List<Image> imageList;
+        List<ImageResponseDto> imageResponseDtoList = new LinkedList<>();
 
         try {
             imageList = imageRepository.findAllByType(type);
-            return imageList.stream().map(ImageDto::new).collect(Collectors.toList());
+            for(Image image : imageList) {
+                imageResponseDtoList.add(new ImageResponseDto(image.getId(), image.getType(), image.getFilename(), image.getUserId()));
+            }
+
+            return imageResponseDtoList;
         } catch (Exception e) {
             throw new ImageException("failed to get images by type");
         }
     }
-
-
 
 }
