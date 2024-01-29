@@ -23,5 +23,5 @@ public class Record {
     private String userId;
 
     @NotNull
-    private int gameId;
+    private long gameId;
 }
