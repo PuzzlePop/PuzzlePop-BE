@@ -1,6 +1,7 @@
 package com.ssafy.puzzlepop.engine.service;
 
 import com.ssafy.puzzlepop.engine.domain.Game;
+import com.ssafy.puzzlepop.engine.domain.User;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,6 @@ public class GameService {
         return result;
     }
 
-    //채팅방 하나 불러오기
     public Game findById(String roomId) {
         return gameRooms.get(roomId);
     }
@@ -61,5 +61,14 @@ public class GameService {
         }
 
         return game;
+    }
+
+    public boolean enterGame(String gameId, String userId, String sessionId) {
+        Game game = gameRooms.get(gameId);
+        if (game.enterPlayer(new User(userId), sessionId)) {
+            return true;
+        }
+
+        return false;
     }
 }
