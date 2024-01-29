@@ -7,5 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Room {
     private String name;
-    private int userid;
+    private String userid;
+    private GameType type;
 }

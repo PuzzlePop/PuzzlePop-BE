@@ -1,14 +1,12 @@
 package com.ssafy.puzzlepop.engine;
 
-import jdk.swing.interop.SwingInterOpUtils;
+import com.ssafy.puzzlepop.engine.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.stereotype.Controller;
 
 @Configuration
 @RequiredArgsConstructor

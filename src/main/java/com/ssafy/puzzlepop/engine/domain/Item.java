@@ -15,12 +15,8 @@ public class Item {
         this.name = name;
         if (name.equals("hint")) {
             this.id = 1L;
-            this.description = "이 아이템을 클릭하면, 아직 맞추지 않은 2조각을 맞출 수 있어요!";
-            this.img_path = "path";
         } else if (name.equals("earthquake")) {
             this.id = 2L;
-            this.description = "이 아이템을 클릭하면, 상대방의 아직 맞추지 않은 퍼즐들이 섞여요!";
-            this.img_path = "path";
         } else if (name.equals("mirror")) {
             this.id = 3L;
         } else if (name.equals("frame")) {

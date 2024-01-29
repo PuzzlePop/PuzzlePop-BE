@@ -1,19 +1,27 @@
 package com.ssafy.puzzlepop.engine.controller;
 
-import com.ssafy.puzzlepop.engine.domain.GameType;
 import com.ssafy.puzzlepop.engine.InGameMessage;
+import com.ssafy.puzzlepop.engine.SocketError;
 import com.ssafy.puzzlepop.engine.domain.Game;
+import com.ssafy.puzzlepop.engine.domain.GameType;
 import com.ssafy.puzzlepop.engine.domain.User;
 import com.ssafy.puzzlepop.engine.service.GameService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.messaging.SessionConnectEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,20 +31,52 @@ public class MessageController {
     @Autowired
     private GameService gameService;
     private final SimpMessageSendingOperations sendingOperations;
-    private final int BATTLE_TIMER = 5;
+    private final int BATTLE_TIMER = 300;
+    private String sessionId;
+    private Map<String, String> sessionToGame;
+
+    @PostConstruct
+    public void init() {
+        sessionToGame = new HashMap<>();
+    }
+
+    //세션 아이디 설정
+    @EventListener
+    public void handleWebSocketConnectListener(SessionConnectEvent event) {
+        System.out.println("MessageController.handleWebSocketConnectListener");
+        System.out.println(event.getMessage().getHeaders().get("simpSessionId"));
+        sessionId = (String) event.getMessage().getHeaders().get("simpSessionId");
+    }
+
+    @EventListener
+    public void handleDisconnectEvent(SessionDisconnectEvent event) {
+        System.out.println("MessageController.handleDisconnectEvent");
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+        String sessionId = accessor.getSessionId();
+        String gameId = sessionToGame.get(sessionId);
+        Game game = gameService.findById(gameId);
+        System.out.println(game.getSessionToUser().get(sessionId).getId() + " 님이 퇴장하십니다.");
+        game.exitPlayer(sessionId);
+        sessionToGame.remove(sessionId);
+
+        sendingOperations.convertAndSend("/topic/game/room/"+gameId, game);
+    }
+
 
     @MessageMapping("/game/message")
     public void enter(InGameMessage message) {
-        if (InGameMessage.MessageType.ENTER.equals(message.getType())) {
-            message.setMessage(message.getSender()+"님이 입장하였습니다.");
-        }
-
+        System.out.println(sessionId + " 에 대한 if문 시작");
         if (message.getType().equals(InGameMessage.MessageType.ENTER)) {
-            System.out.println(gameService.findById(message.getRoomId()).getGameName() + "에 " + message.getSender() + "님이 입장하셨습니다.");
-            if (gameService.findById(message.getRoomId()).enterPlayer(new User(message.getSender()))) {
-                sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(),message);
+            Game game = gameService.findById(message.getRoomId());
+            sessionToGame.put(sessionId, message.getRoomId());
+
+            if (game.enterPlayer(new User(message.getSender()), sessionId)) {
+                sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
+                System.out.println(gameService.findById(message.getRoomId()).getGameName() + "에 " + message.getSender() + "님이 입장하셨습니다.");
             } else {
-                sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(),"방 가득참");
+                System.out.println("방 입장 실패");
+                sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(),new SocketError("room", "방 가득 참"));
+                System.out.println(gameService.findById(message.getRoomId()).getGameName() + "에 " + message.getSender() + "님이 입장하지 못했습니다.");
             }
         } else {
             if (message.getMessage().equals("gameStart")) {
@@ -49,8 +89,6 @@ public class MessageController {
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
             }
         }
-
-
     }
 
     //서버 타이머  제공
