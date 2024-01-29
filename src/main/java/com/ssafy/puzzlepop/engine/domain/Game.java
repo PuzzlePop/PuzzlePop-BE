@@ -24,6 +24,7 @@ public class Game {
     private Date startTime;
 
     private boolean isStarted = false;
+    private HashMap<String, User> sessionToUser;
 
 //    public Game(String gameName, int userid) {
 //        this.redTeam = new Team(new LinkedList<>());
@@ -45,7 +46,25 @@ public class Game {
 
     }
 
-    public boolean enterPlayer(User user) {
+    public void exitPlayer(String sessionId) {
+        User user = sessionToUser.get(sessionId);
+
+        if (redTeam.getPlayers().contains(user)) {
+            redTeam.deletePlayer(user);
+        } else {
+            blueTeam.deletePlayer(user);
+        }
+
+        sessionToUser.remove(sessionId);
+    }
+
+    public boolean enterPlayer(User user, String sessionId) {
+        sessionToUser.put(sessionId, user);
+
+        if (redTeam.getPlayers().contains(user) || blueTeam.getPlayers().contains(user)) {
+            return true;
+        }
+
         if (redTeam.getPlayers().size() <= 3) {
             redTeam.addPlayer(user);
             return true;
@@ -60,6 +79,9 @@ public class Game {
     }
 
     public static Game create(String name, String userid) {
+        HashMap<String, User> map = new HashMap<>();
+
+
         User user = new User(userid);
         Game game = new Game();
         String uuid = UUID.randomUUID().toString();
@@ -67,6 +89,7 @@ public class Game {
 
         Team red = new Team(new LinkedList<>());
         Team blue = new Team(new LinkedList<>());
+        game.sessionToUser = map;
 
         game.redTeam = red;
         game.blueTeam = blue;
@@ -78,7 +101,7 @@ public class Game {
         game.gameId = uuid;
         game.gameName = name;
         game.admin = user;
-
+        game.startTime = new Date();
 
         System.out.println(name + "배틀 방 생성 / id = " + uuid + " / 방장 id = " + user.getId());
 
