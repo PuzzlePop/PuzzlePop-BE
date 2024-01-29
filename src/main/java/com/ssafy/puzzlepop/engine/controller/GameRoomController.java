@@ -14,6 +14,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/game")
+@CrossOrigin("*")
 public class GameRoomController {
 
     @Autowired
