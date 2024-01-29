@@ -39,6 +39,10 @@ public class GameService {
         return game;
     }
 
+    public void deleteRoom(String name) {
+        gameRooms.remove(name);
+    }
+
 //    public Game createRoom(String name, String userid, GameType type) {
 //        Game game = Game.create(name, userid, type);
 //        gameRooms.put(game.getGameId(), game);

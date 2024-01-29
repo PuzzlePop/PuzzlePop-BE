@@ -16,9 +16,11 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +61,14 @@ public class MessageController {
         game.exitPlayer(sessionId);
         sessionToGame.remove(sessionId);
 
+        if (game.isEmpty()) {
+            System.out.println("game.isEmpty()");
+            gameService.deleteRoom(gameId);
+        }
+
         sendingOperations.convertAndSend("/topic/game/room/"+gameId, game);
     }
+
 
 
     @MessageMapping("/game/message")
