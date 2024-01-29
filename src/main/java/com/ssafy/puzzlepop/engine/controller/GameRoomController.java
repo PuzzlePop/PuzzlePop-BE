@@ -1,5 +1,7 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.controller;
 
+import com.ssafy.puzzlepop.engine.service.GameService;
+import com.ssafy.puzzlepop.engine.domain.Game;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,9 +36,12 @@ public class GameRoomController {
     // 채팅방 생성
     @PostMapping("/room")
     @ResponseBody
-    public Game createRoom(@RequestParam String name, @RequestParam String userid, @RequestParam GameType type) {
-        return gameService.createRoom(name, userid, type);
+    public Game createRoom(@RequestParam String name, @RequestParam String userid) {
+        return gameService.createRoom(name, userid);
     }
+//    public Game createRoom(@RequestParam String name, @RequestParam String userid, @RequestParam GameType type) {
+//        return gameService.createRoom(name, userid, type);
+//    }
 
     // 채팅방 입장 화면
     @GetMapping("/room/enter/{roomId}")

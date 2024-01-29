@@ -1,5 +1,10 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.controller;
 
+import com.ssafy.puzzlepop.engine.domain.GameType;
+import com.ssafy.puzzlepop.engine.InGameMessage;
+import com.ssafy.puzzlepop.engine.domain.Game;
+import com.ssafy.puzzlepop.engine.domain.User;
+import com.ssafy.puzzlepop.engine.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -28,8 +33,11 @@ public class MessageController {
 
         if (message.getType().equals(InGameMessage.MessageType.ENTER)) {
             System.out.println(gameService.findById(message.getRoomId()).getGameName() + "에 " + message.getSender() + "님이 입장하셨습니다.");
-            gameService.findById(message.getRoomId()).getRedTeam().addPlayer(new User(message.getSender()));
-            sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(),message);
+            if (gameService.findById(message.getRoomId()).enterPlayer(new User(message.getSender()))) {
+                sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(),message);
+            } else {
+                sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(),"방 가득참");
+            }
         } else {
             if (message.getMessage().equals("gameStart")) {
                 System.out.println("game start");

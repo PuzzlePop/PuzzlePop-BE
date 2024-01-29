@@ -1,5 +1,8 @@
 package com.ssafy.puzzlepop.engine;
 
+import com.ssafy.puzzlepop.engine.domain.Picture;
+import com.ssafy.puzzlepop.engine.domain.Piece;
+import com.ssafy.puzzlepop.engine.domain.PuzzleBoard;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.*;

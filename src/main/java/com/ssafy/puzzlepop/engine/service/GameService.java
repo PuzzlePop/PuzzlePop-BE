@@ -1,5 +1,6 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.service;
 
+import com.ssafy.puzzlepop.engine.domain.Game;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,11 +33,17 @@ public class GameService {
     }
 
     //채팅방 생성
-    public Game createRoom(String name, String userid, GameType type) {
-        Game game = Game.create(name, userid, type);
+    public Game createRoom(String name, String userid) {
+        Game game = Game.create(name, userid);
         gameRooms.put(game.getGameId(), game);
         return game;
     }
+
+//    public Game createRoom(String name, String userid, GameType type) {
+//        Game game = Game.create(name, userid, type);
+//        gameRooms.put(game.getGameId(), game);
+//        return game;
+//    }
 
     public Game startGame(String roomId) {
         Game game = findById(roomId);
