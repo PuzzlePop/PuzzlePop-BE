@@ -22,7 +22,10 @@ public class GameSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
+        // app로 시작되는 메시지는 message-handling methods로 라우팅된다.
         registry.setApplicationDestinationPrefixes("/app");
+
+        //sub으로 시작되는 요청을 구독한 모든 사용자들에게 메시지를 broadcast한다.
         registry.enableSimpleBroker("/queue", "/topic");
     }
 
