@@ -81,8 +81,6 @@ public class Game {
     public static Game create(String name, String userid) {
         HashMap<String, User> map = new HashMap<>();
 
-
-        User user = new User(userid);
         Game game = new Game();
         String uuid = UUID.randomUUID().toString();
 
@@ -96,17 +94,24 @@ public class Game {
 
         game.gameType = GameType.BATTLE;
 
-        game.redTeam.addPlayer(user);
 
         game.gameId = uuid;
         game.gameName = name;
-        game.admin = user;
+
         game.startTime = new Date();
 
-        System.out.println(name + "배틀 방 생성 / id = " + uuid + " / 방장 id = " + user.getId());
+        System.out.println(name + "배틀 방 생성 / id = " + uuid);
 
 
         return game;
+    }
+
+    public boolean isEmpty() {
+        if (redTeam.getPlayers().size() + blueTeam.getPlayers().size() == 0) {
+            return true;
+        }
+
+        return false;
     }
 //    public static Game create(String name, String userid, GameType type) {
 //        User user = new User(userid);
