@@ -3,6 +3,7 @@ package com.ssafy.puzzlepop.engine.service;
 import com.ssafy.puzzlepop.engine.domain.Game;
 import com.ssafy.puzzlepop.engine.domain.User;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Getter
 public class GameService {
     private Map<String, Game> gameRooms;
 
