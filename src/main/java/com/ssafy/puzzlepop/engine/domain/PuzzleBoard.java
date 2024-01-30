@@ -31,12 +31,12 @@ public class PuzzleBoard {
     private int itemCount = 0;
     private boolean[][] visited;
 
-    public void addItem(String itemName) {
+    public void addItem(ItemType type) {
         if (itemCount > 5) {
             return;
         }
 
-        Item item = new Item(itemName);
+        Item item = new Item(type);
         itemList[itemCount++] = item;
     }
 

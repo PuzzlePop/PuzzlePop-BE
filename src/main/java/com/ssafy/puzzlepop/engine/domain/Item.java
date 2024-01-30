@@ -7,27 +7,27 @@ import java.util.*;
 @Getter
 public class Item {
     private Long id;
-    private String name;
+    private ItemType name;
     private String description;
     private String img_path;
 
-    public Item (String name) {
+    public Item (ItemType name) {
         this.name = name;
-        if (name.equals("hint")) {
+        if (name == ItemType.HINT) {
             this.id = 1L;
-        } else if (name.equals("earthquake")) {
+        } else if (name == ItemType.EARTHQUAKE) {
             this.id = 2L;
-        } else if (name.equals("mirror")) {
+        } else if (name == ItemType.MIRROR) {
             this.id = 3L;
-        } else if (name.equals("frame")) {
+        } else if (name == ItemType.FRAME) {
             this.id = 4L;
-        } else if (name.equals("shield")) {
+        } else if (name == ItemType.SHIELD) {
             this.id = 5L;
-        } else if (name.equals("magnet")) {
+        } else if (name == ItemType.MAGNET) {
             this.id = 6L;
-        } else if (name.equals("rocket")) {
+        } else if (name == ItemType.ROCKET) {
             this.id = 7L;
-        } else if (name.equals("fire")) {
+        } else if (name == ItemType.FIRE) {
             this.id = 8L;
         }
     }
