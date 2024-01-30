@@ -62,8 +62,10 @@ public class GameService {
 
         //TODO
         //게임 진행 로직
-        if (message.equals("add piece")) {
-
+        if (message.equals("ADD_PIECE")) {
+            System.out.println("ADD_PIECE");
+        } else {
+            System.out.println("구현중인 명령어");
         }
 
         return game;

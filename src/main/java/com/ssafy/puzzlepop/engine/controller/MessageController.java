@@ -16,11 +16,9 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,12 +85,12 @@ public class MessageController {
                 System.out.println(gameService.findById(message.getRoomId()).getGameName() + "에 " + message.getSender() + "님이 입장하지 못했습니다.");
             }
         } else {
-            if (message.getMessage().equals("gameStart")) {
-                System.out.println("game start");
+            if (message.getMessage().equals("GAME_START")) {
+                System.out.println("GAME_START");
                 Game game = gameService.startGame(message.getRoomId());
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
             } else {
-                System.out.println("명령어 : " + message.getTargets());
+                System.out.println("명령어 : " + message.getMessage());
                 Game game = gameService.playGame(message.getRoomId(), message.getMessage(), message.getTargets());
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
             }
