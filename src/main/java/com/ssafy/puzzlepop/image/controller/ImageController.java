@@ -66,6 +66,16 @@ public class ImageController {
         }
     }
 
+    @GetMapping("/info/{id}")
+    public ResponseEntity<?> findImageInfoById(@PathVariable int id) {
+        try {
+            ImageResponseDto imageResponseDto = imageService.getImageInfoById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(imageResponseDto);
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findImageById(@PathVariable int id) {
         try {

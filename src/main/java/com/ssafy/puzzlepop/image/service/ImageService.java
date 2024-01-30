@@ -17,9 +17,13 @@ public interface ImageService {
 
     void deleteImage(int id) throws ImageException;
 
+    UrlResource getImageById(int id) throws ImageException;
+
+    ImageResponseDto getImageInfoById(int id) throws ImageException;
+
     List<ImageResponseDto> getAllImages() throws ImageException;
 
     List<ImageResponseDto> getImagesByType(String type) throws ImageException;
 
-    UrlResource getImageById(int id) throws ImageException;
+
 }

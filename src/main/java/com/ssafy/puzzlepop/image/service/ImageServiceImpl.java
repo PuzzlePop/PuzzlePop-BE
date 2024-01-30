@@ -16,10 +16,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -111,7 +111,7 @@ public class ImageServiceImpl implements ImageService {
 //            throw new ImageException("image to update doesn't exist");
 //        }
 
-        return 0;
+        return imageDto.getId();
     }
 
     @Override
@@ -177,15 +177,36 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    public ImageResponseDto getImageInfoById(int id) throws ImageException {
+        try {
+            Image existImage = imageRepository.findById(id).orElse(null);
+            if (existImage == null) {
+                throw new ImageException("image doesn't exist");
+            }
+
+            ImageResponseDto imageResponseDto = new ImageResponseDto();
+            imageResponseDto.setId(existImage.getId());
+            imageResponseDto.setType(existImage.getType());
+            imageResponseDto.setFilename(existImage.getFilename());
+            imageResponseDto.setFilenameExtension(existImage.getFilenameExtension());
+            imageResponseDto.setUserId(existImage.getUserId());
+
+            return imageResponseDto;
+        } catch(Exception e) {
+            throw new ImageException("error occurred during finding image information");
+        }
+    }
+
+    @Override
     public List<ImageResponseDto> getAllImages() throws ImageException {
 
         List<Image> imageList;
-        List<ImageResponseDto> imageResponseDtoList = new LinkedList<>();
+        List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
 
         try {
             imageList = imageRepository.findAll();
-            for(Image image : imageList) {
-                imageResponseDtoList.add(new ImageResponseDto(image.getId(), image.getType(), image.getFilename(), image.getUserId()));
+            for (Image image : imageList) {
+                imageResponseDtoList.add(new ImageResponseDto(image.getId(), image.getType(), image.getFilename(), image.getFilenameExtension(), image.getUserId()));
             }
 
             return imageResponseDtoList;
@@ -197,12 +218,12 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public List<ImageResponseDto> getImagesByType(String type) throws ImageException {
         List<Image> imageList;
-        List<ImageResponseDto> imageResponseDtoList = new LinkedList<>();
+        List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
 
         try {
             imageList = imageRepository.findAllByType(type);
-            for(Image image : imageList) {
-                imageResponseDtoList.add(new ImageResponseDto(image.getId(), image.getType(), image.getFilename(), image.getUserId()));
+            for (Image image : imageList) {
+                imageResponseDtoList.add(new ImageResponseDto(image.getId(), image.getType(), image.getFilename(), image.getFilenameExtension(), image.getUserId()));
             }
 
             return imageResponseDtoList;
