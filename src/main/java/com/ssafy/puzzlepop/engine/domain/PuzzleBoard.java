@@ -65,9 +65,23 @@ public class PuzzleBoard {
         //TODO
         //1. 사진 비율에 따른 여러가지 피스 제공
         //2. 소수인 사이즈를 가진 사진이 들어왔을 때
-        pieceSize = GCD(picture.getWidth(), picture.getLength());
-        widthCnt = picture.getWidth()/pieceSize;
-        lengthCnt = picture.getLength()/pieceSize;
+//        pieceSize = GCD(picture.getWidth(), picture.getLength());
+//        widthCnt = picture.getWidth()/pieceSize;
+//        lengthCnt = picture.getLength()/pieceSize;
+        pieceSize = 100;
+        Map<Integer, Integer> levelSize = new HashMap<>();
+        levelSize.put(1, 500);
+        levelSize.put(2, 600);
+        levelSize.put(3, 800);
+
+        int originHeight = p.getLength();
+        int originWidth = p.getWidth();
+        int imgWidth = originHeight >= originWidth ? Math.round((levelSize.get(3)*originWidth) / originHeight / 100) * 100 : levelSize.get(3);
+        int imgHeight = originHeight >= originWidth ? levelSize.get(3) : Math.round((levelSize.get(3)*originHeight) /  originWidth/ 100) * 100;
+        System.out.println("imgHeight = " + imgHeight);
+        System.out.println("imgWidth = " + imgWidth);
+        widthCnt = (int) Math.floor((double)imgWidth / (double)pieceSize);
+        lengthCnt = (int) Math.floor((double) imgHeight / (double)pieceSize);
 
         //퍼즐 조각 초기화
         //고유 인덱스 할당
