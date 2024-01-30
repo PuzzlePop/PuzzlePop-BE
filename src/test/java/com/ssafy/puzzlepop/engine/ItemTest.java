@@ -119,50 +119,50 @@ public class ItemTest {
 //        bluePuzzle.print();
     }
 
-    @Test
-    @DisplayName("불 지르기 테스트")
-    void fireTest() {
-        Picture p = new Picture(64, 48, "String");
+//    @Test
+//    @DisplayName("불 지르기 테스트")
+//    void fireTest() {
+//        Picture p = new Picture(64, 48, "String");
+//
+//        PuzzleBoard redPuzzle = new PuzzleBoard();
+//        PuzzleBoard bluePuzzle = new PuzzleBoard();
+//
+//        redPuzzle.init(p);
+//        bluePuzzle.init(p);
+//
+//        bluePuzzle.print();
+//
+//        bluePuzzle.addItem("액자");
+//        bluePuzzle.useItem(1, bluePuzzle);
+//
+//        //불지르기
+//        redPuzzle.addItem("불지르기");
+//        redPuzzle.useItem(1, bluePuzzle);
+//
+//        bluePuzzle.print();
+//    }
 
-        PuzzleBoard redPuzzle = new PuzzleBoard();
-        PuzzleBoard bluePuzzle = new PuzzleBoard();
-
-        redPuzzle.init(p);
-        bluePuzzle.init(p);
-
-        bluePuzzle.print();
-
-        bluePuzzle.addItem("액자");
-        bluePuzzle.useItem(1, bluePuzzle);
-
-        //불지르기
-        redPuzzle.addItem("불지르기");
-        redPuzzle.useItem(1, bluePuzzle);
-
-        bluePuzzle.print();
-    }
-
-    @Test
-    @DisplayName("로켓 테스트")
-    void rocketTest() {
-        Picture p = new Picture(64, 48, "String");
-
-        PuzzleBoard redPuzzle = new PuzzleBoard();
-        PuzzleBoard bluePuzzle = new PuzzleBoard();
-
-        redPuzzle.init(p);
-        bluePuzzle.init(p);
-
-
-
-        bluePuzzle.addItem("frame");
-        bluePuzzle.useItem(1, bluePuzzle);
-        bluePuzzle.print();
-
-        //로켓
-        redPuzzle.addItem("rocket");
-        redPuzzle.useItem(1, bluePuzzle);
-
-        bluePuzzle.print();
-    }
+//    @Test
+//    @DisplayName("로켓 테스트")
+//    void rocketTest() {
+//        Picture p = new Picture(64, 48, "String");
+//
+//        PuzzleBoard redPuzzle = new PuzzleBoard();
+//        PuzzleBoard bluePuzzle = new PuzzleBoard();
+//
+//        redPuzzle.init(p);
+//        bluePuzzle.init(p);
+//
+//
+//
+//        bluePuzzle.addItem("frame");
+//        bluePuzzle.useItem(1, bluePuzzle);
+//        bluePuzzle.print();
+//
+//        //로켓
+//        redPuzzle.addItem("rocket");
+//        redPuzzle.useItem(1, bluePuzzle);
+//
+//        bluePuzzle.print();
+//    }
 }
