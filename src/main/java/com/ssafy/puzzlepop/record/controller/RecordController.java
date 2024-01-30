@@ -1,8 +1,9 @@
 package com.ssafy.puzzlepop.record.controller;
 
-import com.ssafy.puzzlepop.record.domain.Record;
 import com.ssafy.puzzlepop.record.domain.RecordCreateDto;
+import com.ssafy.puzzlepop.record.domain.RecordDetailDto;
 import com.ssafy.puzzlepop.record.domain.RecordDto;
+import com.ssafy.puzzlepop.record.domain.UserRecordInfoDto;
 import com.ssafy.puzzlepop.record.exception.RecordException;
 import com.ssafy.puzzlepop.record.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-// TODO: userId 입력받는 메소드들: RequestParam 대신 Authentication에서 받아오도록 추후 리팩토링 필요
 
 @RestController
 @RequestMapping("/record")
@@ -55,21 +54,22 @@ public class RecordController {
         return ResponseEntity.status(HttpStatus.OK).body(recordDto);
     }
 
-//    @GetMapping("/list")
-//    public ResponseEntity<?> findAllRecords(@RequestParam String userId) throws RecordException {
-//
-//        List<RecordDto> recordList = recordService.getAllRecords(userId);
-//        return ResponseEntity.status(HttpStatus.OK).body(recordList);
-//    }
-//
-//    @GetMapping("/list/{type}")
-//    public ResponseEntity<?> findRecordsByType(@PathVariable String type, @RequestParam String userId) throws RecordException {
-//
-//        List<RecordDto> recordList = recordService.getRecordsByType(type, userId);
-//        return ResponseEntity.status(HttpStatus.OK).body(recordList);
-//    }
+    /////////
 
-    /////////////
+    @GetMapping("/list")
+    public ResponseEntity<?> findRecentRecordsByUserId(@RequestParam String userId) throws RecordException {
 
+        List<RecordDetailDto> recordList = recordService.getRecentRecordsByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(recordList);
+    }
+
+    //////////
+
+    @GetMapping("/info")
+    public ResponseEntity<?> getRecordInfoByUserId(@RequestParam String userId) throws RecordException {
+
+        UserRecordInfoDto userRecordInfoDto = recordService.getUserRecordInfo(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(userRecordInfoDto);
+    }
 
 }

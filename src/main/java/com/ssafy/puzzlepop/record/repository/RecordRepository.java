@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface RecordRepository extends JpaRepository<Record, Integer> {
 
-    public List<Record> findByUserId(String userId);
+    List<Record> findByUserId(String userId);
 
+    int countByUserId(String userId);
 }
