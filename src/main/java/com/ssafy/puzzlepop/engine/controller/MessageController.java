@@ -7,6 +7,7 @@ import com.ssafy.puzzlepop.engine.domain.GameType;
 import com.ssafy.puzzlepop.engine.domain.User;
 import com.ssafy.puzzlepop.engine.service.GameService;
 import jakarta.annotation.PostConstruct;
+import jdk.swing.interop.SwingInterOpUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -74,6 +75,7 @@ public class MessageController {
         System.out.println(sessionId + " 에 대한 if문 시작");
         if (message.getType().equals(InGameMessage.MessageType.ENTER)) {
             Game game = gameService.findById(message.getRoomId());
+
             sessionToGame.put(sessionId, message.getRoomId());
 
             if (game.enterPlayer(new User(message.getSender()), sessionId)) {
@@ -91,6 +93,7 @@ public class MessageController {
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
             } else {
                 System.out.println("명령어 : " + message.getMessage());
+                System.out.println("게임방 : " + message.getRoomId());
                 Game game = gameService.playGame(message.getRoomId(), message.getMessage(), message.getTargets());
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
             }

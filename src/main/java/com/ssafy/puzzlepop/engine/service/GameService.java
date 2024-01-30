@@ -31,6 +31,9 @@ public class GameService {
     }
 
     public Game findById(String roomId) {
+        if (gameRooms.get(roomId) == null) {
+            System.out.println("game이 없음.......");
+        }
         return gameRooms.get(roomId);
     }
 
@@ -52,20 +55,33 @@ public class GameService {
 //    }
 
     public Game startGame(String roomId) {
+        System.out.println("GameService.startGame");
+        System.out.println("gameid = " + roomId);
+        System.out.println(gameRooms);
         Game game = findById(roomId);
         game.start();
         return game;
     }
 
     public Game playGame(String roomId, String message, String targets) {
+        System.out.println("GameService.playGame");
+        System.out.println(gameRooms);
         Game game = findById(roomId);
 
         //TODO
         //게임 진행 로직
         if (message.equals("ADD_PIECE")) {
+            String[] stringToInt = targets.split(",");
+            List<Integer> pieces = new LinkedList<>();
+            for (int i = 0; i < stringToInt.length; i++) {
+                pieces.add(Integer.parseInt(stringToInt[i]));
+            }
             System.out.println("ADD_PIECE");
+            game.getRedPuzzle().addPiece(pieces);
+            game.getRedPuzzle().print();
         } else {
-            System.out.println("구현중인 명령어");
+            System.out.println("구현중인 명령어 : " + message);
+            System.out.println("targets = " + targets);
         }
 
         return game;

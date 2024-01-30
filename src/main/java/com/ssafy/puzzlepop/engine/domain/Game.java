@@ -153,7 +153,7 @@ public class Game {
 //    }
 
     public void start() {
-        Picture picture = new Picture(64, 48, ".");
+        Picture picture = new Picture(1000, 551, ".");
         redPuzzle = new PuzzleBoard();
         bluePuzzle = new PuzzleBoard();
         redPuzzle.init(picture);

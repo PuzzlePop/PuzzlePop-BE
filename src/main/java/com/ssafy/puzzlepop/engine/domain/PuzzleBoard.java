@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.*;
 
+//TODO
+//알고리즘 정교화
 @Getter
 @NoArgsConstructor
 public class PuzzleBoard {
