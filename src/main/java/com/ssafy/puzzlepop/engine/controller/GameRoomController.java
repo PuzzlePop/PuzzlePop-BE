@@ -4,9 +4,9 @@ import com.ssafy.puzzlepop.engine.domain.Game;
 import com.ssafy.puzzlepop.engine.domain.Room;
 import com.ssafy.puzzlepop.engine.service.GameService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +17,6 @@ import java.util.List;
 @CrossOrigin("*")
 public class GameRoomController {
 
-    @Autowired
     private final GameService gameService;
 
     // 채팅 리스트 화면
@@ -35,17 +34,15 @@ public class GameRoomController {
         return gameService.createRoom(room.getName(), String.valueOf(room.getUserid()));
     }
 
-
-    // 채팅방 입장 화면
-    @GetMapping("/room/enter/{roomId}")
-    public String roomDetail(Model model, @PathVariable String roomId) {
-        model.addAttribute(roomId);
-        return "/chat/roomdetail";
-    }
     // 특정 채팅방 조회
     @GetMapping("/room/{roomId}")
     @ResponseBody
-    public Game roomInfo(@PathVariable String roomId) {
-        return gameService.findById(roomId);
+    public ResponseEntity<?> roomInfo(@PathVariable String roomId) {
+        Game game = gameService.findById(roomId);
+        if (game == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found");
+        } else {
+            return ResponseEntity.ok(game);
+        }
     }
 }
