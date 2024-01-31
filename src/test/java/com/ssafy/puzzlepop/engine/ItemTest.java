@@ -2,6 +2,7 @@ package com.ssafy.puzzlepop.engine;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.LinkedList;
 import java.util.List;
