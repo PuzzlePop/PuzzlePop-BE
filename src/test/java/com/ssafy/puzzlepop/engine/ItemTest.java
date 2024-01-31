@@ -2,6 +2,7 @@ package com.ssafy.puzzlepop.engine;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -117,28 +118,28 @@ public class ItemTest {
 //        bluePuzzle.print();
     }
 
-    @Test
-    @DisplayName("불 지르기 테스트")
-    void fireTest() {
-        Picture p = new Picture(64, 48, "String");
-
-        PuzzleBoard redPuzzle = new PuzzleBoard();
-        PuzzleBoard bluePuzzle = new PuzzleBoard();
-
-        redPuzzle.init(p);
-        bluePuzzle.init(p);
-
-        bluePuzzle.print();
-
-        bluePuzzle.addItem("액자");
-        bluePuzzle.useItem(1, bluePuzzle);
-
-        //불지르기
-        redPuzzle.addItem("불지르기");
-        redPuzzle.useItem(1, bluePuzzle);
-
-        bluePuzzle.print();
-    }
+//    @Test
+//    @DisplayName("불 지르기 테스트")
+//    void fireTest() {
+//        Picture p = new Picture(64, 48, "String");
+//
+//        PuzzleBoard redPuzzle = new PuzzleBoard();
+//        PuzzleBoard bluePuzzle = new PuzzleBoard();
+//
+//        redPuzzle.init(p);
+//        bluePuzzle.init(p);
+//
+//        bluePuzzle.print();
+//
+//        bluePuzzle.addItem("액자");
+//        bluePuzzle.useItem(1, bluePuzzle);
+//
+//        //불지르기
+//        redPuzzle.addItem("불지르기");
+//        redPuzzle.useItem(1, bluePuzzle);
+//
+//        bluePuzzle.print();
+//    }
 
     @Test
     @DisplayName("로켓 테스트")

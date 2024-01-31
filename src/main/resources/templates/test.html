@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Information</title>
+</head>
+<body>
+
+<h2>User Information</h2>
+
+<div>
+    <p><strong>ID:</strong> <span th:text="${userDto.id}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${userDto.email}"></span></p>
+    <p><strong>Nickname:</strong> <span th:text="${userDto.nickname}"></span></p>
+    <p><strong>Given Name:</strong> <span th:text="${userDto.givenName}"></span></p>
+    <p><strong>Family Name:</strong> <span th:text="${userDto.familyName}"></span></p>
+    <p><strong>Image Path:</strong> <span th:text="${userDto.imgPath}"></span></p>
+    <p><strong>Locale:</strong> <span th:text="${userDto.locale}"></span></p>
+    <p><strong>BGM:</strong> <span th:text="${userDto.bgm}"></span></p>
+    <p><strong>Sound Effect:</strong> <span th:text="${userDto.soundEffect}"></span></p>
+    <p><strong>Playing Game ID:</strong> <span th:text="${userDto.playingGameID}"></span></p>
+    <p><strong>Gold:</strong> <span th:text="${userDto.gold}"></span></p>
+    <p><strong>Online Status:</strong> <span th:text="${userDto.onlineStatus}"></span></p>
+    <p><strong>Access Token:</strong> <span th:text="${userDto.accessToken}"></span></p>
+    <p><strong>Refresh Token:</strong> <span th:text="${userDto.refreshToken}"></span></p>
+    <p><strong>Token Type:</strong> <span th:text="${userDto.tokenType}"></span></p>
+    <p><strong>Created Date:</strong> <span th:text="${userDto.createdDate}"></span></p>
+    <p><strong>Expired Date:</strong> <span th:text="${userDto.expiredDate}"></span></p>
+    <p><strong>Provider:</strong> <span th:text="${userDto.provider}"></span></p>
+    <p><strong>Provider ID:</strong> <span th:text="${userDto.providerId}"></span></p>
+    <p><strong>Role:</strong> <span th:text="${userDto.role}"></span></p>
+</div>
+
+</body>
+</html>
