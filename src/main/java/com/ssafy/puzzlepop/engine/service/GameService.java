@@ -90,6 +90,11 @@ public class GameService {
                 res.setMessage("combo");
                 res.setTargetList(comboPieces);
             }
+        } else if (message.equals("USE_ITEM")) {
+            //TODO
+            // 배틀 형태로도 구현해야함
+            game.getRedPuzzle().useItem(Integer.parseInt(targets), game.getRedPuzzle());
+
         } else {
             System.out.println("구현중인 명령어 : " + message);
             System.out.println("targets = " + targets);
@@ -125,39 +130,5 @@ public class GameService {
         } else {
             return 0;
         }
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        PuzzleBoard p = new PuzzleBoard();
-        p.init(new Picture(1000, 551, ""));
-
-//        Date now = new Date();
-//        Thread.sleep(5000);
-//        Date next = new Date();
-//
-//        System.out.println(now.getTime()/1000);
-//        System.out.println(next.getTime()/1000);
-        for (int i = 0; i < 6; i++) {
-            Date now = new Date();
-            if (p.getComboTimer().isEmpty()) {
-                p.getComboTimer().add(now);
-            } else {
-                if (now.getTime()/1000 - p.getComboTimer().peekLast().getTime()/1000 <= 5) {
-                    p.getComboTimer().add(now);
-                } else {
-                    p.getComboTimer().clear();
-                    p.getComboTimer().add(now);
-                }
-            }
-
-            Thread.sleep(5000);
-            if (p.getComboTimer().size() % 3 == 0) {
-                System.out.println("지금 " + (i+1) + "번째인데" + (p.getComboTimer().size()/3)+"combo!");
-            }
-        }
-
-
-
-        System.out.println(p.getComboTimer());
     }
 }
