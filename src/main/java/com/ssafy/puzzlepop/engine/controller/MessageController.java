@@ -56,6 +56,9 @@ public class MessageController {
         String sessionId = accessor.getSessionId();
         String gameId = sessionToGame.get(sessionId);
         Game game = gameService.findById(gameId);
+        if (game == null) {
+            return;
+        }
         System.out.println(game.getSessionToUser().get(sessionId).getId() + " 님이 퇴장하십니다.");
         game.exitPlayer(sessionId);
         sessionToGame.remove(sessionId);
@@ -91,6 +94,10 @@ public class MessageController {
                 Game game = gameService.startGame(message.getRoomId());
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
             } else {
+                if (!gameService.findById(message.getRoomId()).isStarted()) {
+                    System.out.println("게임 시작 안했음! 명령 무시함");
+                    return;
+                }
                 System.out.println("명령어 : " + message.getMessage());
                 System.out.println("게임방 : " + message.getRoomId());
                 ResponseMessage res = gameService.playGame(message.getRoomId(), message.getMessage(), message.getTargets());
