@@ -13,6 +13,6 @@ import lombok.*;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class RecordCreateDto {
 
-    private String userId;
+    private Long userId;
     private Long gameId;
 }

@@ -23,23 +23,23 @@ public class RecordServiceImpl implements RecordService {
     private final GameInfoService gameInfoService;
     private final TeamService teamService;
 
-//  TODO: UserTeam 개발 완료 시 주석 해제
+//    TODO: UserTeam 개발 완료 시 주석 해제
 //    private final UserTeamService userTeamService;
 
 
     @Autowired
-    private RecordServiceImpl(RecordRepository recordRepository, GameInfoService gameInfoService, TeamService teamService/*, UserTeamService userTeamService*/) {
+    public RecordServiceImpl(RecordRepository recordRepository, GameInfoService gameInfoService, TeamService teamService) {
         this.recordRepository = recordRepository;
         this.gameInfoService = gameInfoService;
         this.teamService = teamService;
-//  TODO: UserTeam 개발 완료 시 주석 해제
+//        TODO: UserTeam 개발 완료 시 주석 해제
 //        this.userTeamService = userTeamService;
     }
 
     ///////
 
     @Override
-    public int createRecord(RecordCreateDto recordCreateDto) throws RecordException {
+    public Long createRecord(RecordCreateDto recordCreateDto) throws RecordException {
         if (recordCreateDto.getUserId() == null || recordCreateDto.getGameId() <= 0) {
             throw new RecordException("bad request");
         }
@@ -61,7 +61,7 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public int updateRecord(RecordDto recordDto) throws RecordException {
+    public Long updateRecord(RecordDto recordDto) throws RecordException {
         if (recordDto.getId() <= 0 || recordDto.getUserId() == null || recordDto.getGameId() <= 0) {
             throw new RecordException("bad request");
         }
@@ -85,7 +85,7 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public void deleteRecord(int id) throws RecordException {
+    public void deleteRecord(Long id) throws RecordException {
         if (id <= 0) {
             throw new RecordException("bad request");
         }
@@ -103,7 +103,7 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public RecordDto getRecordById(int id) throws RecordException {
+    public RecordDto getRecordById(Long id) throws RecordException {
         if (id <= 0) {
             throw new RecordException("bad request");
         }
@@ -124,7 +124,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Transactional
     @Override
-    public List<RecordDetailDto> getRecentRecordsByUserId(String userId) throws RecordException {
+    public List<RecordDetailDto> getRecentRecordsByUserId(Long userId) throws RecordException {
         if (userId == null) {
             throw new RecordException("bad request");
         }
@@ -162,7 +162,7 @@ public class RecordServiceImpl implements RecordService {
                 // 협동 게임인 경우
                 // teamList1에 담고 teamList2는 null로 리턴
                 else if ("multi".equals(gameInfoDto.getType())) {
-//  TODO: UserTeam 개발 완료 시 주석 해제
+                    // TODO: UserTeam 개발 완료 시 주석 해제
 //                    List<UserTeamDto> userTeamDtoList = userTeamService.findAllByTeamId(teamDtoList.get(0).getId());
 //                    recordDetailDto.setUserTeamList1(userTeamDtoList);
                     recordDetailList.add(recordDetailDto);
@@ -170,7 +170,7 @@ public class RecordServiceImpl implements RecordService {
                 // 배틀 게임인 경우
                 // teamList1과 teamList2 모두 정보 담아 리턴
                 else if ("battle".equals(gameInfoDto.getType())) {
-//  TODO: UserTeam 개발 완료 시 주석 해제
+                    // TODO: UserTeam 개발 완료 시 주석 해제
 //                    List<UserTeamDto> userTeamDtoList = userTeamService.findAllByTeamId(teamDtoList.get(0).getId());
 //                    recordDetailDto.setUserTeamList1(userTeamDtoList);
 //                    List<UserTeamDto> userTeamDtoList2 = userTeamService.findAllByTeamId(teamDtoList.get(1).getId());
@@ -192,7 +192,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Transactional
     @Override
-    public UserRecordInfoDto getUserRecordInfo(String userId) throws RecordException {
+    public UserRecordInfoDto getUserRecordInfo(Long userId) throws RecordException {
 
         if (userId == null) {
             throw new RecordException("bad request");
@@ -206,7 +206,7 @@ public class RecordServiceImpl implements RecordService {
 
             // 전체 맞춘 피스수
             int totalMatchedPieceCount = 0;
-//  TODO: UserTeam 개발 완료 시 주석 해제
+            // TODO: UserTeam 개발 완료 시 주석 해제
 //        List<UserTeamDto> userTeamDtoList = userTeamService.getByUserId(userId);
 //        for(UserTeamDto utd : userTeamDtoList) {
 //            totalMatchedPieceCount += utd.getMatchedPieceCount();
@@ -229,7 +229,7 @@ public class RecordServiceImpl implements RecordService {
                     playedBattleGameCount++; // 횟수 카운트 ++
 
                     // 소속 팀 확인
-                    int teamNumber = checkTeamNumber(userId, gameInfoDto.getId());
+                    int teamNumber = getTeamNumber(userId, gameInfoDto.getId());
                     List<TeamDto> teamDtoList = teamService.findAllByGameId(gameInfoDto.getId());
                     if (teamNumber == 1) { // team1 소속
                         if (teamDtoList.get(0).getMatchedPieceCount() > teamDtoList.get(1).getMatchedPieceCount()) {
@@ -257,11 +257,11 @@ public class RecordServiceImpl implements RecordService {
     /////////
 
     // 1: team1 / 2: team2 / 0: X
-    private int checkTeamNumber(String userId, Long gameId) {
+    private int getTeamNumber(Long userId, Long gameId) {
 
         List<TeamDto> teamDtoList = teamService.findAllByGameId(gameId);
 
-//  TODO: UserTeam 개발 완료 시 주석 해제
+        // TODO: UserTeam 개발 완료 시 주석 해제
 //        List<UserTeamDto> userTeamDtoList = userTeamService.findAllByTeamId(teamDtoList.get(0).getId());
 //        for (UserTeamDto utd : userTeamDtoList) {
 //            if (userId.equals(utd.getUserId())) {

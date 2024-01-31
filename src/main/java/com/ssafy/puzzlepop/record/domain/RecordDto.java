@@ -13,9 +13,9 @@ import lombok.*;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class RecordDto {
 
-    private int id;
-    private String userId;
-    private long gameId;
+    private Long id;
+    private Long userId;
+    private Long gameId;
 
     @Builder
     public RecordDto(Record record) {

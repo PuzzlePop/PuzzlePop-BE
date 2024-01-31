@@ -17,11 +17,11 @@ import lombok.*;
 public class Record {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @NotNull
-    private String userId;
+    private Long userId;
 
     @NotNull
-    private long gameId;
+    private Long gameId;
 }

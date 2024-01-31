@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RecordRepository extends JpaRepository<Record, Integer> {
+public interface RecordRepository extends JpaRepository<Record, Long> {
 
-    List<Record> findByUserId(String userId);
+    List<Record> findByUserId(Long userId);
 
-    int countByUserId(String userId);
+    int countByUserId(Long userId);
 }

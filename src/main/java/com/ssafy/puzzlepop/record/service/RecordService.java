@@ -9,15 +9,15 @@ import com.ssafy.puzzlepop.record.exception.RecordException;
 import java.util.List;
 
 public interface RecordService {
-    int createRecord(RecordCreateDto recordCreateDto) throws RecordException;
+    Long createRecord(RecordCreateDto recordCreateDto) throws RecordException;
 
-    int updateRecord(RecordDto recordDto) throws RecordException;
+    Long updateRecord(RecordDto recordDto) throws RecordException;
 
-    void deleteRecord(int id) throws RecordException;
+    void deleteRecord(Long id) throws RecordException;
 
-    RecordDto getRecordById(int id) throws RecordException;
+    RecordDto getRecordById(Long id) throws RecordException;
 
-    List<RecordDetailDto> getRecentRecordsByUserId(String userId) throws RecordException;
+    List<RecordDetailDto> getRecentRecordsByUserId(Long userId) throws RecordException;
 
-    UserRecordInfoDto getUserRecordInfo(String userId) throws RecordException;
+    UserRecordInfoDto getUserRecordInfo(Long userId) throws RecordException;
 }
