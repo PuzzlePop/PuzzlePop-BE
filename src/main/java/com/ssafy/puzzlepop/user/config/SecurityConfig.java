@@ -14,12 +14,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserService userService;
-    private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
+//    private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
     private final Oauth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
 
-    public SecurityConfig(UserService userService, Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler, Oauth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler) {
+    public SecurityConfig(UserService userService, Oauth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler) {
         this.userService = userService;
-        this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
         this.oauth2AuthenticationFailureHandler = oauth2AuthenticationFailureHandler;
     }
 
@@ -41,8 +40,8 @@ public class SecurityConfig {
                         .loginPage("/login")
                                 .userInfoEndpoint((userInfoEndpointConfig) ->
                                         userInfoEndpointConfig.userService(userService))
-                                .successHandler(oauth2AuthenticationSuccessHandler)
-                                .failureHandler(oauth2AuthenticationFailureHandler)
+//                                .successHandler(oauth2AuthenticationSuccessHandler)
+//                                .failureHandler(oauth2AuthenticationFailureHandler)
                         );
 
 //        http
