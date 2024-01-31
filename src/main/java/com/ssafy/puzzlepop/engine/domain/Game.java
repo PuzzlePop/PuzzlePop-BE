@@ -17,6 +17,8 @@ public class Game {
 
     private User admin;
 
+    private Picture picture;
+
     private Team redTeam;
     private Team blueTeam;
     private PuzzleBoard redPuzzle;
@@ -26,15 +28,6 @@ public class Game {
 
     private boolean isStarted = false;
     private HashMap<String, User> sessionToUser;
-
-//    public Game(String gameName, int userid) {
-//        this.redTeam = new Team(new LinkedList<>());
-//        this.blueTeam = new Team(new LinkedList<>());
-//
-//        this.admin = new User(userid);
-//        this.gameId = UUID.randomUUID().toString();
-//        this.gameName = gameName;
-//    }
 
     public void changeTeam(User user) {
         if (redTeam.isIn((user))) {
@@ -95,6 +88,7 @@ public class Game {
 
         game.gameType = GameType.BATTLE;
 
+        game.picture = Picture.create();
 
         game.gameId = uuid;
         game.gameName = name;
@@ -115,7 +109,32 @@ public class Game {
 
         return false;
     }
-//    public static Game create(String name, String userid, GameType type) {
+
+
+    public void start() {
+        redPuzzle = new PuzzleBoard();
+        bluePuzzle = new PuzzleBoard();
+        redPuzzle.init(picture);
+        bluePuzzle.init(picture);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        startTime = new Date();
+        System.out.println(startTime);
+        isStarted = true;
+        System.out.println("------------------게임 시작-------------------");
+        redPuzzle.print();
+        bluePuzzle.print();
+    }
+
+    //초 단위 경과 시간
+    public long getTime() {
+        Date nowTime = new Date();
+        long start = startTime.getTime();
+        long now = nowTime.getTime();
+        return (now-start)/1000;
+    }
+
+    //    public static Game create(String name, String userid, GameType type) {
 //        User user = new User(userid);
 //        Game game = new Game();
 //        String uuid = UUID.randomUUID().toString();
@@ -154,29 +173,8 @@ public class Game {
 //        return game;
 //    }
 
-    public void start() {
-        Picture picture = new Picture(1000, 551, ".");
-        redPuzzle = new PuzzleBoard();
-        bluePuzzle = new PuzzleBoard();
-        redPuzzle.init(picture);
-        bluePuzzle.init(picture);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        startTime = new Date();
-        System.out.println(startTime);
-        isStarted = true;
-        System.out.println("------------------게임 시작-------------------");
-        redPuzzle.print();
-        bluePuzzle.print();
-    }
 
-    //초 단위 경과 시간
-    public long getTime() {
-        Date nowTime = new Date();
-        long start = startTime.getTime();
-        long now = nowTime.getTime();
-        return (now-start)/1000;
-    }
 
 //    public static void main(String[] args) {
 //        Scanner sc = new Scanner(System.in);
