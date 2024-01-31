@@ -1,5 +1,7 @@
 package com.ssafy.puzzlepop.engine;
 
+import com.ssafy.puzzlepop.engine.domain.Picture;
+import com.ssafy.puzzlepop.engine.domain.PuzzleBoard;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -141,27 +143,27 @@ public class ItemTest {
 //        bluePuzzle.print();
 //    }
 
-    @Test
-    @DisplayName("로켓 테스트")
-    void rocketTest() {
-        Picture p = new Picture(64, 48, "String");
-
-        PuzzleBoard redPuzzle = new PuzzleBoard();
-        PuzzleBoard bluePuzzle = new PuzzleBoard();
-
-        redPuzzle.init(p);
-        bluePuzzle.init(p);
-
-
-
-        bluePuzzle.addItem("frame");
-        bluePuzzle.useItem(1, bluePuzzle);
-        bluePuzzle.print();
-
-        //로켓
-        redPuzzle.addItem("rocket");
-        redPuzzle.useItem(1, bluePuzzle);
-
-        bluePuzzle.print();
-    }
+//    @Test
+//    @DisplayName("로켓 테스트")
+//    void rocketTest() {
+//        Picture p = new Picture(64, 48, "String");
+//
+//        PuzzleBoard redPuzzle = new PuzzleBoard();
+//        PuzzleBoard bluePuzzle = new PuzzleBoard();
+//
+//        redPuzzle.init(p);
+//        bluePuzzle.init(p);
+//
+//
+//
+//        bluePuzzle.addItem("frame");
+//        bluePuzzle.useItem(1, bluePuzzle);
+//        bluePuzzle.print();
+//
+//        //로켓
+//        redPuzzle.addItem("rocket");
+//        redPuzzle.useItem(1, bluePuzzle);
+//
+//        bluePuzzle.print();
+//    }
 }

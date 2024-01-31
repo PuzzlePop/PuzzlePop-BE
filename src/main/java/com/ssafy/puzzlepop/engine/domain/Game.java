@@ -1,4 +1,4 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +11,7 @@ import java.util.*;
 public class Game {
     private String gameId;
     private String gameName;
+    private int roomSize;
 
     private GameType gameType;
 
@@ -24,6 +25,7 @@ public class Game {
     private Date startTime;
 
     private boolean isStarted = false;
+    private HashMap<String, User> sessionToUser;
 
 //    public Game(String gameName, int userid) {
 //        this.redTeam = new Team(new LinkedList<>());
@@ -45,47 +47,115 @@ public class Game {
 
     }
 
-    public static Game create(String name, String userid, GameType type) {
-        User user = new User(userid);
+    public void exitPlayer(String sessionId) {
+        User user = sessionToUser.get(sessionId);
+
+        if (redTeam.getPlayers().contains(user)) {
+            redTeam.deletePlayer(user);
+        } else {
+            blueTeam.deletePlayer(user);
+        }
+
+        sessionToUser.remove(sessionId);
+    }
+
+    public boolean enterPlayer(User user, String sessionId) {
+        sessionToUser.put(sessionId, user);
+
+        if (redTeam.getPlayers().contains(user) || blueTeam.getPlayers().contains(user)) {
+            return true;
+        }
+
+        if (redTeam.getPlayers().size() < roomSize/2) {
+            redTeam.addPlayer(user);
+            return true;
+        } else {
+            if (blueTeam.getPlayers().size() < roomSize/2) {
+                blueTeam.addPlayer(user);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public static Game create(String name, String userid, int roomSize) {
+        HashMap<String, User> map = new HashMap<>();
+
         Game game = new Game();
         String uuid = UUID.randomUUID().toString();
 
-        if (type == GameType.BATTLE) {
-            Team red = new Team(new LinkedList<>());
-            Team blue = new Team(new LinkedList<>());
 
-            game.redTeam = red;
-            game.blueTeam = blue;
+        Team red = new Team(new LinkedList<>());
+        Team blue = new Team(new LinkedList<>());
+        game.sessionToUser = map;
 
-            game.gameType = GameType.BATTLE;
+        game.redTeam = red;
+        game.blueTeam = blue;
 
-            game.redTeam.addPlayer(user);
-
-            game.gameId = uuid;
-            game.gameName = name;
-            game.admin = user;
+        game.gameType = GameType.BATTLE;
 
 
-            System.out.println(name + "배틀 방 생성 / id = " + uuid + " / 방장 id = " + user.getId());
-        } else {
-            Team red = new Team(new LinkedList<>());
+        game.gameId = uuid;
+        game.gameName = name;
+        game.roomSize = roomSize;
 
-            game.redTeam = red;
+        game.startTime = new Date();
 
-            game.gameType = GameType.TEAM;
-            game.redTeam.addPlayer(user);
-            game.gameId = uuid;
-            game.gameName = name;
-            game.admin = user;
+        System.out.println(name + "배틀 방 생성 / id = " + uuid);
 
-            System.out.println(name + "협동 방 생성 / id = " + uuid + " / 방장 id = " + user.getId());
-        }
 
         return game;
     }
 
+    public boolean isEmpty() {
+        if (redTeam.getPlayers().size() + blueTeam.getPlayers().size() == 0) {
+            return true;
+        }
+
+        return false;
+    }
+//    public static Game create(String name, String userid, GameType type) {
+//        User user = new User(userid);
+//        Game game = new Game();
+//        String uuid = UUID.randomUUID().toString();
+//
+//        if (type == GameType.BATTLE) {
+//            Team red = new Team(new LinkedList<>());
+//            Team blue = new Team(new LinkedList<>());
+//
+//            game.redTeam = red;
+//            game.blueTeam = blue;
+//
+//            game.gameType = GameType.BATTLE;
+//
+//            game.redTeam.addPlayer(user);
+//
+//            game.gameId = uuid;
+//            game.gameName = name;
+//            game.admin = user;
+//
+//
+//            System.out.println(name + "배틀 방 생성 / id = " + uuid + " / 방장 id = " + user.getId());
+//        } else {
+//            Team red = new Team(new LinkedList<>());
+//
+//            game.redTeam = red;
+//
+//            game.gameType = GameType.TEAM;
+//            game.redTeam.addPlayer(user);
+//            game.gameId = uuid;
+//            game.gameName = name;
+//            game.admin = user;
+//
+//            System.out.println(name + "협동 방 생성 / id = " + uuid + " / 방장 id = " + user.getId());
+//        }
+//
+//        return game;
+//    }
+
     public void start() {
-        Picture picture = new Picture(64, 48, ".");
+        Picture picture = new Picture(1000, 551, ".");
         redPuzzle = new PuzzleBoard();
         bluePuzzle = new PuzzleBoard();
         redPuzzle.init(picture);
