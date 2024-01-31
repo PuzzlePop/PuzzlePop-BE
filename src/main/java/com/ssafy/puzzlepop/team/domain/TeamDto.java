@@ -11,20 +11,20 @@ import lombok.NoArgsConstructor;
 public class TeamDto {
     private Long id;
     private Long gameId;
-    private Integer assembledPieceCount;
+    private Integer matchedPieceCount;
 
     @Builder
     public TeamDto(Team team) {
         this.id = team.getId();
         this.gameId = team.getGameId();
-        this.assembledPieceCount = team.getAssembledPieceCount();
+        this.matchedPieceCount = team.getMatchedPieceCount();
     }
 
     public Team toEntity() {
         return Team.builder()
                 .id(this.id)
                 .gameId(this.gameId)
-                .assembledPieceCount(this.assembledPieceCount)
+                .matchedPieceCount(this.matchedPieceCount)
                 .build();
     }
 }

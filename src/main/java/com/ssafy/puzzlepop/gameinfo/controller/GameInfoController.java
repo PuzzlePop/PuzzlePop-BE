@@ -1,8 +1,8 @@
-package com.ssafy.puzzlepop.team.controller;
+package com.ssafy.puzzlepop.gameinfo.controller;
 
-import com.ssafy.puzzlepop.team.domain.TeamDto;
-import com.ssafy.puzzlepop.team.exception.TeamNotFoundException;
-import com.ssafy.puzzlepop.team.service.TeamServiceImpl;
+import com.ssafy.puzzlepop.gameinfo.domain.GameInfoDto;
+import com.ssafy.puzzlepop.gameinfo.exception.GameInfoNotFoundException;
+import com.ssafy.puzzlepop.gameinfo.service.GameInfoService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,51 +12,51 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-public class TeamController {
-    private final TeamServiceImpl teamService;
+public class GameInfoController {
+    private final GameInfoService gameService;
 
-    @GetMapping("/team")
-    public ResponseEntity<?> getTeamById(@RequestBody TeamDto requestDto) {
+    @GetMapping("/game")
+    public ResponseEntity<?> getGameById(@RequestBody GameInfoDto requestDto) {
         try {
-            TeamDto responseDto = teamService.getTeamById(requestDto.getId());
+            GameInfoDto responseDto = gameService.getGameInfoById(requestDto.getId());
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
-        } catch (TeamNotFoundException e) {
+        } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @PostMapping("/team")
-    public ResponseEntity<?> createTeam(@RequestBody TeamDto requestDto) {
+    @PostMapping("/game")
+    public ResponseEntity<?> createGame(@RequestBody GameInfoDto requestDto) {
         try {
-            Long id = teamService.createTeam(requestDto);
+            Long id = gameService.createGameInfo(requestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(id);
-        } catch (TeamNotFoundException e) {
+        } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @PutMapping("/team")
-    public ResponseEntity<?> updateTeam(@RequestBody TeamDto requestDto) {
+    @PutMapping("/game")
+    public ResponseEntity<?> updateGame(@RequestBody GameInfoDto requestDto) {
         try {
-            Long id = teamService.updateTeam(requestDto);
+            Long id = gameService.updateGameInfo(requestDto);
             return ResponseEntity.status(HttpStatus.OK).body(id);
-        } catch (TeamNotFoundException e) {
+        } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @DeleteMapping("/team")
-    public ResponseEntity<?> deleteTeam(@RequestBody TeamDto requestDto) {
+    @DeleteMapping("/game")
+    public ResponseEntity<?> deleteGame(@RequestBody GameInfoDto requestDto) {
         try {
-            teamService.deleteTeam(requestDto.getId());
+            gameService.deleteGameInfo(requestDto.getId());
             return ResponseEntity.status(HttpStatus.OK).body(null);
-        } catch (TeamNotFoundException e) {
+        } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -64,36 +64,24 @@ public class TeamController {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    @GetMapping("/team/all")
-    public ResponseEntity<?> findAllTeams() {
+    @GetMapping("/game/list")
+    public ResponseEntity<?> findAllGames() {
         try {
-            List<TeamDto> responseDtos = teamService.getAllTeams();
+            List<GameInfoDto> responseDtos = gameService.getAllGameInfos();
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
-        } catch (TeamNotFoundException e) {
+        } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @GetMapping("/team/search")
-    public ResponseEntity<?> findTeamByGameId(@RequestParam(value = "gameId") Long gameId) {
+    @GetMapping("/game/search")
+    public ResponseEntity<?> findGamesByType(@RequestBody GameInfoDto requestDto) {
         try {
-            List<TeamDto> responseDtos = teamService.findAllByGameId(gameId);
+            List<GameInfoDto> responseDtos = gameService.findAllByType(requestDto.getType());
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
-        } catch (TeamNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @PutMapping("/team/update")
-    public ResponseEntity<?> updateMatchedPieceCount(@RequestBody TeamDto requestDto) {
-        try {
-            Long id = teamService.updateMatchedPieceCount(requestDto);
-            return ResponseEntity.status(HttpStatus.OK).body(id);
-        } catch (TeamNotFoundException e) {
+        } catch (GameInfoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

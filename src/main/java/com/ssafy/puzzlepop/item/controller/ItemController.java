@@ -1,8 +1,8 @@
-package com.ssafy.puzzlepop.team.controller;
+package com.ssafy.puzzlepop.item.controller;
 
-import com.ssafy.puzzlepop.team.domain.TeamDto;
-import com.ssafy.puzzlepop.team.exception.TeamNotFoundException;
-import com.ssafy.puzzlepop.team.service.TeamServiceImpl;
+import com.ssafy.puzzlepop.item.service.ItemService;
+import com.ssafy.puzzlepop.item.domain.ItemDto;
+import com.ssafy.puzzlepop.item.exception.ItemNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,51 +12,51 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-public class TeamController {
-    private final TeamServiceImpl teamService;
+public class ItemController {
+    private final ItemService itemService;
 
-    @GetMapping("/team")
-    public ResponseEntity<?> getTeamById(@RequestBody TeamDto requestDto) {
+    @GetMapping("/item")
+    public ResponseEntity<?> getItemById(@RequestBody ItemDto requestDto) {
         try {
-            TeamDto responseDto = teamService.getTeamById(requestDto.getId());
+            ItemDto responseDto = itemService.getItemById(requestDto.getId());
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
-        } catch (TeamNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @PostMapping("/team")
-    public ResponseEntity<?> createTeam(@RequestBody TeamDto requestDto) {
+    @PostMapping("/item")
+    public ResponseEntity<?> createItem(@RequestBody ItemDto requestDto) {
         try {
-            Long id = teamService.createTeam(requestDto);
+            Long id = itemService.createItem(requestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(id);
-        } catch (TeamNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @PutMapping("/team")
-    public ResponseEntity<?> updateTeam(@RequestBody TeamDto requestDto) {
+    @PutMapping("/item")
+    public ResponseEntity<?> updateItem(@RequestBody ItemDto requestDto) {
         try {
-            Long id = teamService.updateTeam(requestDto);
+            Long id = itemService.updateItem(requestDto);
             return ResponseEntity.status(HttpStatus.OK).body(id);
-        } catch (TeamNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @DeleteMapping("/team")
-    public ResponseEntity<?> deleteTeam(@RequestBody TeamDto requestDto) {
+    @DeleteMapping("/item")
+    public ResponseEntity<?> deleteItem(@RequestBody ItemDto requestDto) {
         try {
-            teamService.deleteTeam(requestDto.getId());
+            itemService.deleteItem(requestDto.getId());
             return ResponseEntity.status(HttpStatus.OK).body(null);
-        } catch (TeamNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -64,36 +64,37 @@ public class TeamController {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    @GetMapping("/team/all")
-    public ResponseEntity<?> findAllTeams() {
+    @GetMapping("/item/list")
+    public ResponseEntity<?> findAllItems() {
         try {
-            List<TeamDto> responseDtos = teamService.getAllTeams();
+            List<ItemDto> responseDtos = itemService.getAllItems();
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
-        } catch (TeamNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @GetMapping("/team/search")
-    public ResponseEntity<?> findTeamByGameId(@RequestParam(value = "gameId") Long gameId) {
+    @GetMapping("/item/search")
+    public ResponseEntity<?> findItemsByType(@RequestBody ItemDto requestDto) {
         try {
-            List<TeamDto> responseDtos = teamService.findAllByGameId(gameId);
+            List<ItemDto> responseDtos = itemService.findAllByType(requestDto.getType());
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
-        } catch (TeamNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @PutMapping("/team/update")
-    public ResponseEntity<?> updateMatchedPieceCount(@RequestBody TeamDto requestDto) {
+    @GetMapping("/item/random")
+    public ResponseEntity<?> extractRandomItemsByType(@RequestParam("type") String type,
+                                             @RequestParam("limit") Integer limit) {
         try {
-            Long id = teamService.updateMatchedPieceCount(requestDto);
-            return ResponseEntity.status(HttpStatus.OK).body(id);
-        } catch (TeamNotFoundException e) {
+            List<ItemDto> responseDtos = itemService.extractRandom(type, limit);
+            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+        } catch (ItemNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
