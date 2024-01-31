@@ -1,6 +1,7 @@
 package com.ssafy.puzzlepop.team.domain;
 
 import com.ssafy.puzzlepop.teamitem.domain.TeamItem;
+import com.ssafy.puzzlepop.teamuser.domain.TeamUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,8 @@ public class Team {
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE)
     List<TeamItem> teamItems;
+    @OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE)
+    List<TeamUser> teamUsers;
 
     public void update(TeamDto teamDto) {
         this.id = teamDto.getId();
