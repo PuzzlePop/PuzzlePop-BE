@@ -16,10 +16,10 @@ public class TeamUserDto {
     private User user;
 
     @Builder
-    public TeamUserDto(TeamUser teamItem) {
-        this.id = teamItem.getId();
-        this.team = teamItem.getTeam();
-        this.user = teamItem.getUser();
+    public TeamUserDto(TeamUser teamUser) {
+        this.id = teamUser.getId();
+        this.team = teamUser.getTeam();
+        this.user = teamUser.getUser();
     }
 
     public TeamUser toEntity() {
