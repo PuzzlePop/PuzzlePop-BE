@@ -1,11 +1,10 @@
 package com.ssafy.puzzlepop.image.controller;
 
-import com.ssafy.puzzlepop.image.domain.ImageCreateDto;
+import com.ssafy.puzzlepop.image.domain.ImageRequestDto;
 import com.ssafy.puzzlepop.image.domain.ImageDto;
 import com.ssafy.puzzlepop.image.domain.ImageResponseDto;
 import com.ssafy.puzzlepop.image.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +21,7 @@ import java.util.List;
 @RequestMapping("/image")
 public class ImageController {
 
+    private static final Long ADMIN_USER_ID = (long) 0;
     private final ImageService imageService;
 
     @Autowired
@@ -31,11 +31,11 @@ public class ImageController {
 
     @PostMapping
     public ResponseEntity<?> createImage(@RequestParam MultipartFile file, @RequestParam String type) {
-        String userId = "admin"; // TODO: accessToken의 userId를 넣어야 함
-        ImageCreateDto imageCreateDto = new ImageCreateDto(type, userId);
+        // TODO: ADMIN_USER_ID 대신 요청 보낸 유저의 ID로 교체할 것
+        ImageRequestDto imageRequestDto = new ImageRequestDto(type, ADMIN_USER_ID);
 
         try {
-            int id = imageService.createImage(file, imageCreateDto);
+            Long id = imageService.createImage(file, imageRequestDto);
             return ResponseEntity.status(HttpStatus.OK).body(id);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -43,11 +43,11 @@ public class ImageController {
     }
 
     // 보류
-    @PutMapping
+    //@PutMapping
     public ResponseEntity<?> updateImage(@RequestBody ImageDto imageDto) {
 
         try {
-            int id = imageService.updateImage(imageDto);
+            Long id = imageService.updateImage(imageDto);
             return ResponseEntity.status(HttpStatus.OK).body(id);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -56,7 +56,7 @@ public class ImageController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteImage(@PathVariable int id) {
+    public ResponseEntity<?> deleteImage(@PathVariable Long id) {
 
         try {
             imageService.deleteImage(id);
@@ -67,17 +67,17 @@ public class ImageController {
     }
 
     @GetMapping("/info/{id}")
-    public ResponseEntity<?> findImageInfoById(@PathVariable int id) {
+    public ResponseEntity<?> findImageInfoById(@PathVariable Long id) {
         try {
             ImageResponseDto imageResponseDto = imageService.getImageInfoById(id);
             return ResponseEntity.status(HttpStatus.OK).body(imageResponseDto);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findImageById(@PathVariable int id) {
+    public ResponseEntity<?> findImageById(@PathVariable Long id) {
         try {
             UrlResource imageResource = imageService.getImageById(id);
             return ResponseEntity.status(HttpStatus.OK).body(imageResource);
@@ -99,8 +99,21 @@ public class ImageController {
 
     @GetMapping("/list/{type}")
     public ResponseEntity<?> findImagesByType(@PathVariable String type) {
+        // TODO: 요청 보낸 사용자의 userID로 대체해야 함
+        Long userId = ADMIN_USER_ID;
         try {
-            List<ImageResponseDto> imageList = imageService.getImagesByType(type);
+            List<ImageResponseDto> imageList = imageService.getImagesByType(type, userId);
+            return ResponseEntity.status(HttpStatus.OK).body(imageList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+
+    @PostMapping("/list")
+    public ResponseEntity<?> findImagesByUserId(@RequestBody ImageResponseDto imageResponseDto) {
+        try {
+            List<ImageResponseDto> imageList = imageService.getImagesByUserId(imageResponseDto.getUserId());
             return ResponseEntity.status(HttpStatus.OK).body(imageList);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

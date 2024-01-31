@@ -1,7 +1,7 @@
 package com.ssafy.puzzlepop.image.service;
 
 import com.ssafy.puzzlepop.image.domain.Image;
-import com.ssafy.puzzlepop.image.domain.ImageCreateDto;
+import com.ssafy.puzzlepop.image.domain.ImageRequestDto;
 import com.ssafy.puzzlepop.image.domain.ImageDto;
 import com.ssafy.puzzlepop.image.domain.ImageResponseDto;
 import com.ssafy.puzzlepop.image.exception.ImageException;
@@ -16,13 +16,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ImageServiceImpl implements ImageService {
+    private static final Long ADMIN_USER_ID = (long) 0;
+    private static final String CUSTOM_PUZZLE_IMAGE_TYPE = "cPuzzle";
 
     private final ImageRepository imageRepository;
 
@@ -36,11 +35,11 @@ public class ImageServiceImpl implements ImageService {
     ///////////
 
     @Override
-    public int createImage(MultipartFile file, ImageCreateDto imageCreateDto) throws ImageException {
+    public Long createImage(MultipartFile file, ImageRequestDto imageRequestDto) throws ImageException {
 
         // 권한 체크
-        if ("sPuzzle".equals(imageCreateDto.getType()) || "item".equals(imageCreateDto.getType())) { //
-            if (!"admin".equals(imageCreateDto.getUserId())) { // TODO: accessToken 발급받은 userId가 admin인지 확인
+        if ("sPuzzle".equals(imageRequestDto.getType()) || "item".equals(imageRequestDto.getType())) { //
+            if (!ADMIN_USER_ID.equals(imageRequestDto.getUserId())) { // TODO: accessToken 발급받은 userId가 admin인지 확인
                 throw new ImageException("업로드 권한이 없습니다.");
             }
         }
@@ -76,12 +75,12 @@ public class ImageServiceImpl implements ImageService {
         // image 객체에 file의 정보 뽑아서 담기
         Image image = new Image();
 
-        image.setType(imageCreateDto.getType()); // 이미지타입
+        image.setType(imageRequestDto.getType()); // 이미지타입
         image.setName(name); // 서버저장파일명
         image.setFilename(filename); // 원본파일명
         image.setFilepath(filepath); // 서버경로+서버저장파일명
         image.setFilenameExtension(filenameExtension); // 파일 확장자
-        image.setUserId(imageCreateDto.getUserId()); // 업로드한 uid
+        image.setUserId(imageRequestDto.getUserId()); // 업로드한 uid
 
         // 이미지 객체 db 저장
         try {
@@ -93,7 +92,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public int updateImage(ImageDto imageDto) throws ImageException {
+    public Long updateImage(ImageDto imageDto) throws ImageException {
 //        Image existImage = imageRepository.findById(imageDto.getId()).orElse(null);
 //
 //        if (existImage != null) {
@@ -115,7 +114,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void deleteImage(int id) throws ImageException {
+    public void deleteImage(Long id) throws ImageException {
 
         /*
         - 아이디에 해당하는 이미지정보가 db에 존재하는지 확인
@@ -152,7 +151,7 @@ public class ImageServiceImpl implements ImageService {
 
 
     @Override
-    public UrlResource getImageById(int id) throws ImageException {
+    public UrlResource getImageById(Long id) throws ImageException {
         Image image;
 
         try {
@@ -177,7 +176,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public ImageResponseDto getImageInfoById(int id) throws ImageException {
+    public ImageResponseDto getImageInfoById(Long id) throws ImageException {
         try {
             Image existImage = imageRepository.findById(id).orElse(null);
             if (existImage == null) {
@@ -192,7 +191,7 @@ public class ImageServiceImpl implements ImageService {
             imageResponseDto.setUserId(existImage.getUserId());
 
             return imageResponseDto;
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new ImageException("error occurred during finding image information");
         }
     }
@@ -216,9 +215,15 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<ImageResponseDto> getImagesByType(String type) throws ImageException {
+    public List<ImageResponseDto> getImagesByType(String type, Long userId) throws ImageException {
         List<Image> imageList;
         List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
+
+        if (CUSTOM_PUZZLE_IMAGE_TYPE.equals(type)) {
+            if (!Objects.equals(userId, ADMIN_USER_ID)) {
+                throw new ImageException("not allowed");
+            }
+        }
 
         try {
             imageList = imageRepository.findAllByType(type);
@@ -229,6 +234,24 @@ public class ImageServiceImpl implements ImageService {
             return imageResponseDtoList;
         } catch (Exception e) {
             throw new ImageException("failed to get images by type");
+        }
+    }
+
+    @Override
+    public List<ImageResponseDto> getImagesByUserId(Long userId) throws ImageException {
+        List<Image> imageList;
+        List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
+
+        try {
+            imageList = imageRepository.findAllByUserId(userId);
+            for (Image image : imageList) {
+                if (CUSTOM_PUZZLE_IMAGE_TYPE.equals(image.getType())) { // custom 인 경우에만 담아보냄 ^^
+                    imageResponseDtoList.add(new ImageResponseDto(image.getId(), image.getType(), image.getFilename(), image.getFilenameExtension(), image.getUserId()));
+                }
+            }
+            return imageResponseDtoList;
+        } catch (Exception e) {
+            throw new ImageException("failed to get images by userId");
         }
     }
 

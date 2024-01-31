@@ -1,5 +1,7 @@
 package com.ssafy.puzzlepop.image.domain;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.ssafy.puzzlepop.team.domain.Team;
 import lombok.*;
 import org.springframework.http.HttpStatus;
@@ -12,15 +14,16 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ImageDto {
 
-    private int id;
+    private Long id;
     private String type;
     private String name;
     private String filename;
     private String filepath;
     private String filenameExtension;
-    private String userId;
+    private Long userId;
     private Date createTime;
     private Date updateTime;
 

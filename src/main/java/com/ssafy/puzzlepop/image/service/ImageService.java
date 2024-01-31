@@ -1,6 +1,6 @@
 package com.ssafy.puzzlepop.image.service;
 
-import com.ssafy.puzzlepop.image.domain.ImageCreateDto;
+import com.ssafy.puzzlepop.image.domain.ImageRequestDto;
 import com.ssafy.puzzlepop.image.domain.ImageDto;
 import com.ssafy.puzzlepop.image.domain.ImageResponseDto;
 import com.ssafy.puzzlepop.image.exception.ImageException;
@@ -11,19 +11,19 @@ import java.util.List;
 
 public interface ImageService {
 
-    int createImage(MultipartFile file, ImageCreateDto imageCreateDto) throws ImageException;
+    Long createImage(MultipartFile file, ImageRequestDto imageRequestDto) throws ImageException;
 
-    int updateImage(ImageDto imageDto) throws ImageException;
+    Long updateImage(ImageDto imageDto) throws ImageException;
 
-    void deleteImage(int id) throws ImageException;
+    void deleteImage(Long id) throws ImageException;
 
-    UrlResource getImageById(int id) throws ImageException;
+    UrlResource getImageById(Long id) throws ImageException;
 
-    ImageResponseDto getImageInfoById(int id) throws ImageException;
+    ImageResponseDto getImageInfoById(Long id) throws ImageException;
 
     List<ImageResponseDto> getAllImages() throws ImageException;
 
-    List<ImageResponseDto> getImagesByType(String type) throws ImageException;
+    List<ImageResponseDto> getImagesByType(String type, Long userId) throws ImageException;
 
-
+    List<ImageResponseDto> getImagesByUserId(Long userId) throws ImageException;
 }

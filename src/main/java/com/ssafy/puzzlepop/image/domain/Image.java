@@ -19,7 +19,7 @@ import java.util.Date;
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @NotNull
     private String type; // 이미지 구분
@@ -37,7 +37,7 @@ public class Image {
     private String filenameExtension; // 파일 확장자 png
 
     @NotNull
-    private String userId; // 업로드한 유저 id (기본이미지: admin)
+    private Long userId; // 업로드한 유저 id
 
     @CreationTimestamp
     @Column(nullable = false)
