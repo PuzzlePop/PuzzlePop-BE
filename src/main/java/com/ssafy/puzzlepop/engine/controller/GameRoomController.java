@@ -31,7 +31,7 @@ public class GameRoomController {
     @PostMapping("/room")
     @ResponseBody
     public Game createRoom(@RequestBody Room room) {
-        return gameService.createRoom(room.getName(), String.valueOf(room.getUserid()));
+        return gameService.createRoom(room.getName(), String.valueOf(room.getUserid()), room.getRoomSize());
     }
 
     // 특정 채팅방 조회
@@ -42,6 +42,9 @@ public class GameRoomController {
         if (game == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found");
         } else {
+            if (game.getRedTeam().getPlayers().size() + game.getBlueTeam().getPlayers().size() == game.getRoomSize()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Room is fulled");
+            }
             return ResponseEntity.ok(game);
         }
     }

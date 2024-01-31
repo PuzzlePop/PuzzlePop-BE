@@ -37,8 +37,8 @@ public class GameService {
     }
 
     //채팅방 생성
-    public Game createRoom(String name, String userid) {
-        Game game = Game.create(name, userid);
+    public Game createRoom(String name, String userid, int roomSize) {
+        Game game = Game.create(name, userid, roomSize);
         gameRooms.put(game.getGameId(), game);
         return game;
     }

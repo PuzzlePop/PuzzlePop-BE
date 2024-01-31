@@ -11,6 +11,7 @@ import java.util.*;
 public class Game {
     private String gameId;
     private String gameName;
+    private int roomSize;
 
     private GameType gameType;
 
@@ -65,11 +66,11 @@ public class Game {
             return true;
         }
 
-        if (redTeam.getPlayers().size() <= 3) {
+        if (redTeam.getPlayers().size() < roomSize/2) {
             redTeam.addPlayer(user);
             return true;
         } else {
-            if (blueTeam.getPlayers().size() <= 3) {
+            if (blueTeam.getPlayers().size() < roomSize/2) {
                 blueTeam.addPlayer(user);
                 return true;
             } else {
@@ -78,7 +79,7 @@ public class Game {
         }
     }
 
-    public static Game create(String name, String userid) {
+    public static Game create(String name, String userid, int roomSize) {
         HashMap<String, User> map = new HashMap<>();
 
         Game game = new Game();
@@ -97,6 +98,7 @@ public class Game {
 
         game.gameId = uuid;
         game.gameName = name;
+        game.roomSize = roomSize;
 
         game.startTime = new Date();
 
