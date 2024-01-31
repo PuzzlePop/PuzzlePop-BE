@@ -1,6 +1,5 @@
 package com.ssafy.puzzlepop.record.service;
 
-import com.ssafy.puzzlepop.gameinfo.domain.GameInfo;
 import com.ssafy.puzzlepop.gameinfo.domain.GameInfoDto;
 import com.ssafy.puzzlepop.gameinfo.service.GameInfoService;
 import com.ssafy.puzzlepop.record.domain.Record;
@@ -23,13 +22,17 @@ public class RecordServiceImpl implements RecordService {
     private final RecordRepository recordRepository;
     private final GameInfoService gameInfoService;
     private final TeamService teamService;
+
+//  TODO: UserTeam 개발 완료 시 주석 해제
 //    private final UserTeamService userTeamService;
+
 
     @Autowired
     private RecordServiceImpl(RecordRepository recordRepository, GameInfoService gameInfoService, TeamService teamService/*, UserTeamService userTeamService*/) {
         this.recordRepository = recordRepository;
         this.gameInfoService = gameInfoService;
         this.teamService = teamService;
+//  TODO: UserTeam 개발 완료 시 주석 해제
 //        this.userTeamService = userTeamService;
     }
 
@@ -160,7 +163,7 @@ public class RecordServiceImpl implements RecordService {
                 // teamList1에 담고 teamList2는 null로 리턴
                 else if ("multi".equals(gameInfoDto.getType())) {
 //  TODO: UserTeam 개발 완료 시 주석 해제
-//                    List<UserTeamDto> userTeamDtoList = userTeamService.findAllById(teamDtoList.get(0));
+//                    List<UserTeamDto> userTeamDtoList = userTeamService.findAllByTeamId(teamDtoList.get(0).getId());
 //                    recordDetailDto.setUserTeamList1(userTeamDtoList);
                     recordDetailList.add(recordDetailDto);
                 }
@@ -168,9 +171,9 @@ public class RecordServiceImpl implements RecordService {
                 // teamList1과 teamList2 모두 정보 담아 리턴
                 else if ("battle".equals(gameInfoDto.getType())) {
 //  TODO: UserTeam 개발 완료 시 주석 해제
-//                    List<UserTeamDto> userTeamDtoList = userTeamService.findAllById(teamDtoList.get(0));
+//                    List<UserTeamDto> userTeamDtoList = userTeamService.findAllByTeamId(teamDtoList.get(0).getId());
 //                    recordDetailDto.setUserTeamList1(userTeamDtoList);
-//                    List<UserTeamDto> userTeamDtoList2 = userTeamService.findAllById(teamDtoList.get(1));
+//                    List<UserTeamDto> userTeamDtoList2 = userTeamService.findAllByTeamId(teamDtoList.get(1).getId());
 //                    recordDetailDto.setUserTeamList2(userTeamDtoList2);
                     recordDetailList.add(recordDetailDto);
                 }
@@ -217,24 +220,62 @@ public class RecordServiceImpl implements RecordService {
             // 배틀게임 플레이 횟수
             int playedBattleGameCount = 0;
             // 이긴 배틀게임 수
-            int winCount = 0;
+            int battleGameWinCount = 0;
+
             List<Record> recordList = recordRepository.findByUserId(userId);
             for (Record record : recordList) {
                 GameInfoDto gameInfoDto = gameInfoService.getGameInfoById(record.getGameId());
-                if ("battle".equals(gameInfoDto.getType())) {
-                    playedBattleGameCount++;
+                if ("battle".equals(gameInfoDto.getType())) { // 배틀 게임이면
+                    playedBattleGameCount++; // 횟수 카운트 ++
 
-                    // TODO: 배틀인 건 알겠고 이 유저가 이겼는지 확인해야 함
-                    //
+                    // 소속 팀 확인
+                    int teamNumber = checkTeamNumber(userId, gameInfoDto.getId());
+                    List<TeamDto> teamDtoList = teamService.findAllByGameId(gameInfoDto.getId());
+                    if (teamNumber == 1) { // team1 소속
+                        if (teamDtoList.get(0).getMatchedPieceCount() > teamDtoList.get(1).getMatchedPieceCount()) {
+                            battleGameWinCount++;
+                        }
+                    } else if (teamNumber == 2) { // team2 소속
+                        if (teamDtoList.get(0).getMatchedPieceCount() < teamDtoList.get(1).getMatchedPieceCount()) {
+                            battleGameWinCount++;
+                        }
+                    } else if (teamNumber == 0) { // 오류 상황
+                        throw new RecordException("something wrong...");
+                    }
                 }
             }
             userRecordInfoDto.setPlayedBattleGameCount(playedBattleGameCount);
-            userRecordInfoDto.setWinCount(winCount);
+            userRecordInfoDto.setWinCount(battleGameWinCount);
 
             return userRecordInfoDto;
         } catch (Exception e) {
             throw new RecordException("error occurred during find record info");
         }
 
+    }
+
+    /////////
+
+    // 1: team1 / 2: team2 / 0: X
+    private int checkTeamNumber(String userId, Long gameId) {
+
+        List<TeamDto> teamDtoList = teamService.findAllByGameId(gameId);
+
+//  TODO: UserTeam 개발 완료 시 주석 해제
+//        List<UserTeamDto> userTeamDtoList = userTeamService.findAllByTeamId(teamDtoList.get(0).getId());
+//        for (UserTeamDto utd : userTeamDtoList) {
+//            if (userId.equals(utd.getUserId())) {
+//                return 1;
+//            }
+//        }
+//        userTeamDtoList = userTeamService.findAllByTeamId(teamDtoList.get(1).getId());
+//        for (UserTeamDto utd : userTeamDtoList) {
+//            if (userId.equals(utd.getUserId())) {
+//                return 2;
+//            }
+//        }
+//        return 0;
+
+        return 1; // TODO: UserTeam 개발 완료 시 삭제
     }
 }
