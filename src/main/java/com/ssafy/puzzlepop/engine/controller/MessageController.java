@@ -100,7 +100,7 @@ public class MessageController {
                 }
                 System.out.println("명령어 : " + message.getMessage());
                 System.out.println("게임방 : " + message.getRoomId());
-                ResponseMessage res = gameService.playGame(message.getRoomId(), message.getMessage(), message.getTargets());
+                ResponseMessage res = gameService.playGame(message);
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), res);
             }
         }

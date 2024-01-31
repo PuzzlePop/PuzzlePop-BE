@@ -1,5 +1,6 @@
 package com.ssafy.puzzlepop.engine.service;
 
+import com.ssafy.puzzlepop.engine.InGameMessage;
 import com.ssafy.puzzlepop.engine.domain.*;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -62,7 +63,13 @@ public class GameService {
         return game;
     }
 
-    public ResponseMessage playGame(String roomId, String message, String targets) {
+    public ResponseMessage playGame(InGameMessage inGameMessage) {
+        String roomId = inGameMessage.getRoomId();
+        String message = inGameMessage.getMessage();
+        String targets = inGameMessage.getTargets();
+        int position_x = inGameMessage.getPosition_x();
+        int position_y = inGameMessage.getPosition_y();
+
         System.out.println("GameService.playGame");
         System.out.println(gameRooms);
         ResponseMessage res = new ResponseMessage();
@@ -87,7 +94,7 @@ public class GameService {
             if (comboCnt != 0) {
                 List<Integer> comboPieces = game.getRedPuzzle().combo(pieces, comboCnt);
                 System.out.println("콤보 대상 : " + comboPieces);
-                res.setMessage("combo");
+                res.setMessage("COMBO");
                 res.setTargetList(comboPieces);
             }
         } else if (message.equals("USE_ITEM")) {
@@ -95,6 +102,11 @@ public class GameService {
             // 배틀 형태로도 구현해야함
             game.getRedPuzzle().useItem(Integer.parseInt(targets), game.getRedPuzzle());
 
+        } else if (message.equals("MOVE")) {
+            System.out.println(position_x + "," + position_y + " 으로 이동");
+            res.setMessage("MOVE");
+            res.setPosition_x(position_x);
+            res.setPosition_y(position_y);
         } else {
             System.out.println("구현중인 명령어 : " + message);
             System.out.println("targets = " + targets);
