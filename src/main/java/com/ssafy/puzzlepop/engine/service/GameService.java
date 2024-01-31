@@ -1,7 +1,6 @@
 package com.ssafy.puzzlepop.engine.service;
 
-import com.ssafy.puzzlepop.engine.domain.Game;
-import com.ssafy.puzzlepop.engine.domain.User;
+import com.ssafy.puzzlepop.engine.domain.*;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -63,10 +62,14 @@ public class GameService {
         return game;
     }
 
-    public Game playGame(String roomId, String message, String targets) {
+    public ResponseMessage playGame(String roomId, String message, String targets) {
         System.out.println("GameService.playGame");
         System.out.println(gameRooms);
+        ResponseMessage res = new ResponseMessage();
         Game game = findById(roomId);
+        res.setGame(game);
+
+        System.out.println("targets = " + targets);
 
         //TODO
         //게임 진행 로직
@@ -79,12 +82,20 @@ public class GameService {
             System.out.println("ADD_PIECE");
             game.getRedPuzzle().addPiece(pieces);
             game.getRedPuzzle().print();
+
+            int comboCnt = comboCheck(game.getRedPuzzle());
+            if (comboCnt != 0) {
+                List<Integer> comboPieces = game.getRedPuzzle().combo(pieces, comboCnt);
+                System.out.println("콤보 대상 : " + comboPieces);
+                res.setMessage("combo");
+                res.setTargetList(comboPieces);
+            }
         } else {
             System.out.println("구현중인 명령어 : " + message);
             System.out.println("targets = " + targets);
         }
 
-        return game;
+        return res;
     }
 
     public boolean enterGame(String gameId, String userId, String sessionId) {
@@ -94,5 +105,59 @@ public class GameService {
         }
 
         return false;
+    }
+
+    public int comboCheck(PuzzleBoard puzzle) {
+        Date now = new Date();
+        if (puzzle.getComboTimer().isEmpty()) {
+            puzzle.getComboTimer().add(now);
+        } else {
+            if (now.getTime()/1000 - puzzle.getComboTimer().peekLast().getTime()/1000 <= 5) {
+                puzzle.getComboTimer().add(now);
+            } else {
+                puzzle.getComboTimer().clear();
+                puzzle.getComboTimer().add(now);
+            }
+        }
+
+        if (puzzle.getComboTimer().size() % 3 == 0) {
+            return puzzle.getComboTimer().size()/3;
+        } else {
+            return 0;
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        PuzzleBoard p = new PuzzleBoard();
+        p.init(new Picture(1000, 551, ""));
+
+//        Date now = new Date();
+//        Thread.sleep(5000);
+//        Date next = new Date();
+//
+//        System.out.println(now.getTime()/1000);
+//        System.out.println(next.getTime()/1000);
+        for (int i = 0; i < 6; i++) {
+            Date now = new Date();
+            if (p.getComboTimer().isEmpty()) {
+                p.getComboTimer().add(now);
+            } else {
+                if (now.getTime()/1000 - p.getComboTimer().peekLast().getTime()/1000 <= 5) {
+                    p.getComboTimer().add(now);
+                } else {
+                    p.getComboTimer().clear();
+                    p.getComboTimer().add(now);
+                }
+            }
+
+            Thread.sleep(5000);
+            if (p.getComboTimer().size() % 3 == 0) {
+                System.out.println("지금 " + (i+1) + "번째인데" + (p.getComboTimer().size()/3)+"combo!");
+            }
+        }
+
+
+
+        System.out.println(p.getComboTimer());
     }
 }
