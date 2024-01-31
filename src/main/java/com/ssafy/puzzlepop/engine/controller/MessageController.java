@@ -113,10 +113,10 @@ public class MessageController {
         for (int i = allRoom.size()-1; i >= 0 ; i--) {
             if (allRoom.get(i).isStarted()) {
                 long time = allRoom.get(i).getTime();
-                if (allRoom.get(i).getGameType() == GameType.BATTLE) {
+                if (allRoom.get(i).getGameType().equals("BATTLE")) {
                     time = BATTLE_TIMER-time;
                 }
-                if (time > 0) {
+                if (time >= 0) {
                     sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), time);
                 } else {
                     sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), "너 게임 끝났어! 이 방 폭파됨");

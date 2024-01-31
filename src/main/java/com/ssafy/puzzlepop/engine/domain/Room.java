@@ -10,4 +10,5 @@ public class Room {
     private String userid;
     private GameType type;
     private int roomSize;
+    private String gameType;
 }

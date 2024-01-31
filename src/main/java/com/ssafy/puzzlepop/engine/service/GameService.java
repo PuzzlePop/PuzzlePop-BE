@@ -38,8 +38,8 @@ public class GameService {
     }
 
     //채팅방 생성
-    public Game createRoom(String name, String userid, int roomSize) {
-        Game game = Game.create(name, userid, roomSize);
+    public Game createRoom(Room room) {
+        Game game = Game.create(room);
         gameRooms.put(game.getGameId(), game);
         return game;
     }
@@ -80,6 +80,9 @@ public class GameService {
 
         //TODO
         //게임 진행 로직
+
+        //TODO
+        // 배틀 형태로도 구현해야함
         if (message.equals("ADD_PIECE")) {
             String[] stringToInt = targets.split(",");
             List<Integer> pieces = new LinkedList<>();
@@ -98,8 +101,7 @@ public class GameService {
                 res.setTargetList(comboPieces);
             }
         } else if (message.equals("USE_ITEM")) {
-            //TODO
-            // 배틀 형태로도 구현해야함
+
             game.getRedPuzzle().useItem(Integer.parseInt(targets), game.getRedPuzzle());
 
         } else if (message.equals("MOVE")) {
