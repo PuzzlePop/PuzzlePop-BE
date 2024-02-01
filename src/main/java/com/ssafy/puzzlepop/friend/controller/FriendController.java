@@ -4,6 +4,7 @@ import com.ssafy.puzzlepop.friend.domain.FriendDto;
 import com.ssafy.puzzlepop.friend.exception.FriendNotFoundException;
 import com.ssafy.puzzlepop.friend.service.FriendService;
 import com.ssafy.puzzlepop.user.domain.UserDto;
+import com.ssafy.puzzlepop.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,12 +12,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @AllArgsConstructor
 public class FriendController {
 
     private final FriendService friendService;
+    private final UserService userService;
 
     @GetMapping("/friend")
     public ResponseEntity<?> getFriendById1AndId2(@RequestBody FriendDto requestDto) {
@@ -93,7 +96,21 @@ public class FriendController {
     @GetMapping("/friend/list")
     public ResponseEntity<?> getAllByFromUserIdOrToUserId(@RequestBody UserDto requestDto) {
         try {
-            List<UserDto> responseDtos = friendService.getAllByFromUserIdOrToUserId(requestDto.getId());
+            List<FriendDto> responseDtos = friendService.getAllByFromUserIdOrToUserId(requestDto.getId());
+            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+        } catch (FriendNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/friend/list/all")
+    public ResponseEntity<?> getAllByUserId(@RequestBody UserDto requestDto) {
+        try {
+            List<Long> friendIds = friendService.getAllFriendIdByUserId(requestDto.getId());
+            List<UserDto> responseDtos = friendIds.stream()
+                    .map(userService::getUserById).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
