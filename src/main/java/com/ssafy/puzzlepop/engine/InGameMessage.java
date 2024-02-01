@@ -1,5 +1,6 @@
 package com.ssafy.puzzlepop.engine;
 
+import com.ssafy.puzzlepop.engine.domain.Game;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,4 +25,9 @@ public class InGameMessage {
     private String message;
 
     private String targets;
+
+    private int position_x;
+    private int position_y;
+
+    private Game game;
 }
