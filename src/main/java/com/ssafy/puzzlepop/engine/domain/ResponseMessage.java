@@ -16,5 +16,6 @@ public class ResponseMessage {
     private List<Integer> targetList;
     private int position_x;
     private int position_y;
+    private String targets;
 
 }

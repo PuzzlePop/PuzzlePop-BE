@@ -1,5 +1,6 @@
 package com.ssafy.puzzlepop.engine.service;
 
+import com.google.gson.Gson;
 import com.ssafy.puzzlepop.engine.InGameMessage;
 import com.ssafy.puzzlepop.engine.domain.*;
 import jakarta.annotation.PostConstruct;
@@ -14,11 +15,13 @@ import java.util.*;
 @Getter
 public class GameService {
     private Map<String, Game> gameRooms;
+    private Gson gson;
 
     @PostConstruct
     //의존관게 주입완료되면 실행되는 코드
     private void init() {
         gameRooms = new LinkedHashMap<>();
+        gson = new Gson();
     }
 
     //채팅방 불러오기
@@ -64,6 +67,7 @@ public class GameService {
     }
 
     public ResponseMessage playGame(InGameMessage inGameMessage) {
+
         String roomId = inGameMessage.getRoomId();
         String sender = inGameMessage.getSender();
         String message = inGameMessage.getMessage();
@@ -75,7 +79,7 @@ public class GameService {
         System.out.println(gameRooms);
         ResponseMessage res = new ResponseMessage();
         Game game = findById(roomId);
-        res.setGame(game);
+        //res.setGame(game);
 
         System.out.println("sender = " + sender);
         System.out.println("targets = " + targets);
@@ -160,26 +164,49 @@ public class GameService {
             game.getRedPuzzle().useItem(Integer.parseInt(targets), game.getRedPuzzle());
 
         } else if (message.equals("MOUSE_DOWN")) {
-            int[] p = ourPuzzle.getIdxToCoordinate().get(Integer.parseInt(targets));
+            PieceDto[] arr = gson.fromJson(targets, PieceDto[].class);
 
-            if (ourPuzzle.getBoard()[0][p[0]][p[1]].isLocked()) {
-                System.out.println(targets + "번 피스 잠겨있음");
-                res.setMessage("BLOCKED");
-                return res;
+            for (int i = 0; i < arr.length; i++) {
+                PieceDto now = arr[i];
+                int[] p = ourPuzzle.getIdxToCoordinate().get(now.getIndex());
+                if (ourPuzzle.getBoard()[0][p[0]][p[1]].isLocked()) {
+                    res.setMessage("BLOCKED");
+                    return res;
+                }
+
+                ourPuzzle.getBoard()[0][p[0]][p[1]].setLocked(true);
             }
 
-            System.out.println(targets + "번 피스 잠금");
+            System.out.println(targets + " 피스 잠금");
             res.setMessage("LOCKED");
-            ourPuzzle.getBoard()[0][p[0]][p[1]].setLocked(true);
+            res.setTargets(targets);
         } else if (message.equals("MOUSE_UP")) {
-            System.out.println(targets + "번 피스 잠금 해제");
-            res.setMessage("UNBLOCKED");
-            int[] p = ourPuzzle.getIdxToCoordinate().get(Integer.parseInt(targets));
-            ourPuzzle.getBoard()[0][p[0]][p[1]].setLocked(false);
+            PieceDto[] arr = gson.fromJson(targets, PieceDto[].class);
+
+            for (int i = 0; i < arr.length; i++) {
+                PieceDto now = arr[i];
+                int[] p = ourPuzzle.getIdxToCoordinate().get(now.getIndex());
+
+                ourPuzzle.getBoard()[0][p[0]][p[1]].setLocked(false);
+            }
+
+            System.out.println(targets + " 피스 잠금 해제");
+            res.setMessage("UNLOCKED");
+            res.setTargets(targets);
         } else if (message.equals("MOUSE_DRAG")) {
             res.setMessage("MOVE");
-            res.setPosition_x(position_x);
-            res.setPosition_y(position_y);
+
+            PieceDto[] arr = gson.fromJson(targets, PieceDto[].class);
+
+            for (int i = 0; i < arr.length; i++) {
+                PieceDto now = arr[i];
+                int[] p = ourPuzzle.getIdxToCoordinate().get(now.getIndex());
+
+                ourPuzzle.getBoard()[0][p[0]][p[1]].setPosition_x(now.getX());
+                ourPuzzle.getBoard()[0][p[0]][p[1]].setPosition_y(now.getY());
+            }
+
+            res.setTargets(targets);
         } else {
             System.out.println("구현중인 명령어 : " + message);
             System.out.println("targets = " + targets);
