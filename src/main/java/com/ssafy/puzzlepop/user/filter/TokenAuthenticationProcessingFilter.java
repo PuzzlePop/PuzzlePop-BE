@@ -20,24 +20,23 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+
+@Component
 public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationProcessingFilter.class);
 
     private final UserService userService;
-    private final UserPrincipalService userPrincipalService;
-
+//    private final UserPrincipalService userPrincipalService;
     private final AuthenticationFailureHandler failureHandler;
-
     private final JwtProvider tokenProvider;
-
     private final JwtResolver tokenResolver;
-
     private AuthenticationSuccessHandler successHandler; // this is not necessary, for future usage
 
     /**
@@ -49,16 +48,14 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
     public TokenAuthenticationProcessingFilter(
             JwtProvider tokenProvider,
             JwtResolver tokenResolver,
-            TokenAuthenticationFailureHandler failureHandler,
-            UserPrincipalService userPrincipalService, UserService userService) {
+            TokenAuthenticationFailureHandler failureHandler, UserService userService) {
 
         this.failureHandler = failureHandler;
         this.tokenProvider = tokenProvider;
         this.tokenResolver = tokenResolver;
         this.userService = userService;
-        this.userPrincipalService = userPrincipalService;
+//        this.userPrincipalService = userPrincipalService;
     }
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
