@@ -193,10 +193,10 @@ public class UserService extends DefaultOAuth2UserService {
         return users.stream().map(UserDto::new).collect(Collectors.toList());
     }
 
-    public UserDto getUserByIdAndEmail(Long id, String email) {
+    public UserDto getUserById(Long id) {
         // 해당 id를 가진 유저를 반환
-        User user = userRepository.findByIdAndEmail(id, email).orElseThrow(
-                () -> new UserNotFoundException("User not found with id " + id + " with " + email)
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("User not found with id: " + id)
         );
         return new UserDto(user);
     }
@@ -205,6 +205,14 @@ public class UserService extends DefaultOAuth2UserService {
         // 해당 email을 가진 유저를 반환
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new UserNotFoundException("User not found with email: " + email)
+        );
+        return new UserDto(user);
+    }
+
+    public UserDto getUserByIdAndEmail(Long id, String email) {
+        // 해당 id를 가진 유저를 반환
+        User user = userRepository.findByIdAndEmail(id, email).orElseThrow(
+                () -> new UserNotFoundException("User not found with id " + id + " with " + email)
         );
         return new UserDto(user);
     }
