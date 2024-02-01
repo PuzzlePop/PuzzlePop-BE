@@ -47,7 +47,6 @@ public class GameSocketConfig implements WebSocketMessageBrokerConfigurer {
             return false;
         }
 
-        // 예를 들어, 특정 방 번호 범위를 허용하거나, 특정한 방 번호만을 허용하는 등의 방법이 있을 수 있습니다.
         return gameService.getGameRooms().containsKey(roomId);// 예시: 허용된 방 번호 집합에 해당 방 번호가 포함되어 있는지 확인
     }
 }

@@ -270,9 +270,6 @@ public class PuzzleBoard {
 
     //퍼즐 조각 결합 짜기
     //파라미터 정보(pieceList) : 게임 관련 소켓에서 결합하는 조각들을 하나의 리스트로 만들어서 파라미터로 입력
-    //TODO
-    //다 맞췄을 때 조건 추가하기
-    //맞출때 위치정보 배열에서 삭제해주기
     public void addPiece(List<Integer> pieceList) {
         //이번 결합으로 생기는 조각 뭉탱이들
         Set<Piece> set = new HashSet<>();
