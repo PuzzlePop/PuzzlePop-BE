@@ -99,9 +99,10 @@ public class JwtProvider {
 
 
     public boolean validate(String token) {
-
+        System.out.println("validating token...");
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            System.out.println("validation complete");
             return true;
         } catch (SecurityException ex) {
             logger.error("Invalid JWT signature");
@@ -116,6 +117,7 @@ public class JwtProvider {
         } catch (IllegalArgumentException ex) {
             logger.error("JWT claims string is empty.");
         }
+        System.out.println("validation failed");
         return false;
     }
 

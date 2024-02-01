@@ -28,4 +28,9 @@ public class JwtController {
         return ResponseEntity.ok(newAccessToken);
     }
 
+    @PostMapping("token")
+    public String Token(){
+        return "<h1>token</h1>";
+    }
+
 }
