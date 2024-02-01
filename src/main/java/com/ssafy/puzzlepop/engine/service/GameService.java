@@ -65,6 +65,7 @@ public class GameService {
 
     public ResponseMessage playGame(InGameMessage inGameMessage) {
         String roomId = inGameMessage.getRoomId();
+        String sender = inGameMessage.getSender();
         String message = inGameMessage.getMessage();
         String targets = inGameMessage.getTargets();
         int position_x = inGameMessage.getPosition_x();
@@ -76,8 +77,21 @@ public class GameService {
         Game game = findById(roomId);
         res.setGame(game);
 
+        System.out.println("sender = " + sender);
         System.out.println("targets = " + targets);
 
+        String teamColor = "";
+        if (game.getRedTeam().isIn(sender)) {
+            System.out.println("얘 레드팀임");
+            teamColor = "RED";
+        } else if (game.getBlueTeam().isIn(sender)){
+            System.out.println("얘 블루팀임");
+            teamColor = "BLUE";
+        } else {
+            System.out.println("팀이 없는데, 이거 맞아?");
+            res.setMessage("팀 없는데?");
+            return res;
+        }
         //TODO
         //게임 진행 로직
 
@@ -90,6 +104,7 @@ public class GameService {
                 pieces.add(Integer.parseInt(stringToInt[i]));
             }
             System.out.println("ADD_PIECE");
+
             game.getRedPuzzle().addPiece(pieces);
             game.getRedPuzzle().print();
 
