@@ -26,5 +26,8 @@ public class InGameMessage {
 
     private String targets;
 
+    private int position_x;
+    private int position_y;
+
     private Game game;
 }

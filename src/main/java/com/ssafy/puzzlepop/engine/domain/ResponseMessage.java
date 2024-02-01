@@ -11,7 +11,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseMessage {
-    Game game;
-    String message;
-    List<Integer> targetList;
+    private Game game;
+    private String message;
+    private List<Integer> targetList;
+    private int position_x;
+    private int position_y;
+
 }

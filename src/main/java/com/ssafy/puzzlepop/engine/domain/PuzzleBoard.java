@@ -52,6 +52,12 @@ public class PuzzleBoard {
 
 
     public void useItem(int itemNumber, PuzzleBoard puzzle) {
+        if (itemList[itemNumber-1] == null) {
+            System.out.println("아이템 사용 실패 : 없음");
+            return;
+        }
+
+        System.out.println("아이템 사용 : " + itemList[itemNumber-1]);
         itemList[itemNumber-1].run(puzzle);
         itemList[itemNumber-1] = null;
         itemCount--;

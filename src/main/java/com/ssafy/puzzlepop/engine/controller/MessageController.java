@@ -56,6 +56,9 @@ public class MessageController {
         String sessionId = accessor.getSessionId();
         String gameId = sessionToGame.get(sessionId);
         Game game = gameService.findById(gameId);
+        if (game == null) {
+            return;
+        }
         System.out.println(game.getSessionToUser().get(sessionId).getId() + " 님이 퇴장하십니다.");
         game.exitPlayer(sessionId);
         sessionToGame.remove(sessionId);
@@ -91,9 +94,13 @@ public class MessageController {
                 Game game = gameService.startGame(message.getRoomId());
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
             } else {
+                if (!gameService.findById(message.getRoomId()).isStarted()) {
+                    System.out.println("게임 시작 안했음! 명령 무시함");
+                    return;
+                }
                 System.out.println("명령어 : " + message.getMessage());
                 System.out.println("게임방 : " + message.getRoomId());
-                ResponseMessage res = gameService.playGame(message.getRoomId(), message.getMessage(), message.getTargets());
+                ResponseMessage res = gameService.playGame(message);
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), res);
             }
         }
@@ -106,10 +113,10 @@ public class MessageController {
         for (int i = allRoom.size()-1; i >= 0 ; i--) {
             if (allRoom.get(i).isStarted()) {
                 long time = allRoom.get(i).getTime();
-                if (allRoom.get(i).getGameType() == GameType.BATTLE) {
+                if (allRoom.get(i).getGameType().equals("BATTLE")) {
                     time = BATTLE_TIMER-time;
                 }
-                if (time > 0) {
+                if (time >= 0) {
                     sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), time);
                 } else {
                     sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), "너 게임 끝났어! 이 방 폭파됨");
