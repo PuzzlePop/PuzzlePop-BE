@@ -35,6 +35,9 @@ public class PuzzleBoard {
     private int itemCount = 0;
     private boolean[][] visited;
 
+    private final int CANVAS_WIDTH = 2580;
+    private final int CANVAS_LENGTH = 1440;
+
     public void addItem(ItemType type) {
         if (itemCount > 5) {
             return;
@@ -78,20 +81,21 @@ public class PuzzleBoard {
 //        pieceSize = GCD(picture.getWidth(), picture.getLength());
 //        widthCnt = picture.getWidth()/pieceSize;
 //        lengthCnt = picture.getLength()/pieceSize;
-        pieceSize = 100;
-        Map<Integer, Integer> levelSize = new HashMap<>();
-        levelSize.put(1, 500);
-        levelSize.put(2, 600);
-        levelSize.put(3, 800);
+        pieceSize = p.getPieceSize();
+//        Map<Integer, Integer> levelSize = new HashMap<>();
+//        levelSize.put(1, 500);
+//        levelSize.put(2, 600);
+//        levelSize.put(3, 800);
+//
+//        int originHeight = p.getLength();
+//        int originWidth = p.getWidth();
+//        int imgWidth = originHeight >= originWidth ? Math.round((levelSize.get(3)*originWidth) / originHeight / 100) * 100 : levelSize.get(3);
+//        int imgHeight = originHeight >= originWidth ? levelSize.get(3) : Math.round((levelSize.get(3)*originHeight) /  originWidth/ 100) * 100;
+//        widthCnt = (int) Math.floor((double)imgWidth / (double)pieceSize);
+//        lengthCnt = (int) Math.floor((double) imgHeight / (double)pieceSize);
 
-        int originHeight = p.getLength();
-        int originWidth = p.getWidth();
-        int imgWidth = originHeight >= originWidth ? Math.round((levelSize.get(3)*originWidth) / originHeight / 100) * 100 : levelSize.get(3);
-        int imgHeight = originHeight >= originWidth ? levelSize.get(3) : Math.round((levelSize.get(3)*originHeight) /  originWidth/ 100) * 100;
-        System.out.println("imgHeight = " + imgHeight);
-        System.out.println("imgWidth = " + imgWidth);
-        widthCnt = (int) Math.floor((double)imgWidth / (double)pieceSize);
-        lengthCnt = (int) Math.floor((double) imgHeight / (double)pieceSize);
+        widthCnt = p.getWidthPieceCnt();
+        lengthCnt = p.getLengthPieceCnt();
 
         //퍼즐 조각 초기화
         //고유 인덱스 할당
@@ -99,6 +103,8 @@ public class PuzzleBoard {
         board = new Piece[2][lengthCnt][widthCnt];
         isCorrected = new boolean[lengthCnt][widthCnt];
         idxToCoordinate = new HashMap<>();
+
+        boolean[] randomVisited = new boolean[widthCnt * lengthCnt];
         int cnt = 0;
         for (int i = 0; i < lengthCnt; i++) {
             for (int j = 0; j < widthCnt; j++) {
@@ -216,9 +222,46 @@ public class PuzzleBoard {
                     type[LEFT] = board[0][i][j-1].getType()[1] == 2 ? 1 : 2;
                 }
 
+                for (int k = 0; k < 4; k++) {
+                    if (type[k] == 1) {
+                        type[k] = -1;
+                    } else if (type[k] == 2) {
+                        type[k] = 1;
+                    }
+                }
+
                 now.setType(type);
+
+                int idx = random(picture.getLengthPieceCnt() * picture.getWidthPieceCnt())-1;
+                while (true) {
+                    if (randomVisited[idx]) {
+                        idx = random(picture.getLengthPieceCnt()*picture.getWidthPieceCnt())-1;
+                        continue;
+                    } else {
+                        randomVisited[idx] = true;
+                        break;
+                    }
+                }
+
+                Piece randomForPiece = board[0][idxToCoordinate.get(idx)[0]][idxToCoordinate.get(idx)[1]];
+                double x =
+                        CANVAS_WIDTH/2 -
+                                pieceSize/2 +
+                                pieceSize * ((j*2) + (i % 2)) -
+                                picture.getWidth();
+                double y =
+                        CANVAS_LENGTH/2 -
+                                pieceSize/2 +
+                                pieceSize*i -
+                                picture.getLength()/2;
+
+                randomForPiece.setPosition_x(x);
+                randomForPiece.setPosition_y(y);
             }
         }
+
+
+
 
         correctedCount = 0;
         randomArrange();

@@ -34,8 +34,6 @@ public class Picture {
         int originWidth = p.getWidth();
         int imgWidth = originHeight >= originWidth ? Math.round((p.levelSize.get(3)*originWidth) / originHeight / 100) * 100 : p.levelSize.get(3);
         int imgHeight = originHeight >= originWidth ? p.levelSize.get(3) : Math.round((p.levelSize.get(3)*originHeight) /  originWidth/ 100) * 100;
-        System.out.println("imgHeight = " + imgHeight);
-        System.out.println("imgWidth = " + imgWidth);
         p.widthPieceCnt = (int) Math.floor((double)imgWidth / (double)p.pieceSize);
         p.lengthPieceCnt = (int) Math.floor((double) imgHeight / (double)p.pieceSize);
 
