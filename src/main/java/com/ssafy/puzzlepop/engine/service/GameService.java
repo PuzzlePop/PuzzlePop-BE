@@ -80,13 +80,16 @@ public class GameService {
         System.out.println("sender = " + sender);
         System.out.println("targets = " + targets);
 
-        String teamColor = "";
+        PuzzleBoard ourPuzzle;
+        PuzzleBoard yourPuzzle;
         if (game.getRedTeam().isIn(sender)) {
             System.out.println("얘 레드팀임");
-            teamColor = "RED";
+            ourPuzzle = game.getRedPuzzle();
+            yourPuzzle = game.getBluePuzzle();
         } else if (game.getBlueTeam().isIn(sender)){
             System.out.println("얘 블루팀임");
-            teamColor = "BLUE";
+            ourPuzzle = game.getBluePuzzle();
+            yourPuzzle = game.getRedPuzzle();
         } else {
             System.out.println("팀이 없는데, 이거 맞아?");
             res.setMessage("팀 없는데?");
@@ -116,11 +119,64 @@ public class GameService {
                 res.setTargetList(comboPieces);
             }
         } else if (message.equals("USE_ITEM")) {
+            Item item = ourPuzzle.getItemList()[Integer.parseInt(targets)];
+            ItemType type = item.getName();
 
+            if (type == ItemType.FIRE || type == ItemType.EARTHQUAKE || type == ItemType.ROCKET) {
+                Item[] yourItemList = yourPuzzle.getItemList();
+                int shield = -1;
+                int mirror = -1;
+                for (int i = 0; i < 5; i++) {
+                    if (yourItemList[i].getName() == ItemType.MIRROR) {
+                        mirror = i;
+                    } else if (yourItemList[i].getName() == ItemType.SHIELD) {
+                        shield = i;
+                    }
+                }
+
+                ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle);
+                //둘다 없을 때
+                if (mirror != -1 && shield != -1) {
+                    item.run(yourPuzzle);
+                }
+                //반사됨
+                else if (mirror != -1 && shield == -1) {
+                    item.run(ourPuzzle);
+                }
+                //방어됨
+                else if (mirror == -1 && shield != -1) {
+                    //아무일 없음
+                }
+                //둘다 있을 때
+                else {
+                    //반사부터 적용됨
+                    item.run(ourPuzzle);
+                }
+            } else if (type == ItemType.HINT || type == ItemType.FRAME || type == ItemType.MAGNET) {
+                ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle);
+            } else {
+
+            }
             game.getRedPuzzle().useItem(Integer.parseInt(targets), game.getRedPuzzle());
 
-        } else if (message.equals("MOVE")) {
-            System.out.println(position_x + "," + position_y + " 으로 이동");
+        } else if (message.equals("MOUSE_DOWN")) {
+            int[] p = ourPuzzle.getIdxToCoordinate().get(Integer.parseInt(targets));
+
+            if (ourPuzzle.getBoard()[0][p[0]][p[1]].isLocked()) {
+                System.out.println(targets + "번 피스 잠겨있음");
+                res.setMessage("BLOCKED");
+                return res;
+            }
+
+            System.out.println(targets + "번 피스 잠금");
+            res.setMessage("LOCKED");
+            ourPuzzle.getBoard()[0][p[0]][p[1]].setLocked(true);
+        } else if (message.equals("MOUSE_UP")) {
+            System.out.println(targets + "번 피스 잠금 해제");
+            res.setMessage("UNBLOCKED");
+            int[] p = ourPuzzle.getIdxToCoordinate().get(Integer.parseInt(targets));
+            ourPuzzle.getBoard()[0][p[0]][p[1]].setLocked(false);
+        } else if (message.equals("MOUSE_DRAG")) {
             res.setMessage("MOVE");
             res.setPosition_x(position_x);
             res.setPosition_y(position_y);

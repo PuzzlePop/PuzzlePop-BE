@@ -16,6 +16,7 @@ public class Piece {
     private int[] type;
     private double position_x;
     private double position_y;
+    private boolean locked = false;
 
 
     public Piece(int index) {
