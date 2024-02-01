@@ -5,22 +5,28 @@ import com.ssafy.puzzlepop.engine.domain.Piece;
 import com.ssafy.puzzlepop.engine.domain.PuzzleBoard;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.util.*;
+
+import java.util.Arrays;
 
 class PuzzleBoardTest {
     @Test
     @DisplayName("초기화 테스트")
     void initTest() {
-        Picture p = new Picture(1000, 551, "String");
+        Picture p = new Picture();
+        p.setWidth(1000);
+        p.setLength(551);
+        p.setPieceSize(100);
+        p.setLengthPieceCnt(4);
+        p.setWidthPieceCnt(8);
+
         PuzzleBoard puzzle = new PuzzleBoard();
         puzzle.init(p);
         Piece[][][] board = puzzle.getBoard();
-        System.out.println(puzzle.getWidthCnt());
-        System.out.println(puzzle.getLengthCnt());
 
         for (int i = 0; i < puzzle.getLengthCnt(); i++) {
             for (int j = 0; j < puzzle.getWidthCnt(); j++) {
-                System.out.print(Arrays.toString(board[0][i][j].getType()) + " ");
+//                System.out.print(board[0][i][j].getIndex() + " " + board[0][i][j].getPosition_x()+ " "+board[0][i][j].getPosition_y() + " | ");
+                System.out.print(Arrays.toString(board[0][i][j].getType()));
             }
             System.out.println();
         }
