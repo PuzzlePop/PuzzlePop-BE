@@ -2,6 +2,7 @@ package com.ssafy.puzzlepop.engine.controller;
 
 import com.ssafy.puzzlepop.engine.domain.Game;
 import com.ssafy.puzzlepop.engine.domain.Room;
+import com.ssafy.puzzlepop.engine.domain.User;
 import com.ssafy.puzzlepop.engine.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,18 +45,20 @@ public class GameRoomController {
     }
 
     //특정 게임방 조회
-    @GetMapping("/room/{roomId}")
+    @PostMapping("/room/{roomId}")
     @ResponseBody
-    public ResponseEntity<?> roomInfo(@PathVariable String roomId) {
+    public ResponseEntity<?> roomInfo(@PathVariable String roomId, @RequestBody User user) {
         Game game = gameService.findById(roomId);
         if (game == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found");
         } else {
-//            if (game.isStarted()) {
-//                if (game.getPlayers().contains())
-//
-//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Game is started");
-//            }
+            if (game.isStarted()) {
+                if (game.getPlayers().contains(user)) {
+                    return ResponseEntity.ok(game);
+                }
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Game is started");
+            }
 
             if (game.getGameType().equals("BATTLE")) {
                 if (game.getRedTeam().getPlayers().size() + game.getBlueTeam().getPlayers().size() == game.getRoomSize()) {
