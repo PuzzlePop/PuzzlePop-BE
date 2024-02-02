@@ -35,15 +35,15 @@ public class GameRoomController {
         return ResponseEntity.ok(allBattleRoom);
     }
 
-    // 모든 채팅방 목록 반환
-    // 채팅방 생성
+
+    //게임 생성
     @PostMapping("/room")
     @ResponseBody
     public Game createRoom(@RequestBody Room room) {
         return gameService.createRoom(room);
     }
 
-    // 특정 게임방 조회
+    //특정 게임방 조회
     @GetMapping("/room/{roomId}")
     @ResponseBody
     public ResponseEntity<?> roomInfo(@PathVariable String roomId) {

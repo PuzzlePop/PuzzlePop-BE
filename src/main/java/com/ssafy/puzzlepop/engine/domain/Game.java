@@ -3,7 +3,6 @@ package com.ssafy.puzzlepop.engine.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Getter
@@ -27,7 +26,7 @@ public class Game {
     private Date startTime;
 
     private boolean isStarted = false;
-    private HashMap<String, User> sessionToUser;
+    private LinkedHashMap<String, User> sessionToUser;
 
     public void changeTeam(User user) {
         if (redTeam.isIn((user))) {
@@ -42,6 +41,16 @@ public class Game {
 
     public void exitPlayer(String sessionId) {
         User user = sessionToUser.get(sessionId);
+        if (user == admin) {
+            Collection<User> values = sessionToUser.values();
+            Iterator<User> iter = values.iterator();
+            if (values.size() > 1) {
+                for (int i = 0; i < 2; i++) {
+                    admin = iter.next();
+                }
+                System.out.println("방장이 " + admin.getId() + " 님으로 바뀌었습니다~");
+            }
+        }
 
         if (redTeam.getPlayers().contains(user)) {
             redTeam.deletePlayer(user);
@@ -53,6 +62,9 @@ public class Game {
     }
 
     public boolean enterPlayer(User user, String sessionId) {
+        if (sessionToUser.isEmpty()) {
+            admin = user;
+        }
         sessionToUser.put(sessionId, user);
 
         if (gameType.equals("BATTLE")) {
@@ -60,11 +72,11 @@ public class Game {
                 return true;
             }
 
-            if (redTeam.getPlayers().size() < roomSize/2) {
+            if (redTeam.getPlayers().size() < roomSize / 2) {
                 redTeam.addPlayer(user);
                 return true;
             } else {
-                if (blueTeam.getPlayers().size() < roomSize/2) {
+                if (blueTeam.getPlayers().size() < roomSize / 2) {
                     blueTeam.addPlayer(user);
                     return true;
                 } else {
@@ -91,7 +103,7 @@ public class Game {
         int roomSize = room.getRoomSize();
         String gameType = room.getGameType();
 
-        HashMap<String, User> map = new HashMap<>();
+        LinkedHashMap<String, User> map = new LinkedHashMap<>();
 
         Game game = new Game();
         String uuid = UUID.randomUUID().toString();
@@ -153,7 +165,11 @@ public class Game {
     }
 
 
-    public void start() {
+    public synchronized void start() {
+        if (isStarted) {
+            return;
+        }
+
         redPuzzle = new PuzzleBoard();
         bluePuzzle = new PuzzleBoard();
         redPuzzle.init(picture);
@@ -161,6 +177,7 @@ public class Game {
 
         startTime = new Date();
         isStarted = true;
+
         System.out.println("------------------게임 시작-------------------");
         redPuzzle.print();
         bluePuzzle.print();
