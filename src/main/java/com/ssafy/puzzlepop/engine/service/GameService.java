@@ -21,6 +21,7 @@ public class GameService {
     //의존관게 주입완료되면 실행되는 코드
     private void init() {
         gameRooms = new LinkedHashMap<>();
+        gameRooms = Collections.synchronizedMap(gameRooms);
         gson = new Gson();
     }
 

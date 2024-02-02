@@ -19,9 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -37,7 +35,8 @@ public class MessageController {
 
     @PostConstruct
     public void init() {
-        sessionToGame = new HashMap<>();
+        sessionToGame = new LinkedHashMap<>();
+        sessionToGame = Collections.synchronizedMap(sessionToGame);
     }
 
     //세션 아이디 설정
