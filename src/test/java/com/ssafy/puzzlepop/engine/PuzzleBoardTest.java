@@ -27,6 +27,7 @@ class PuzzleBoardTest {
             for (int j = 0; j < puzzle.getWidthCnt(); j++) {
 //                System.out.print(board[0][i][j].getIndex() + " " + board[0][i][j].getPosition_x()+ " "+board[0][i][j].getPosition_y() + " | ");
                 System.out.print(Arrays.toString(board[0][i][j].getType()));
+
             }
             System.out.println();
         }

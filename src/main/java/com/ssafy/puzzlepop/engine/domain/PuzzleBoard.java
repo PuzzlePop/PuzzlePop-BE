@@ -222,14 +222,6 @@ public class PuzzleBoard {
                     type[LEFT] = board[0][i][j-1].getType()[1] == 2 ? 1 : 2;
                 }
 
-                for (int k = 0; k < 4; k++) {
-                    if (type[k] == 1) {
-                        type[k] = -1;
-                    } else if (type[k] == 2) {
-                        type[k] = 1;
-                    }
-                }
-
                 now.setType(type);
 
                 int idx = random(picture.getLengthPieceCnt() * picture.getWidthPieceCnt())-1;
@@ -260,7 +252,17 @@ public class PuzzleBoard {
             }
         }
 
-
+        for (int i = 0; i < lengthCnt; i++) {
+            for (int j = 0; j < widthCnt; j++) {
+                for (int k = 0; k < 4; k++) {
+                    if (board[0][i][j].getType()[k] == 1) {
+                        board[0][i][j].getType()[k] = -1;
+                    } else if (board[0][i][j].getType()[k] == 2) {
+                        board[0][i][j].getType()[k] = 1;
+                    }
+                }
+            }
+        }
 
 
         correctedCount = 0;
