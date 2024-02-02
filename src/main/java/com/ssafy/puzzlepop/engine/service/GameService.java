@@ -134,15 +134,16 @@ public class GameService {
             }
             System.out.println("ADD_PIECE");
 
-            game.getRedPuzzle().addPiece(pieces);
-            game.getRedPuzzle().print();
+            ourPuzzle.addPiece(pieces);
+            ourPuzzle.print();
 
-            int comboCnt = comboCheck(game.getRedPuzzle());
+            int comboCnt = comboCheck(ourPuzzle);
             if (comboCnt != 0) {
-                List<Integer> comboPieces = game.getRedPuzzle().combo(pieces, comboCnt);
+                List<Integer> comboPieces = ourPuzzle.combo(pieces, comboCnt);
                 System.out.println("콤보 대상 : " + comboPieces);
-                res.setMessage("COMBO");
-                res.setTargetList(comboPieces);
+                res.setMessage("ADD_PIECE");
+                res.setTargets(targets);
+                res.setCombo(comboPieces);
             }
         } else if (message.equals("USE_ITEM")) {
             Item item = ourPuzzle.getItemList()[Integer.parseInt(targets)];
@@ -183,7 +184,7 @@ public class GameService {
             } else {
 
             }
-            game.getRedPuzzle().useItem(Integer.parseInt(targets), game.getRedPuzzle());
+
 
         } else if (message.equals("MOUSE_DOWN")) {
             PieceDto[] arr = gson.fromJson(targets, PieceDto[].class);
