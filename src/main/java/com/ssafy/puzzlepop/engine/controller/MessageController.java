@@ -3,7 +3,6 @@ package com.ssafy.puzzlepop.engine.controller;
 import com.ssafy.puzzlepop.engine.InGameMessage;
 import com.ssafy.puzzlepop.engine.SocketError;
 import com.ssafy.puzzlepop.engine.domain.Game;
-import com.ssafy.puzzlepop.engine.domain.GameType;
 import com.ssafy.puzzlepop.engine.domain.ResponseMessage;
 import com.ssafy.puzzlepop.engine.domain.User;
 import com.ssafy.puzzlepop.engine.service.GameService;
@@ -50,7 +49,7 @@ public class MessageController {
     }
 
     @EventListener
-    public void handleDisconnectEvent(SessionDisconnectEvent event) {
+    public void handleDisconnectEvent(SessionDisconnectEvent event) throws InterruptedException {
         System.out.println("MessageController.handleDisconnectEvent");
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
@@ -65,7 +64,14 @@ public class MessageController {
 
         if (game.isEmpty()) {
             System.out.println("game.isEmpty()");
-            gameService.deleteRoom(gameId);
+            Thread.sleep(5000);
+            if (game.isEmpty()) {
+                System.out.println("진짜 나간것같아. 게임 지울게!");
+                gameService.deleteRoom(gameId);
+            } else {
+                System.out.println("새로고침이였어. 다시 연결한다!");
+                return;
+            }
         }
 
         sendingOperations.convertAndSend("/topic/game/room/"+gameId, game);
