@@ -24,10 +24,31 @@ public class GameService {
         gson = new Gson();
     }
 
-    //채팅방 불러오기
-    public List<Game> findAllRoom() {
-        //채팅방 최근 생성 순으로 반환
+    //협동 게임방 불러오기
+    public List<Game> findAllCooperationRoom() {
         List<Game> result = new ArrayList<>(gameRooms.values());
+        for (int i = result.size()-1; i >= 0; i--) {
+            if (!result.get(i).getGameType().equals("COOPERATION")) {
+                result.remove(i);
+            }
+        }
+
+        //최근 생성 순으로 반환
+        Collections.reverse(result);
+
+        return result;
+    }
+
+    //배틀 게임방 불러오기
+    public List<Game> findAllBattleRoom() {
+        List<Game> result = new ArrayList<>(gameRooms.values());
+        for (int i = result.size()-1; i >= 0; i--) {
+            if (!result.get(i).getGameType().equals("BATTLE")) {
+                result.remove(i);
+            }
+        }
+
+        //최근 생성 순으로 반환
         Collections.reverse(result);
 
         return result;

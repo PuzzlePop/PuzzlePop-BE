@@ -19,11 +19,20 @@ public class GameRoomController {
 
     private final GameService gameService;
 
-    // 채팅 리스트 화면
-    @GetMapping("/rooms")
+    //협동 게임 방 리스트
+    @GetMapping("/rooms/cooperation")
     @ResponseBody
-    public List<Game> rooms() {
-        return gameService.findAllRoom();
+    public ResponseEntity<?> cooperationRooms() {
+        List<Game> allCooperationRoom = gameService.findAllCooperationRoom();
+        return ResponseEntity.ok(allCooperationRoom);
+    }
+
+    //배틀 게임 방 리스트
+    @GetMapping("/rooms/battle")
+    @ResponseBody
+    public ResponseEntity<?> battleRooms() {
+        List<Game> allBattleRoom = gameService.findAllBattleRoom();
+        return ResponseEntity.ok(allBattleRoom);
     }
 
     // 모든 채팅방 목록 반환
@@ -34,7 +43,7 @@ public class GameRoomController {
         return gameService.createRoom(room);
     }
 
-    // 특정 채팅방 조회
+    // 특정 게임방 조회
     @GetMapping("/room/{roomId}")
     @ResponseBody
     public ResponseEntity<?> roomInfo(@PathVariable String roomId) {
@@ -42,6 +51,10 @@ public class GameRoomController {
         if (game == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found");
         } else {
+            if (game.isStarted()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Game is started");
+            }
+
             if (game.getGameType().equals("BATTLE")) {
                 if (game.getRedTeam().getPlayers().size() + game.getBlueTeam().getPlayers().size() == game.getRoomSize()) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Room is fulled");

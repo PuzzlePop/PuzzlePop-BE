@@ -115,7 +115,8 @@ public class MessageController {
     //서버 타이머  제공
     @Scheduled(fixedRate = 1000)
     public void sendServerTime() {
-        List<Game> allRoom = gameService.findAllRoom();
+        List<Game> allRoom = gameService.findAllCooperationRoom();
+        allRoom.addAll(gameService.findAllBattleRoom());
         for (int i = allRoom.size()-1; i >= 0 ; i--) {
             if (allRoom.get(i).isStarted()) {
                 long time = allRoom.get(i).getTime();
