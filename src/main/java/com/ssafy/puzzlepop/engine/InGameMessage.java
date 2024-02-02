@@ -12,7 +12,7 @@ import lombok.Setter;
 public class InGameMessage {
 
     public enum MessageType {
-        ENTER, GAME
+        ENTER, GAME, CHAT
     }
 
     private MessageType type;

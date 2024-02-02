@@ -3,6 +3,7 @@ package com.ssafy.puzzlepop.engine.controller;
 import com.ssafy.puzzlepop.engine.InGameMessage;
 import com.ssafy.puzzlepop.engine.SocketError;
 import com.ssafy.puzzlepop.engine.domain.Game;
+import com.ssafy.puzzlepop.engine.domain.ResponseChatMessage;
 import com.ssafy.puzzlepop.engine.domain.ResponseMessage;
 import com.ssafy.puzzlepop.engine.domain.User;
 import com.ssafy.puzzlepop.engine.service.GameService;
@@ -93,6 +94,12 @@ public class MessageController {
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(),new SocketError("room", "방 가득 참"));
                 System.out.println(gameService.findById(message.getRoomId()).getGameName() + "에 " + message.getSender() + "님이 입장하지 못했습니다.");
             }
+        } else if (message.getType().equals(InGameMessage.MessageType.CHAT)) {
+            ResponseChatMessage responseChatMessage = new ResponseChatMessage();
+            responseChatMessage.setChatMessage(message.getMessage());
+            responseChatMessage.setUserid(message.getSender());
+            responseChatMessage.setTime(new Date());
+            sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(), responseChatMessage);
         } else {
             if (message.getMessage().equals("GAME_START")) {
                 System.out.println("GAME_START");
