@@ -20,6 +20,7 @@ public class Game {
 
     private Team redTeam;
     private Team blueTeam;
+    private List<User> players;
     private PuzzleBoard redPuzzle;
     private PuzzleBoard bluePuzzle;
 
@@ -174,6 +175,9 @@ public class Game {
         bluePuzzle = new PuzzleBoard();
         redPuzzle.init(picture);
         bluePuzzle.init(picture);
+        players = new LinkedList<>();
+        players.addAll(redTeam.getPlayers());
+        players.addAll(blueTeam.getPlayers());
 
         startTime = new Date();
         isStarted = true;

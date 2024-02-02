@@ -51,9 +51,11 @@ public class GameRoomController {
         if (game == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found");
         } else {
-            if (game.isStarted()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Game is started");
-            }
+//            if (game.isStarted()) {
+//                if (game.getPlayers().contains())
+//
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Game is started");
+//            }
 
             if (game.getGameType().equals("BATTLE")) {
                 if (game.getRedTeam().getPlayers().size() + game.getBlueTeam().getPlayers().size() == game.getRoomSize()) {
