@@ -1,11 +1,12 @@
 package com.ssafy.puzzlepop.engine.domain;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
 
-@Getter
+@Data
 @NoArgsConstructor
 public class Item {
     private Long id;
