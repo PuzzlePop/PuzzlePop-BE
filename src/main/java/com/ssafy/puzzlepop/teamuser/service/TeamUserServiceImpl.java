@@ -1,19 +1,19 @@
 package com.ssafy.puzzlepop.teamuser.service;
 
 import com.ssafy.puzzlepop.team.domain.Team;
-import com.ssafy.puzzlepop.team.domain.TeamDto;
 import com.ssafy.puzzlepop.team.repository.TeamRepository;
 import com.ssafy.puzzlepop.teamuser.domain.TeamUser;
 import com.ssafy.puzzlepop.teamuser.domain.TeamUserRequestDto;
+import com.ssafy.puzzlepop.teamuser.domain.TeamUserResponseDto;
 import com.ssafy.puzzlepop.teamuser.repository.TeamUserRepository;
 import com.ssafy.puzzlepop.user.domain.User;
-import com.ssafy.puzzlepop.user.domain.UserDto;
 import com.ssafy.puzzlepop.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -24,24 +24,27 @@ public class TeamUserServiceImpl implements TeamUserService{
 
     @Override
     @Transactional
-    public TeamUser readTeamUser(Long id) {
-        TeamUser teamuser = teamUserRepository.findById(id).orElseThrow(
+    public TeamUserResponseDto readTeamUser(Long id) {
+        TeamUser teamUser = teamUserRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("TeamUser Not Found with id: " + id));
-        return null;
+        return new TeamUserResponseDto(teamUser);
     }
 
-
     @Override
-    public List<UserDto> findAllByTeamId(Long teamId) {
+    @Transactional
+    public List<TeamUserResponseDto> findAllByTeamId(Long teamId) {
         List<TeamUser> teamUsers = teamUserRepository.findAllByTeamId(teamId);
-        return null;
+        return teamUsers.stream().map(TeamUserResponseDto::new).collect(Collectors.toList());
     }
 
     @Override
-    public List<TeamDto> findAllByUserId(Long userId) {
-        return null;
+    @Transactional
+    public List<TeamUserResponseDto> findAllByUserId(Long userId) {
+        List<TeamUser> teamUsers = teamUserRepository.findAllByUserId(userId);
+        return teamUsers.stream().map(TeamUserResponseDto::new).collect(Collectors.toList());
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     @Transactional
     public Long createTeamUser(TeamUserRequestDto requestDto) {
@@ -49,8 +52,11 @@ public class TeamUserServiceImpl implements TeamUserService{
                 () -> new IllegalArgumentException("User Not Found with id: " + requestDto.getUserId()));
         Team team = teamRepository.findById(requestDto.getTeamId()).orElseThrow(
                 () -> new IllegalArgumentException("Team Not Found with id: " + requestDto.getTeamId()));
-        TeamUser entity = TeamUser.builder().team(team).user(user).build();
-        return teamUserRepository.save(entity).getId();
+        TeamUser teamuser = TeamUser.builder()
+                .team(team).user(user)
+                .matchedPieceCount(requestDto.getMatchedPieceCount())
+                .build();
+        return teamUserRepository.save(teamuser).getId();
     }
 
     @Override
@@ -62,17 +68,17 @@ public class TeamUserServiceImpl implements TeamUserService{
                 () -> new IllegalArgumentException("Team Not Found with id: " + requestDto.getTeamId()));
         User user = userRepository.findById(requestDto.getUserId()).orElseThrow(
                 () -> new IllegalArgumentException("User Not Found with id: " + requestDto.getUserId()));
-        entity.updateTeam(team);
-        entity.updateUser(user);
+        entity.updateTeam(team); entity.updateUser(user);
+        entity.updateMatchedPieceCount(requestDto.getMatchedPieceCount());
         return teamUserRepository.save(entity).getId();
     }
 
     @Override
     @Transactional
-    public void deleteTeamUser(Long id) {
+    public Long deleteTeamUser(Long id) {
         TeamUser entity = teamUserRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("TeamUser Not Found with id: " + id));
         teamUserRepository.delete(entity);
+        return id;
     }
-
 }
