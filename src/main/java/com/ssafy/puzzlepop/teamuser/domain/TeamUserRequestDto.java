@@ -12,11 +12,13 @@ public class TeamUserRequestDto {
     private Long id;
     private Long teamId;
     private Long userId;
+    private Integer matchedPieceCount;
 
     @Builder
-    public TeamUserRequestDto(TeamUser teamItem) {
-        this.id = teamItem.getId();
-        this.teamId = teamItem.getTeam().getId();
-        this.userId = teamItem.getUser().getId();
+    public TeamUserRequestDto(TeamUser teamUser) {
+        this.id = teamUser.getId();
+        this.teamId = teamUser.getTeam().getId();
+        this.userId = teamUser.getUser().getId();
+        this.matchedPieceCount = teamUser.getMatchedPieceCount();
     }
 }
