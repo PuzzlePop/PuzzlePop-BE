@@ -235,6 +235,16 @@ public class GameService {
             System.out.println("targets = " + targets);
         }
 
+        //게임 끝났는지 마지막에 확인
+        if (game.getGameType().equals("BATTLE")) {
+            if (ourPuzzle.isCompleted() || yourPuzzle.isCompleted()) {
+                res.setFinished(true);
+            }
+        } else if (game.getGameType().equals("COOPERATION")) {
+            if (ourPuzzle.isCompleted()) {
+                res.setFinished(true);
+            }
+        }
         return res;
     }
 
