@@ -27,8 +27,10 @@ public class TeamUser {
     public void updateTeam(Team team) {
         this.team = team;
     }
-
     public void updateUser(User user) {
         this.user = user;
+    }
+    public void updateMatchedPieceCount(Integer matchedPieceCount) {
+        this.matchedPieceCount = matchedPieceCount;
     }
 }
