@@ -40,11 +40,13 @@ public class PuzzleBoard {
 
     public void addItem(ItemType type) {
         if (itemCount > 5) {
+            System.out.println("아이템 추가 실패");
             return;
         }
 
         Item item = new Item(type);
         itemList[itemCount++] = item;
+        System.out.println("아이템 추가 성공");
     }
 
     public void swapItem(int from, int to) {
@@ -53,17 +55,22 @@ public class PuzzleBoard {
         itemList[to] = tmp;
     }
 
+    public List<Integer> useRandomItem(DropItem item, PuzzleBoard puzzle) {
+        return item.run(puzzle);
+    }
 
-    public void useItem(int itemNumber, PuzzleBoard puzzle) {
+    public List<Integer> useItem(int itemNumber, PuzzleBoard puzzle) {
         if (itemList[itemNumber-1] == null) {
             System.out.println("아이템 사용 실패 : 없음");
-            return;
+            return null;
         }
 
         System.out.println("아이템 사용 : " + itemList[itemNumber-1]);
-        itemList[itemNumber-1].run(puzzle);
+        List<Integer> targets = itemList[itemNumber-1].run(puzzle);
         itemList[itemNumber-1] = null;
         itemCount--;
+
+        return targets;
     }
 
 

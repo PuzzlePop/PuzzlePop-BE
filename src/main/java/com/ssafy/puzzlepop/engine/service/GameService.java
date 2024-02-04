@@ -107,15 +107,25 @@ public class GameService {
         System.out.println("targets = " + targets);
 
         PuzzleBoard ourPuzzle;
+        String ourColor;
         PuzzleBoard yourPuzzle;
+        String yourColor;
+
+        List<Integer> targetsList;
+
+
         if (game.getRedTeam().isIn(sender)) {
             System.out.println("얘 레드팀임");
             ourPuzzle = game.getRedPuzzle();
+            ourColor = "RED";
             yourPuzzle = game.getBluePuzzle();
+            yourColor = "BLUE";
         } else if (game.getBlueTeam().isIn(sender)){
             System.out.println("얘 블루팀임");
             ourPuzzle = game.getBluePuzzle();
+            ourColor = "BLUE";
             yourPuzzle = game.getRedPuzzle();
+            yourColor = "RED";
         } else {
             System.out.println("팀이 없는데, 이거 맞아?");
             res.setMessage("팀 없는데?");
@@ -161,31 +171,41 @@ public class GameService {
                     }
                 }
 
-                ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle);
+
                 //둘다 없을 때
                 if (mirror != -1 && shield != -1) {
-                    item.run(yourPuzzle);
+                    res.setMessage("ATTACKED");
+                    res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), yourPuzzle));
                 }
                 //반사됨
                 else if (mirror != -1 && shield == -1) {
-                    item.run(ourPuzzle);
+                    res.setMessage("MIRROR");
+                    res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
                 }
                 //방어됨
                 else if (mirror == -1 && shield != -1) {
                     //아무일 없음
+                    res.setMessage("SHIELD");
                 }
                 //둘다 있을 때
                 else {
                     //반사부터 적용됨
-                    item.run(ourPuzzle);
+                    res.setMessage("MIRROR");
+                    res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
                 }
             } else if (type == ItemType.HINT || type == ItemType.FRAME || type == ItemType.MAGNET) {
-                ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle);
-            } else {
-
+                res.setMessage(String.valueOf(type));
+                res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
             }
 
 
+        } else if (message.equals("USE_RANDOM_ITEM")) {
+            DropItem item = new DropItem(ItemType.valueOf(targets), 0, 0);
+            targetsList = ourPuzzle.useRandomItem(item, yourPuzzle);
+
+            res.setMessage("USE_RANDOM_ITEM");
+            res.setTargets(yourColor);
+            res.setTargetList(targetsList);
         } else if (message.equals("MOUSE_DOWN")) {
             PieceDto[] arr = gson.fromJson(targets, PieceDto[].class);
 
@@ -230,6 +250,10 @@ public class GameService {
             }
 
             res.setTargets(targets);
+        } else if (message.equals("ADD_ITEM")) {
+            res.setMessage("GET_ITEM");
+
+            ourPuzzle.addItem(ItemType.valueOf(targets));
         } else {
             System.out.println("구현중인 명령어 : " + message);
             System.out.println("targets = " + targets);
