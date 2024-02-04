@@ -30,7 +30,7 @@ public class ImageServiceImpl implements ImageService {
         this.imageRepository = imageRepository;
     }
 
-    private static final String RELATIVE_PATH = "./uploads/image/";
+    private static final String RELATIVE_PATH = "../uploads/image/";
 
     ///////////
 
@@ -45,8 +45,11 @@ public class ImageServiceImpl implements ImageService {
         }
 
         // 이미지 저장
-        Path absolutePath = Paths.get(RELATIVE_PATH).toAbsolutePath();
-        String absolutePathString = absolutePath.toString();
+        Path basePath = Paths.get(System.getProperty("user.dir"));
+        Path savePath = basePath.getParent().resolve("uploads/image");
+//        Path absolutePath = Paths.get(RELATIVE_PATH).toAbsolutePath();
+//        String absolutePathString = absolutePath.toString();
+        String absolutePathString = savePath.toString();
 
         String originalFilename = file.getOriginalFilename(); // image.jpg
         String filename = originalFilename.substring(0, originalFilename.indexOf(".")); // image
@@ -61,8 +64,8 @@ public class ImageServiceImpl implements ImageService {
         }
 
         // 파일 저장할 폴더 없다면 생성
-        if (!absolutePath.toFile().exists()) {
-            absolutePath.toFile().mkdirs();
+        if (!savePath.toFile().exists()) {
+            savePath.toFile().mkdirs();
         }
 
         // 파일 저장
