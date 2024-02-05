@@ -77,7 +77,7 @@
                 console.log(JSON.parse(recv.message));
             },
             gameStart: function() {
-                ws.send("/app/game/message", {}, JSON.stringify({type:'GAME', roomId:this.roomId, sender:this.sender, message:this.message}));
+                ws.send("/app/game/message", {}, JSON.stringify({type:'GAME', roomId:this.roomId, sender:this.sender, message:this.message, targets:{}}));
                 this.message = 'gameStart';
             }
         }
