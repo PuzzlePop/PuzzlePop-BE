@@ -1,7 +1,8 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.domain;
 
-import java.util.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -13,6 +14,10 @@ public class Piece {
     private int correctLeftIndex;
     private int correctRightIndex;
     private int[] type;
+    private double position_x;
+    private double position_y;
+    private boolean locked = false;
+    private Item item;
 
 
     public Piece(int index) {
