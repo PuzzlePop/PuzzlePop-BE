@@ -1,9 +1,8 @@
 package com.ssafy.puzzlepop.gameinfo.controller;
 
 import com.ssafy.puzzlepop.gameinfo.domain.GameInfoDto;
-import com.ssafy.puzzlepop.gameinfo.exception.GameInfoNotFoundException;
 import com.ssafy.puzzlepop.gameinfo.service.GameInfoService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,80 +10,54 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class GameInfoController {
-    private final GameInfoService gameService;
+    private final GameInfoService gameInfoService;
 
-    @GetMapping("/game")
-    public ResponseEntity<?> getGameById(@RequestBody GameInfoDto requestDto) {
-        try {
-            GameInfoDto responseDto = gameService.getGameInfoById(requestDto.getId());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
-        } catch (GameInfoNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    @GetMapping("/gameinfo")
+    public ResponseEntity<?> readGameInfo(@RequestParam Long gameId) {
+        GameInfoDto responseDto = gameInfoService.readGameInfo(gameId);
+        return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
     }
 
-    @PostMapping("/game")
-    public ResponseEntity<?> createGame(@RequestBody GameInfoDto requestDto) {
-        try {
-            Long id = gameService.createGameInfo(requestDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(id);
-        } catch (GameInfoNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @PutMapping("/game")
-    public ResponseEntity<?> updateGame(@RequestBody GameInfoDto requestDto) {
-        try {
-            Long id = gameService.updateGameInfo(requestDto);
-            return ResponseEntity.status(HttpStatus.OK).body(id);
-        } catch (GameInfoNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @DeleteMapping("/game")
-    public ResponseEntity<?> deleteGame(@RequestBody GameInfoDto requestDto) {
-        try {
-            gameService.deleteGameInfo(requestDto.getId());
-            return ResponseEntity.status(HttpStatus.OK).body(null);
-        } catch (GameInfoNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    @GetMapping("/gameinfo/all")
+    public ResponseEntity<?> readAllGameInfo() {
+        List<GameInfoDto> responseDtos = gameInfoService.readAllGameInfos();
+        return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    @GetMapping("/game/list")
-    public ResponseEntity<?> findAllGames() {
-        try {
-            List<GameInfoDto> responseDtos = gameService.getAllGameInfos();
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
-        } catch (GameInfoNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    @GetMapping("/gameinfo/search")
+    public ResponseEntity<?> findAllByFilter(@RequestParam String filter,
+                                             @RequestParam String value) {
+        List<GameInfoDto> responseDtos = switch (filter) {
+            case "type" -> gameInfoService.findAllByType(value);
+            case "isCleared" -> gameInfoService.findAllByIsCleared(Boolean.parseBoolean(value));
+            case "curPlayerCount" -> gameInfoService.findAllByCurPlayerCount(Integer.parseInt(value));
+            case "maxPlayerCount" -> gameInfoService.findAllByMaxPlayerCount(Integer.parseInt(value));
+            case "totalPieceCount" -> gameInfoService.findAllByTotalPieceCount(Integer.parseInt(value));
+            default -> null;
+        };
+        return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
     }
 
-    @GetMapping("/game/search")
-    public ResponseEntity<?> findGamesByType(@RequestBody GameInfoDto requestDto) {
-        try {
-            List<GameInfoDto> responseDtos = gameService.findAllByType(requestDto.getType());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
-        } catch (GameInfoNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @PostMapping("/gameinfo")
+    public ResponseEntity<?> createGame(@RequestBody GameInfoDto requestDto) {
+        Long id = gameInfoService.createGameInfo(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
+
+    @PutMapping("/gameinfo")
+    public ResponseEntity<?> updateGame(@RequestBody GameInfoDto requestDto) {
+        Long id = gameInfoService.updateGameInfo(requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(id);
+    }
+
+    @DeleteMapping("/gameinfo")
+    public ResponseEntity<?> deleteGame(@RequestParam Long id) {
+        id = gameInfoService.deleteGameInfo(id);
+        return ResponseEntity.status(HttpStatus.OK).body(id);
+    }
+
 }
