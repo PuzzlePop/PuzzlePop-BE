@@ -258,4 +258,14 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
+    @Override
+    public ImageDto getImageDtoById(Long id) throws ImageException {
+        Image image = imageRepository.findById(id).orElse(null);
+        if(image == null) {
+            throw new ImageException("image matches to id doesn't exist");
+        }
+
+        return new ImageDto(image);
+    }
+
 }
