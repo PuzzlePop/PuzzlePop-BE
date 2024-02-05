@@ -1,45 +1,44 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.domain;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.*;
 
-@Getter
+@Data
+@NoArgsConstructor
 public class Item {
     private Long id;
-    private String name;
+    private ItemType name;
     private String description;
     private String img_path;
 
-    public Item (String name) {
+    public Item (ItemType name) {
         this.name = name;
-        if (name.equals("hint")) {
+        if (name == ItemType.HINT) {
             this.id = 1L;
-            this.description = "이 아이템을 클릭하면, 아직 맞추지 않은 2조각을 맞출 수 있어요!";
-            this.img_path = "path";
-        } else if (name.equals("earthquake")) {
+        } else if (name == ItemType.EARTHQUAKE) {
             this.id = 2L;
-            this.description = "이 아이템을 클릭하면, 상대방의 아직 맞추지 않은 퍼즐들이 섞여요!";
-            this.img_path = "path";
-        } else if (name.equals("mirror")) {
+        } else if (name == ItemType.MIRROR) {
             this.id = 3L;
-        } else if (name.equals("frame")) {
+        } else if (name == ItemType.FRAME) {
             this.id = 4L;
-        } else if (name.equals("shield")) {
+        } else if (name == ItemType.SHIELD) {
             this.id = 5L;
-        } else if (name.equals("magnet")) {
+        } else if (name == ItemType.MAGNET) {
             this.id = 6L;
-        } else if (name.equals("rocket")) {
+        } else if (name == ItemType.ROCKET) {
             this.id = 7L;
-        } else if (name.equals("fire")) {
+        } else if (name == ItemType.FIRE) {
             this.id = 8L;
         }
     }
 
-    public void run(PuzzleBoard puzzle) {
+    public List<Integer> run(PuzzleBoard puzzle) {
         List<Set<Piece>> bundles;
         Set<Piece> mostManyBundle;
-        List<Integer> targets;
+        List<Integer> targets = new LinkedList<>();
 
         switch (this.id.intValue()) {
             case 1:
@@ -49,13 +48,15 @@ public class Item {
                     for (int j = 0; j < puzzle.getWidthCnt()-1; j++) {
                         if (!tmp[i][j] && !tmp[i][j+1]) {
                             System.out.println(puzzle.getBoard()[0][i][j] + " " + puzzle.getBoard()[0][i][j+1]);
-                            return;
+                            targets.add(puzzle.getBoard()[0][i][j].getIndex());
+                            targets.add(puzzle.getBoard()[0][i][j+1].getIndex());
                         }
                     }
                 }
                 break;
 
             case 2:
+                System.out.println("EARTHQUAKE EFFECT");
                 puzzle.randomArrange();
                 break;
 
@@ -65,33 +66,32 @@ public class Item {
 
             //액자
             case 4:
-                List<Integer> list = new LinkedList<>();
                 for (int i = 0; i < puzzle.getLengthCnt(); i++) {
                     if (!puzzle.getIsCorrected()[i][0]) {
-                        list.add(puzzle.getBoard()[0][i][0].getIndex());
+                        targets.add(puzzle.getBoard()[0][i][0].getIndex());
                     }
                 }
 
                 for (int i = 0; i < puzzle.getWidthCnt(); i++) {
                     if (!puzzle.getIsCorrected()[0][i]) {
-                        list.add(puzzle.getBoard()[0][0][i].getIndex());
+                        targets.add(puzzle.getBoard()[0][0][i].getIndex());
                     }
                 }
 
                 for (int i = 0; i < puzzle.getLengthCnt(); i++) {
                     if (!puzzle.getIsCorrected()[i][puzzle.getWidthCnt()-1]) {
-                        list.add(puzzle.getBoard()[0][i][puzzle.getWidthCnt()-1].getIndex());
+                        targets.add(puzzle.getBoard()[0][i][puzzle.getWidthCnt()-1].getIndex());
                     }
                 }
 
                 for (int i = 0; i < puzzle.getWidthCnt(); i++) {
                     if (!puzzle.getIsCorrected()[puzzle.getLengthCnt()-1][i]) {
-                        list.add(puzzle.getBoard()[0][puzzle.getLengthCnt()-1][i].getIndex());
+                        targets.add(puzzle.getBoard()[0][puzzle.getLengthCnt()-1][i].getIndex());
                     }
                 }
 
-                System.out.println("액자 효과 대상 : " + list);
-                puzzle.addPiece(list);
+                System.out.println("액자 효과 대상 : " + targets);
+                puzzle.addPiece(targets);
                 break;
 
             case 5:
@@ -100,7 +100,6 @@ public class Item {
 
             //자석
             case 6:
-                targets = new LinkedList<>();
                 for (int i = 0; i < puzzle.getLengthCnt(); i++) {
                     for (int j = 0; j < puzzle.getWidthCnt(); j++) {
                         if (!puzzle.getIsCorrected()[i][j]) {
@@ -140,7 +139,6 @@ public class Item {
 
                             System.out.println("자석 효과 대상 : " + targets);
                             puzzle.addPiece(targets);
-                            return;
                         }
                     }
                 }
@@ -149,8 +147,9 @@ public class Item {
 
             //로켓
             case 7:
+                System.out.println("ROCKET EFFECT");
                 if (puzzle.getBundles().isEmpty())
-                    return;
+                    return null;
                 bundles = puzzle.getBundles();
                 Collections.sort(bundles, (o1, o2) -> {
                     return o2.size() - o1.size();
@@ -161,20 +160,19 @@ public class Item {
                 for (Piece p : mostManyBundle) {
                     targets.add(p.getIndex());
                 }
-                List<Integer> deletedPieces = new LinkedList<>();
+
                 for (int t : targets) {
-                    deletedPieces.add(t);
                     puzzle.deletePiece(t);
                 }
 
-                System.out.println("로켓 대상 : " + deletedPieces);
-
+                System.out.println("로켓 대상 : " + targets);
                 break;
 
             //불지르기
             case 8:
+                System.out.println("FIRE EFFECT");
                 if (puzzle.getBundles().isEmpty())
-                    return;
+                    return null;
 
                 //조각 개수가 많은 덩어리 순으로 정렬해서 그 덩어리 해체하기
                 bundles = puzzle.getBundles();
@@ -192,34 +190,33 @@ public class Item {
                 }
                 Piece target = puzzle.getBoard()[0][puzzle.getIdxToCoordinate().get(setToList.get(randomIdx))[0]][puzzle.getIdxToCoordinate().get(setToList.get(randomIdx))[1]];
 
-                List<Integer> targetsList = new LinkedList<>();
-                targetsList.add(target.getIndex());
+                targets.add(target.getIndex());
 
                 if (setToList.contains(target.getCorrectBottomIndex())) {
-                    targetsList.add(target.getCorrectBottomIndex());
+                    targets.add(target.getCorrectBottomIndex());
                 }
 
                 if (setToList.contains(target.getCorrectTopIndex())) {
-                    targetsList.add(target.getCorrectTopIndex());
+                    targets.add(target.getCorrectTopIndex());
                 }
 
                 if (setToList.contains(target.getCorrectLeftIndex())) {
-                    targetsList.add(target.getCorrectLeftIndex());
+                    targets.add(target.getCorrectLeftIndex());
                 }
 
                 if (setToList.contains(target.getCorrectRightIndex())) {
-                    targetsList.add(target.getCorrectRightIndex());
+                    targets.add(target.getCorrectRightIndex());
                 }
 
-                for (int targetIdx : targetsList) {
+                for (int targetIdx : targets) {
                     puzzle.deletePiece(targetIdx);
                 }
 
-                System.out.println("불 지르기 효과 대상 : " + targetsList);
+                System.out.println("불 지르기 효과 대상 : " + targets);
 
                 puzzle.searchForGroupDisbandment();
-
                 break;
         }
+        return targets;
     }
 }

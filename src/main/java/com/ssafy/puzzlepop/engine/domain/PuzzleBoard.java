@@ -1,11 +1,12 @@
-package com.ssafy.puzzlepop.engine;
+package com.ssafy.puzzlepop.engine.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.*;
 
+//TODO
+//알고리즘 정교화
 @Getter
 @NoArgsConstructor
 public class PuzzleBoard {
@@ -14,13 +15,13 @@ public class PuzzleBoard {
 
     //0번째는 정답지, 1번쨰는 현재 조각 위치
     private Piece[][][] board; //조각들이 들어있는 2차원 배열
-    private int pieceSize; //조각 수
+    private int pieceSize; //조각 크기
     private int widthCnt; //조각 수에 따른 가로 조각 개수
     private int lengthCnt; //조각 수에 따른 세로 조각 개수
     private List<Set<Piece>> bundles = new LinkedList<>(); //조합된 퍼즐 뭉탱이들
     private boolean[][] isCorrected; //조합된 퍼즐인지 확인하는 2차원 배열
-
-    private int correctedCount;
+    private int correctedCount; //현재까지 맞춘 개수
+    private boolean isCompleted = false;
 
     //랜덤 타입 적용에 쓰일 인덱스 상수
     private final int TOP = 0;
@@ -28,17 +29,24 @@ public class PuzzleBoard {
     private final int BOTTOM = 2;
     private final int LEFT = 3;
 
+    private LinkedList<Date> comboTimer = new LinkedList<>();
+
     private Item[] itemList = new Item[5];
     private int itemCount = 0;
     private boolean[][] visited;
 
-    public void addItem(String itemName) {
+    private final int CANVAS_WIDTH = 2580;
+    private final int CANVAS_LENGTH = 1440;
+
+    public void addItem(ItemType type) {
         if (itemCount > 5) {
+            System.out.println("아이템 추가 실패");
             return;
         }
 
-        Item item = new Item(itemName);
+        Item item = new Item(type);
         itemList[itemCount++] = item;
+        System.out.println("아이템 추가 성공");
     }
 
     public void swapItem(int from, int to) {
@@ -47,11 +55,22 @@ public class PuzzleBoard {
         itemList[to] = tmp;
     }
 
+    public List<Integer> useRandomItem(DropItem item, PuzzleBoard puzzle) {
+        return item.run(puzzle);
+    }
 
-    public void useItem(int itemNumber, PuzzleBoard puzzle) {
-        itemList[itemNumber-1].run(puzzle);
+    public List<Integer> useItem(int itemNumber, PuzzleBoard puzzle) {
+        if (itemList[itemNumber-1] == null) {
+            System.out.println("아이템 사용 실패 : 없음");
+            return null;
+        }
+
+        System.out.println("아이템 사용 : " + itemList[itemNumber-1]);
+        List<Integer> targets = itemList[itemNumber-1].run(puzzle);
         itemList[itemNumber-1] = null;
         itemCount--;
+
+        return targets;
     }
 
 
@@ -66,9 +85,24 @@ public class PuzzleBoard {
         //TODO
         //1. 사진 비율에 따른 여러가지 피스 제공
         //2. 소수인 사이즈를 가진 사진이 들어왔을 때
-        pieceSize = GCD(picture.getWidth(), picture.getLength());
-        widthCnt = picture.getWidth()/pieceSize;
-        lengthCnt = picture.getLength()/pieceSize;
+//        pieceSize = GCD(picture.getWidth(), picture.getLength());
+//        widthCnt = picture.getWidth()/pieceSize;
+//        lengthCnt = picture.getLength()/pieceSize;
+        pieceSize = p.getPieceSize();
+//        Map<Integer, Integer> levelSize = new HashMap<>();
+//        levelSize.put(1, 500);
+//        levelSize.put(2, 600);
+//        levelSize.put(3, 800);
+//
+//        int originHeight = p.getLength();
+//        int originWidth = p.getWidth();
+//        int imgWidth = originHeight >= originWidth ? Math.round((levelSize.get(3)*originWidth) / originHeight / 100) * 100 : levelSize.get(3);
+//        int imgHeight = originHeight >= originWidth ? levelSize.get(3) : Math.round((levelSize.get(3)*originHeight) /  originWidth/ 100) * 100;
+//        widthCnt = (int) Math.floor((double)imgWidth / (double)pieceSize);
+//        lengthCnt = (int) Math.floor((double) imgHeight / (double)pieceSize);
+
+        widthCnt = p.getWidthPieceCnt();
+        lengthCnt = p.getLengthPieceCnt();
 
         //퍼즐 조각 초기화
         //고유 인덱스 할당
@@ -76,6 +110,8 @@ public class PuzzleBoard {
         board = new Piece[2][lengthCnt][widthCnt];
         isCorrected = new boolean[lengthCnt][widthCnt];
         idxToCoordinate = new HashMap<>();
+
+        boolean[] randomVisited = new boolean[widthCnt * lengthCnt];
         int cnt = 0;
         for (int i = 0; i < lengthCnt; i++) {
             for (int j = 0; j < widthCnt; j++) {
@@ -194,8 +230,47 @@ public class PuzzleBoard {
                 }
 
                 now.setType(type);
+
+                int idx = random(picture.getLengthPieceCnt() * picture.getWidthPieceCnt())-1;
+                while (true) {
+                    if (randomVisited[idx]) {
+                        idx = random(picture.getLengthPieceCnt()*picture.getWidthPieceCnt())-1;
+                        continue;
+                    } else {
+                        randomVisited[idx] = true;
+                        break;
+                    }
+                }
+
+                Piece randomForPiece = board[0][idxToCoordinate.get(idx)[0]][idxToCoordinate.get(idx)[1]];
+                double x =
+                        CANVAS_WIDTH/2 -
+                                pieceSize/2 +
+                                pieceSize * ((j*2) + (i % 2)) -
+                                picture.getWidth();
+                double y =
+                        CANVAS_LENGTH/2 -
+                                pieceSize/2 +
+                                pieceSize*i -
+                                picture.getLength()/2;
+
+                randomForPiece.setPosition_x(x);
+                randomForPiece.setPosition_y(y);
             }
         }
+
+        for (int i = 0; i < lengthCnt; i++) {
+            for (int j = 0; j < widthCnt; j++) {
+                for (int k = 0; k < 4; k++) {
+                    if (board[0][i][j].getType()[k] == 1) {
+                        board[0][i][j].getType()[k] = -1;
+                    } else if (board[0][i][j].getType()[k] == 2) {
+                        board[0][i][j].getType()[k] = 1;
+                    }
+                }
+            }
+        }
+
 
         correctedCount = 0;
         randomArrange();
@@ -204,9 +279,6 @@ public class PuzzleBoard {
 
     //퍼즐 조각 결합 짜기
     //파라미터 정보(pieceList) : 게임 관련 소켓에서 결합하는 조각들을 하나의 리스트로 만들어서 파라미터로 입력
-    //TODO
-    //다 맞췄을 때 조건 추가하기
-    //맞출때 위치정보 배열에서 삭제해주기
     public void addPiece(List<Integer> pieceList) {
         //이번 결합으로 생기는 조각 뭉탱이들
         Set<Piece> set = new HashSet<>();
@@ -221,6 +293,7 @@ public class PuzzleBoard {
             //그 뭉탱이 집합 삭제
             for (int j = bundles.size()-1; j >= 0; j--) {
                 if (bundles.get(j).contains(x)) {
+                    set.addAll(bundles.get(j));
                     bundles.remove(j);
                 }
             }
@@ -251,6 +324,11 @@ public class PuzzleBoard {
         //뭉탱이들 리스트에 이번 결합을 통해 나온 뭉탱이 추가
         bundles.add(set);
         updatePieceCount();
+
+        if (correctedCount == widthCnt*lengthCnt && bundles.size() == 1) {
+            isCompleted = true;
+            System.out.println("게임 끝!");
+        }
     }
 
     public void updatePieceCount() {
@@ -340,27 +418,35 @@ public class PuzzleBoard {
 
     //콤보 효과 작동
     //파라미터 : 콤보가 터질 조각 뭉탱이
-    public List<Integer> combo(List<Integer> pieceList) {
+    public List<Integer> combo(List<Integer> pieceList, int comboCnt) {
         //4방 탐색용
         int[] dx = {1,-1,0,0};
         int[] dy = {0,0,-1,1};
 
-        System.out.println();
         //입력받은 뭉탱이 주변 조각들(콤보 효과로 달라붙을 수 있는 조건을 가진 조각들)
         Set<Integer> choiceSet = new HashSet<>();
         for (int pieceIdx : pieceList) {
-            int[] xy = idxToCoordinate.get(pieceIdx);
-            System.out.println(pieceIdx + "의 좌표 : " + xy[0] + " " + xy[1]);
-            for (int i = 0; i < 4; i++) {
-                int nr = xy[0]+dx[i];
-                int nc = xy[1]+dy[i];
+            Piece x = board[0][idxToCoordinate.get(pieceIdx)[0]][idxToCoordinate.get(pieceIdx)[1]];
+            for (Set<Piece> bundle : bundles) {
+                if (bundle.contains(x)) {
+                    for (Piece p : bundle) {
+                        int[] xy = idxToCoordinate.get(p.getIndex());
 
-                if (nr >= 0 && nc >= 0 && nr < lengthCnt && nc < widthCnt) {
-                    if (!isCorrected[nr][nc]) {
-                        choiceSet.add(board[0][nr][nc].getIndex());
+                        for (int i = 0; i < 4; i++) {
+                            int nr = xy[0]+dx[i];
+                            int nc = xy[1]+dy[i];
+
+                            if (nr >= 0 && nc >= 0 && nr < lengthCnt && nc < widthCnt) {
+                                if (!isCorrected[nr][nc]) {
+                                    choiceSet.add(board[0][nr][nc].getIndex());
+                                }
+                            }
+                        }
                     }
+
                 }
             }
+
         }
 
         //중복이 제거되었으므로 list로 변환
@@ -368,7 +454,7 @@ public class PuzzleBoard {
 
         //위에서 찾은 주변 조각들 중에서 콤보 효과 터지는 조각들 랜덤 결정
         List<Integer> comboPieces = new LinkedList<>();
-        for (int i = 1; i <= pieceList.size()/3; i++) {
+        for (int i = 1; i <= comboCnt; i++) {
             int randomPieceIdx = random(choiceList.size())-1;
             int chosenPiece = choiceList.get(randomPieceIdx);
             choiceList.remove(randomPieceIdx);
@@ -388,27 +474,29 @@ public class PuzzleBoard {
 
     public void print() {
         System.out.println("---------------------------------------");
-        System.out.println("진행률 : " + (((double)correctedCount/(double)pieceSize)*100) + "%");
+        System.out.println("총 조각 : " + widthCnt*lengthCnt);
+        System.out.println("맞춘 조각 : " + correctedCount);
+        System.out.println("진행률 : " + (((double)correctedCount/((double)widthCnt*(double)lengthCnt))*100) + "%");
         System.out.println("퍼즐 판 정보");
-        for (int i = 0; i < lengthCnt; i++) {
-            for (int j = 0; j < widthCnt; j++) {
-                System.out.print(board[0][i][j].getIndex() + " ");
-            }
-            System.out.println();
-        }
+//        for (int i = 0; i < lengthCnt; i++) {
+//            for (int j = 0; j < widthCnt; j++) {
+//                System.out.print(board[0][i][j].getIndex() + " ");
+//            }
+//            System.out.println();
+//        }
 
-        System.out.println("퍼즐 위치 정보");
-        for (int i = 0; i < lengthCnt; i++) {
-            for (int j = 0; j < widthCnt; j++) {
-                if (board[1][i][j] == null) {
-                    System.out.print("null ");
-                } else {
-
-                    System.out.print(board[1][i][j].getIndex() + " ");
-                }
-            }
-            System.out.println();
-        }
+//        System.out.println("퍼즐 위치 정보");
+//        for (int i = 0; i < lengthCnt; i++) {
+//            for (int j = 0; j < widthCnt; j++) {
+//                if (board[1][i][j] == null) {
+//                    System.out.print("null ");
+//                } else {
+//
+//                    System.out.print(board[1][i][j].getIndex() + " ");
+//                }
+//            }
+//            System.out.println();
+//        }
 
         System.out.println("맞춰진 조각 정보");
         for (int i = 0; i < lengthCnt; i++) {
@@ -423,8 +511,8 @@ public class PuzzleBoard {
             System.out.println(set);
         }
 
-        System.out.println("아이템 리스트");
-        System.out.println(Arrays.toString(itemList));
+//        System.out.println("아이템 리스트");
+//        System.out.println(Arrays.toString(itemList));
         System.out.println("---------------------------------------");
     }
 
@@ -460,5 +548,6 @@ public class PuzzleBoard {
 
         return GCD(b, a%b);
     }
+
 
 }

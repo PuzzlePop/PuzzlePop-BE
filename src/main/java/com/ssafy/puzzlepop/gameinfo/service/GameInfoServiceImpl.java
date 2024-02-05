@@ -2,68 +2,104 @@ package com.ssafy.puzzlepop.gameinfo.service;
 
 import com.ssafy.puzzlepop.gameinfo.domain.GameInfo;
 import com.ssafy.puzzlepop.gameinfo.domain.GameInfoDto;
+import com.ssafy.puzzlepop.gameinfo.exception.GameInfoNotFoundException;
 import com.ssafy.puzzlepop.gameinfo.repository.GameInfoRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class GameInfoServiceImpl implements GameInfoService {
     private final GameInfoRepository gameInfoRepository;
 
     @Override
-    public List<GameInfoDto> getAllGameInfos() {
-        List<GameInfo> gameInfos = gameInfoRepository.findAll();
-        return gameInfos.stream().map(GameInfoDto::new).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<GameInfoDto> findAllByType(String type) {
-        return null;
-    }
-
-    @Override
-    public List<GameInfoDto> findAllByIsCleared(Boolean isCleared) {
-        return null;
-    }
-
-    @Override
-    public List<GameInfoDto> findAllByTotalPieceCount(Integer totalPieceCount) {
-        return null;
-    }
-
-    @Override
-    public List<GameInfoDto> findAllByPuzzleImageId(Long puzzleImageId) {
-        return null;
-    }
-
-    @Override
-    public GameInfoDto getGameInfoById(Long id) {
+    @Transactional
+    public GameInfoDto readGameInfo(Long id) {
         GameInfo gameInfo = gameInfoRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Game not found with id: " + id));
+                () -> new GameInfoNotFoundException(id));
         return new GameInfoDto(gameInfo);
     }
 
     @Override
-    public Long createGameInfo(GameInfoDto gameInfoDto) {
-        GameInfo gameInfo = gameInfoDto.toEntity();
+    @Transactional
+    public List<GameInfoDto> readAllGameInfos() {
+        List<GameInfo> gameInfos = gameInfoRepository.findAll();
+        if (gameInfos.isEmpty()) throw new GameInfoNotFoundException("GameInfo Not Found");
+        return gameInfos.stream().map(GameInfoDto::new).collect(Collectors.toList());
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @Override
+    @Transactional
+    public List<GameInfoDto> findAllByType(String type) {
+        List<GameInfo> gameInfos = gameInfoRepository.findAllByType(type);
+        if (gameInfos.isEmpty())
+            throw new GameInfoNotFoundException("GameInfo Not Found with type: " + type);
+        return gameInfos.stream().map(GameInfoDto::new).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public List<GameInfoDto> findAllByIsCleared(Boolean isCleared) {
+        List<GameInfo> gameInfos = gameInfoRepository.findAllByIsCleared(isCleared);
+        if (gameInfos.isEmpty())
+            throw new GameInfoNotFoundException("GameInfo Not Found with isCleared: " + isCleared);
+        return gameInfos.stream().map(GameInfoDto::new).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public List<GameInfoDto> findAllByCurPlayerCount(Integer curPlayerCount) {
+        List<GameInfo> gameInfos = gameInfoRepository.findAllByCurPlayerCount(curPlayerCount);
+        if (gameInfos.isEmpty())
+            throw new GameInfoNotFoundException("GameInfo Not Found with curPlayerCount: " + curPlayerCount);
+        return gameInfos.stream().map(GameInfoDto::new).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public List<GameInfoDto> findAllByMaxPlayerCount(Integer maxPlayerCount) {
+        List<GameInfo> gameInfos = gameInfoRepository.findAllByMaxPlayerCount(maxPlayerCount);
+        if (gameInfos.isEmpty())
+            throw new GameInfoNotFoundException("GameInfo Not Found with maxPlayerCount: " + maxPlayerCount);
+        return gameInfos.stream().map(GameInfoDto::new).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public List<GameInfoDto> findAllByTotalPieceCount(Integer totalPieceCount) {
+        List<GameInfo> gameInfos = gameInfoRepository.findAllByTotalPieceCount(totalPieceCount);
+        if (gameInfos.isEmpty())
+            throw new GameInfoNotFoundException("GameInfo Not Found with totalPieceCount: " + totalPieceCount);
+        return gameInfos.stream().map(GameInfoDto::new).collect(Collectors.toList());
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @Override
+    @Transactional
+    public Long createGameInfo(GameInfoDto requestDto) {
+        GameInfo gameInfo = requestDto.toEntity();
         return gameInfoRepository.save(gameInfo).getId();
     }
 
     @Override
-    public Long updateGameInfo(GameInfoDto gameInfoDto) {
-        GameInfo gameInfo = gameInfoRepository.findById(gameInfoDto.getId()).orElseThrow(
-                () -> new IllegalArgumentException("Game not found with id: " + gameInfoDto.getType()));
-        return gameInfo.update(gameInfoDto);
+    @Transactional
+    public Long updateGameInfo(GameInfoDto requestDto) {
+        GameInfo gameInfo = gameInfoRepository.findById(requestDto.getId()).orElseThrow(
+                () -> new GameInfoNotFoundException(requestDto.getId()));
+        return gameInfo.update(requestDto);
     }
 
     @Override
-    public void deleteGameInfo(Long id) {
+    @Transactional
+    public Long deleteGameInfo(Long id) {
         GameInfo gameInfo = gameInfoRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Game not found with id: " + id));
+                () -> new GameInfoNotFoundException(id));
         gameInfoRepository.delete(gameInfo);
+        return id;
     }
 }

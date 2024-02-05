@@ -1,9 +1,6 @@
 package com.ssafy.puzzlepop.gameinfo.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,8 +29,9 @@ public class GameInfo {
     private LocalDateTime startedTime;
     private LocalDateTime finishedTime;
 
-//    추후 Image 개발 완료 시 주석해제
-//    private Long puzzleImageId;
+    // 추후 Image 개발 완료 시 주석해제
+    // @OneToMany
+    // private Image image;
 
     public Long update(GameInfoDto gameInfoDto) {
         this.type = gameInfoDto.getType();
@@ -48,8 +46,8 @@ public class GameInfo {
         this.startedTime = gameInfoDto.getStartedTime();
         this.finishedTime = gameInfoDto.getFinishedTime();
 
-//        추후 Image 개발 완료 시 주석해제
-//        this.puzzleImageId = gameDto.getPuzzleImageId();
+        // 추후 Image 개발 완료 시 주석해제
+        // this.image = gameInfoDto.getImage();
         return this.id;
     }
 }
