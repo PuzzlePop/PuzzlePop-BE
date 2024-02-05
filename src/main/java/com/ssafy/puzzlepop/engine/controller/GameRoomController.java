@@ -1,15 +1,23 @@
 package com.ssafy.puzzlepop.engine.controller;
 
-import com.ssafy.puzzlepop.engine.domain.Game;
-import com.ssafy.puzzlepop.engine.domain.Room;
-import com.ssafy.puzzlepop.engine.domain.User;
+import com.ssafy.puzzlepop.engine.domain.*;
 import com.ssafy.puzzlepop.engine.service.GameService;
+import com.ssafy.puzzlepop.image.domain.ImageDto;
+import com.ssafy.puzzlepop.image.exception.ImageException;
+import com.ssafy.puzzlepop.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 @Controller
@@ -18,6 +26,7 @@ import java.util.List;
 @CrossOrigin("*")
 public class GameRoomController {
 
+    private final ImageService imageService;
     private final GameService gameService;
 
     //협동 게임 방 리스트
@@ -45,8 +54,39 @@ public class GameRoomController {
 
 
     @PostMapping("/room/picture")
-    public void updatePicture(@RequestBody Long id) {
+    @ResponseBody
+    public ResponseEntity<?> updatePicture(@RequestBody RequestContainerDto requestContainerDto) throws Exception {
+        Picture p = requestContainerDto.getPicture();
+        User user = requestContainerDto.getUser();
+        String gameId = requestContainerDto.getUuid();
 
+        if (gameService.findById(gameId) == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("게임 없는데 너 뭐냐?");
+        }
+
+        ImageDto imageDtoById = imageService.getImageDtoById(p.getId());
+        String filepath = imageDtoById.getFilepath();
+        String filenameExtension = imageDtoById.getFilenameExtension();
+
+        File file = new File(filepath+"."+filenameExtension);
+        BufferedImage image = ImageIO.read(file);
+        String base64Image = encodeImageToBase64(image, filenameExtension);
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+        p.create(width, height, filepath, 100, base64Image);
+
+        Game game = gameService.findById(gameId);
+        game.updatePicture(p);
+        System.out.println(p);
+        return ResponseEntity.ok(p);
+    }
+
+    public static String encodeImageToBase64(BufferedImage image, String formatName) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, formatName, baos);
+        byte[] bytes = baos.toByteArray();
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
     //특정 게임방 조회
