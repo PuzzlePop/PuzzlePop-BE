@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import org.springframework.stereotype.Component;
 
 /**
  * IBAS 로그인 과정 종료 후에 프론트로 리다이렉션 시켜줘야하는데, 프론트에서 최초 요청 파라미터(redirect_uri)로 콜백 주소를 지정하게 해주기 위함.
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
  * 따라서 Oauth2AuthorizationRequest 를 쿠키에 저장.
  * @see org.springframework.security.oauth2.client.web.AuthorizationRequestRepository
  */
+@Component
 public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
     public static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
