@@ -141,7 +141,7 @@ public class MessageController {
     //배틀 드랍 아이템 제공
     //20초에 한번씩 제공하기로 함
     //테스트용 확률 조정
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 20000)
     public void sendDropItem() {
         //배틀로 변경해야함
         List<Game> allRoom = gameService.findAllCooperationRoom();
@@ -154,6 +154,7 @@ public class MessageController {
                 if (possibility <= 70) {
                     DropItem item = DropItem.randomCreate();
                     System.out.println(item + "을 생성합니다.");
+                    allRoom.get(i).getDropRandomItem().put(item.getUuid(), item);
                     ResponseMessage res = new ResponseMessage();
                     res.setMessage("DROP_ITEM");
                     res.setRandomItem(item);

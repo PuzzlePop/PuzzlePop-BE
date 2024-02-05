@@ -13,19 +13,22 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class DropItem extends Item {
+    private String uuid;
     private double position_x;
     private double position_y;
 
-    public DropItem(ItemType name, int x, int y) {
+    public DropItem(ItemType name, String uuid, int x, int y) {
         super(name);
-        position_x = x;
-        position_y = y;
+        this.uuid = uuid;
+        this.position_x = x;
+        this.position_y = y;
     }
 
     public static DropItem randomCreate() {
         Random random = new Random();
         int position_x = random.nextInt(2580);
         int position_y = random.nextInt(1440);
+        String uuid = String.valueOf(UUID.randomUUID());
 
         //공격형 아이템만 추첨 리스트에 추가
         List<ItemType> list = new LinkedList<>();
@@ -34,23 +37,7 @@ public class DropItem extends Item {
         list.add(ItemType.ROCKET);
 
         return new DropItem(
-                list.get(random.nextInt(list.size())), position_x, position_y);
-    }
-
-    public static void main(String[] args) {
-        Random random = new Random();
-        int position_x = random.nextInt(2580);
-        int position_y = random.nextInt(1440);
-        List<ItemType> list = new LinkedList<>();
-        list.add(ItemType.EARTHQUAKE);
-        list.add(ItemType.FIRE);
-        list.add(ItemType.ROCKET);
-        System.out.println(list.get(random.nextInt(3)));
-
-        DropItem item = new DropItem(
-                list.get(random.nextInt(list.size())), position_x, position_y);
-
-        System.out.println(item);
+                list.get(random.nextInt(list.size())), uuid, position_x, position_y);
     }
 
     @Override
