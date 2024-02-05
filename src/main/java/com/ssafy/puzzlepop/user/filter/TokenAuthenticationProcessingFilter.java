@@ -33,7 +33,7 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationProcessingFilter.class);
 
     private final UserService userService;
-//    private final UserPrincipalService userPrincipalService;
+    private UserPrincipalService userPrincipalService;
     private final AuthenticationFailureHandler failureHandler;
     private final JwtProvider tokenProvider;
     private final JwtResolver tokenResolver;
@@ -48,13 +48,15 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
     public TokenAuthenticationProcessingFilter(
             JwtProvider tokenProvider,
             JwtResolver tokenResolver,
-            TokenAuthenticationFailureHandler failureHandler, UserService userService) {
+            TokenAuthenticationFailureHandler failureHandler,
+            UserService userService,
+            UserPrincipalService userPrincipalService) {
 
         this.failureHandler = failureHandler;
         this.tokenProvider = tokenProvider;
         this.tokenResolver = tokenResolver;
         this.userService = userService;
-//        this.userPrincipalService = userPrincipalService;
+        this.userPrincipalService = userPrincipalService;
     }
 
     @Override
@@ -69,12 +71,12 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
                     throw new InvalidTokenException("유효하지 않은 토큰");
 
                 JwtAuthenticationResult authentication = (JwtAuthenticationResult) tokenProvider.decode(token);
-//                Object principal = UserPrincipalService.loadUserPrincipal(authentication);
-//                authentication.setPrincipal(principal);
-                PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+                PrincipalDetails principal = userPrincipalService.loadUserPrincipal(authentication);
+                authentication.setPrincipal(principal);
 //                String provider = "google";
-                Long userId = principalDetails.getUser().getId();
-                String email = principalDetails.getEmail();
+                Long userId = principal.getUser().getId();
+                String email = principal.getEmail();
+
                 userService.getUserByIdAndEmail(userId, email);
 
                 // handle for authentication success
