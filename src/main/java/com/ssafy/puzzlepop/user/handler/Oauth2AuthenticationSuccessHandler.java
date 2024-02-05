@@ -40,12 +40,12 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         System.out.println("ACCESSTOKEN : "+ accessToken);
         System.out.println("REFRESHTOKEN : "+ refreshToken);
 
-        CookieUtils.setCookie(response, "accessTokenName", accessToken, 60);
-        CookieUtils.setCookie(response, "refreshTokenName", refreshToken, 180);
+        CookieUtils.setCookie(response, "accessTokenName", accessToken, 600);
+        CookieUtils.setCookie(response, "refreshTokenName", refreshToken, 1800);
 
         //코드 내로 리디렉트 설정
 //        String redirectUrl = "/user/oauth-success?token="+token;
-        String redirectUrl = "/";
+        String redirectUrl = "http://localhost:8080/";  // 프론트로 이동
 
 //        //한국어 인코딩 설정
 //        String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8.toString());
