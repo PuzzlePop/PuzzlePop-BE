@@ -1,14 +1,10 @@
 package com.ssafy.puzzlepop.gameinfo.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
 public class GameInfoDto {
     private Long id;
@@ -24,8 +20,6 @@ public class GameInfoDto {
     private LocalDateTime startedTime;
     private LocalDateTime finishedTime;
 
-//    추후 Image 개발 완료 시 주석해제
-//    private Long puzzleImageId;
     @Builder
     public GameInfoDto(GameInfo gameInfo) {
         this.id = gameInfo.getId();
@@ -39,9 +33,6 @@ public class GameInfoDto {
         this.passedTime = gameInfo.getPassedTime();
         this.startedTime = gameInfo.getStartedTime();
         this.finishedTime = gameInfo.getFinishedTime();
-
-//        추후 Image 개발 완료 시 주석해제
-//        this.puzzleImageId = game.getPuzzleImageId();
     }
 
     public GameInfo toEntity() {
@@ -55,7 +46,6 @@ public class GameInfoDto {
                 .curPlayerCount(this.curPlayerCount)
                 .maxPlayerCount(this.maxPlayerCount)
                 .totalPieceCount(this.totalPieceCount)
-//                .puzzleImageId(this.puzzleImageId)
                 .build();
     }
 }

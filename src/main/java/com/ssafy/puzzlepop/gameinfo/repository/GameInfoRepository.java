@@ -10,6 +10,7 @@ import java.util.List;
 public interface GameInfoRepository extends JpaRepository<GameInfo, Long> {
     List<GameInfo> findAllByType(String type);
     List<GameInfo> findAllByIsCleared(Boolean isCleared);
+    List<GameInfo> findAllByCurPlayerCount(Integer curPlayerCount);
+    List<GameInfo> findAllByMaxPlayerCount(Integer maxPlayerCount);
     List<GameInfo> findAllByTotalPieceCount(Integer totalPieceCount);
-//    List<Game> findAllByPuzzleImageId(Long puzzleImageId);
 }
