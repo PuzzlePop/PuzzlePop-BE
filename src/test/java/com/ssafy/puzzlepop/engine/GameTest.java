@@ -1,11 +1,11 @@
 package com.ssafy.puzzlepop.engine;
 
+import com.ssafy.puzzlepop.engine.domain.PuzzleBoard;
+import com.ssafy.puzzlepop.engine.domain.Team;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
     private Team redTeam;
