@@ -268,6 +268,13 @@ public class PuzzleBoard {
                         board[0][i][j].getType()[k] = 1;
                     }
                 }
+
+                //랜덤 아이템 확률 부여
+                Random random = new Random();
+                int possibility = random.nextInt(100);
+                if (possibility <= 10) {
+                    board[0][i][j].setItem(Item.randomCreate());
+                }
             }
         }
 
@@ -317,6 +324,10 @@ public class PuzzleBoard {
 
             //결합됨을 표시
             isCorrected[idxToCoordinate.get(pieceIdx)[0]][idxToCoordinate.get(pieceIdx)[1]] = true;
+            Item item = board[0][idxToCoordinate.get(pieceIdx)[0]][idxToCoordinate.get(pieceIdx)[1]].getItem();
+            board[0][idxToCoordinate.get(pieceIdx)[0]][idxToCoordinate.get(pieceIdx)[1]].setItem(null);
+            item.run(this);
+
             //이번 결합 뭉탱이에 추가
             set.add(x);
         }
