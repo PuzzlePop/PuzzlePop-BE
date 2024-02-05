@@ -26,4 +26,6 @@ public interface ImageService {
     List<ImageResponseDto> getImagesByType(String type, Long userId) throws ImageException;
 
     List<ImageResponseDto> getImagesByUserId(Long userId) throws ImageException;
+
+    ImageDto getImageDtoById(Long id) throws ImageException;
 }
