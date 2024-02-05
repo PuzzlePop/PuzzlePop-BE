@@ -36,12 +36,17 @@ public class GameRoomController {
         return ResponseEntity.ok(allBattleRoom);
     }
 
-
     //게임 생성
     @PostMapping("/room")
     @ResponseBody
     public Game createRoom(@RequestBody Room room) {
         return gameService.createRoom(room);
+    }
+
+
+    @PostMapping("/room/picture")
+    public void updatePicture(@RequestBody Long id) {
+
     }
 
     //특정 게임방 조회

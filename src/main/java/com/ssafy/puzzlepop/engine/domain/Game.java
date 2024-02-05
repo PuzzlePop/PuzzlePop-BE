@@ -28,6 +28,7 @@ public class Game {
 
     private boolean isStarted = false;
     private LinkedHashMap<String, User> sessionToUser;
+    private Map<String, DropItem> dropRandomItem;
 
     public void changeTeam(User user) {
         if (redTeam.isIn((user))) {
@@ -105,12 +106,14 @@ public class Game {
         String gameType = room.getGameType();
 
         LinkedHashMap<String, User> map = new LinkedHashMap<>();
+        Map<String, DropItem> dropItemMap = new HashMap<>();
 
         Game game = new Game();
         String uuid = UUID.randomUUID().toString();
 
 
         game.sessionToUser = map;
+        game.dropRandomItem = dropItemMap;
 
 
 

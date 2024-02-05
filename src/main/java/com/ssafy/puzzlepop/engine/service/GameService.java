@@ -200,7 +200,9 @@ public class GameService {
 
 
         } else if (message.equals("USE_RANDOM_ITEM")) {
-            DropItem item = new DropItem(ItemType.valueOf(targets), 0, 0);
+            DropItem item = game.getDropRandomItem().get(targets);
+            game.getDropRandomItem().remove(targets);
+
             targetsList = ourPuzzle.useRandomItem(item, yourPuzzle);
 
             res.setMessage("USE_RANDOM_ITEM");
@@ -260,6 +262,8 @@ public class GameService {
         }
 
         //게임 끝났는지 마지막에 확인
+        //TODO
+        //끝났을 때 게임 인포에 저장해야함.
         if (game.getGameType().equals("BATTLE")) {
             if (ourPuzzle.isCompleted() || yourPuzzle.isCompleted()) {
                 res.setFinished(true);
