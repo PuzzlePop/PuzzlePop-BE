@@ -6,20 +6,26 @@ import com.ssafy.puzzlepop.user.exception.InvalidTokenException;
 import com.ssafy.puzzlepop.user.exception.RefreshTokenNotFoundException;
 import com.ssafy.puzzlepop.user.repository.UserRepository;
 import com.ssafy.puzzlepop.user.resolver.JwtResolver;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.web.util.WebUtils;
 
+@Component
 @RequiredArgsConstructor
 public class JwtReIssuer {
 
     private final JwtProvider tokenProvider;
-    private final JwtResolver tokenResolver;
     private final UserRepository userRepository;
 
 
     public TokenDto reissueAccessToken(HttpServletRequest request) throws InvalidTokenException {
 
-        String refreshToken = tokenResolver.resolveTokenOrNull(request);
+        Cookie cookie = WebUtils.getCookie(request, "refreshTokenName");
+
+        String refreshToken = cookie.getValue();
+        System.out.println(refreshToken);
 
         if (!tokenProvider.validate(refreshToken) ) {  // 리프레시 토큰 유효성 검사
             throw new InvalidTokenException("유효하지 않은 리프레시 토큰");
