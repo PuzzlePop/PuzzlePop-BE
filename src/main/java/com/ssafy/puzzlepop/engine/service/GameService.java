@@ -147,12 +147,12 @@ public class GameService {
             ourPuzzle.addPiece(pieces);
             ourPuzzle.print();
 
+            res.setMessage("ADD_PIECE");
+            res.setTargets(targets);
             int comboCnt = comboCheck(ourPuzzle);
             if (comboCnt != 0) {
                 List<Integer> comboPieces = ourPuzzle.combo(pieces, comboCnt);
                 System.out.println("콤보 대상 : " + comboPieces);
-                res.setMessage("ADD_PIECE");
-                res.setTargets(targets);
                 res.setCombo(comboPieces);
             }
         } else if (message.equals("USE_ITEM")) {

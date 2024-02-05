@@ -35,6 +35,18 @@ public class Item {
         }
     }
 
+    public static Item randomCreate() {
+        Random random = new Random();
+
+        //공격형 아이템만 추첨 리스트에 추가
+        List<ItemType> list = new LinkedList<>();
+        list.add(ItemType.HINT);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.MAGNET);
+
+        return new Item(list.get(random.nextInt(list.size())));
+    }
+
     public List<Integer> run(PuzzleBoard puzzle) {
         List<Set<Piece>> bundles;
         Set<Piece> mostManyBundle;

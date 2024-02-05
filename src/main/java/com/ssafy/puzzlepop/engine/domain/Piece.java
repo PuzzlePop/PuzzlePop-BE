@@ -17,6 +17,7 @@ public class Piece {
     private double position_x;
     private double position_y;
     private boolean locked = false;
+    private Item item;
 
 
     public Piece(int index) {
