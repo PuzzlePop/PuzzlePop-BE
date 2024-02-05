@@ -60,6 +60,10 @@ public class GameRoomController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Game is started");
             }
 
+            if (game.getRedTeam().getPlayers().contains(user) || game.getBlueTeam().getPlayers().contains(user)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("너 이미 안에 있는데?");
+            }
+
             if (game.getGameType().equals("BATTLE")) {
                 if (game.getRedTeam().getPlayers().size() + game.getBlueTeam().getPlayers().size() == game.getRoomSize()) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Room is fulled");
