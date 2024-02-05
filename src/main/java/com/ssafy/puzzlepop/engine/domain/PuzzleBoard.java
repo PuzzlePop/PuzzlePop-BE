@@ -432,13 +432,59 @@ public class PuzzleBoard {
 
     //콤보 효과 작동
     //파라미터 : 콤보가 터질 조각 뭉탱이
-    public List<Integer> combo(List<Integer> pieceList, int comboCnt) {
+    public List<int[]> combo(List<Integer> pieceList, int comboCnt) {
         //4방 탐색용
         int[] dx = {1,-1,0,0};
         int[] dy = {0,0,-1,1};
 
         //입력받은 뭉탱이 주변 조각들(콤보 효과로 달라붙을 수 있는 조건을 가진 조각들)
-        Set<Integer> choiceSet = new HashSet<>();
+//        Set<Integer> choiceSet = new HashSet<>();
+//        for (int pieceIdx : pieceList) {
+//            Piece x = board[0][idxToCoordinate.get(pieceIdx)[0]][idxToCoordinate.get(pieceIdx)[1]];
+//            for (Set<Piece> bundle : bundles) {
+//                if (bundle.contains(x)) {
+//                    for (Piece p : bundle) {
+//                        int[] xy = idxToCoordinate.get(p.getIndex());
+//
+//                        for (int i = 0; i < 4; i++) {
+//                            int nr = xy[0]+dx[i];
+//                            int nc = xy[1]+dy[i];
+//
+//                            if (nr >= 0 && nc >= 0 && nr < lengthCnt && nc < widthCnt) {
+//                                if (!isCorrected[nr][nc]) {
+//                                    choiceSet.add(board[0][nr][nc].getIndex());
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                }
+//            }
+//
+//        }
+//        //중복이 제거되었으므로 list로 변환
+//        List<Integer> choiceList = new LinkedList<>(choiceSet);
+//
+//        //위에서 찾은 주변 조각들 중에서 콤보 효과 터지는 조각들 랜덤 결정
+//        List<Integer> comboPieces = new LinkedList<>();
+//        for (int i = 1; i <= comboCnt; i++) {
+//            int randomPieceIdx = random(choiceList.size())-1;
+//            int chosenPiece = choiceList.get(randomPieceIdx);
+//            choiceList.remove(randomPieceIdx);
+//            comboPieces.add(chosenPiece);
+//        }
+//
+//        //랜덤 결정 했으니, 입력 받은 리스트에 추가
+//        //addPiece 메서드를 호출하기 위한 작업
+//        for (int pieceIdx : comboPieces) {
+//            pieceList.add(pieceIdx);
+//        }
+//
+//        //랜덤으로 고른 조각들 원래 뭉탱이에 붙이기
+//        addPiece(pieceList);
+//        return comboPieces;
+
+        Map<Integer, Integer> choiceSet = new HashMap<>();
         for (int pieceIdx : pieceList) {
             Piece x = board[0][idxToCoordinate.get(pieceIdx)[0]][idxToCoordinate.get(pieceIdx)[1]];
             for (Set<Piece> bundle : bundles) {
@@ -452,7 +498,7 @@ public class PuzzleBoard {
 
                             if (nr >= 0 && nc >= 0 && nr < lengthCnt && nc < widthCnt) {
                                 if (!isCorrected[nr][nc]) {
-                                    choiceSet.add(board[0][nr][nc].getIndex());
+                                    choiceSet.put(board[0][nr][nc].getIndex(), board[0][xy[0]][xy[1]].getIndex());
                                 }
                             }
                         }
@@ -464,22 +510,23 @@ public class PuzzleBoard {
         }
 
         //중복이 제거되었으므로 list로 변환
-        List<Integer> choiceList = new LinkedList<>(choiceSet);
+        List<Integer> choiceList = new LinkedList<>(choiceSet.keySet());
 
         //위에서 찾은 주변 조각들 중에서 콤보 효과 터지는 조각들 랜덤 결정
-        List<Integer> comboPieces = new LinkedList<>();
+        List<int[]> comboPieces = new LinkedList<>();
         for (int i = 1; i <= comboCnt; i++) {
             int randomPieceIdx = random(choiceList.size())-1;
             int chosenPiece = choiceList.get(randomPieceIdx);
             choiceList.remove(randomPieceIdx);
-            comboPieces.add(chosenPiece);
+            comboPieces.add(new int[] {chosenPiece, choiceSet.get(chosenPiece)});
         }
 
         //랜덤 결정 했으니, 입력 받은 리스트에 추가
         //addPiece 메서드를 호출하기 위한 작업
-        for (int pieceIdx : comboPieces) {
-            pieceList.add(pieceIdx);
+        for (int[] pieceIdx : comboPieces) {
+            pieceList.add(pieceIdx[0]);
         }
+
 
         //랜덤으로 고른 조각들 원래 뭉탱이에 붙이기
         addPiece(pieceList);
