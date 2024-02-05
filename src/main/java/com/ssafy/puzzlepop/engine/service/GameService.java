@@ -151,8 +151,11 @@ public class GameService {
             res.setTargets(targets);
             int comboCnt = comboCheck(ourPuzzle);
             if (comboCnt != 0) {
-                List<Integer> comboPieces = ourPuzzle.combo(pieces, comboCnt);
-                System.out.println("콤보 대상 : " + comboPieces);
+                List<int[]> comboPieces = ourPuzzle.combo(pieces, comboCnt);
+                System.out.println("콤보 대상 : ");
+                for (int[] comboSet : comboPieces) {
+                    System.out.print(Arrays.toString(comboSet) + " | ");
+                }
                 res.setCombo(comboPieces);
             }
         } else if (message.equals("USE_ITEM")) {
