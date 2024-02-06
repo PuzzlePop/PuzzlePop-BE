@@ -151,8 +151,11 @@ public class GameService {
             res.setTargets(targets);
             int comboCnt = comboCheck(ourPuzzle);
             if (comboCnt != 0) {
-                List<Integer> comboPieces = ourPuzzle.combo(pieces, comboCnt);
-                System.out.println("콤보 대상 : " + comboPieces);
+                List<int[]> comboPieces = ourPuzzle.combo(pieces, comboCnt);
+                System.out.println("콤보 대상 : ");
+                for (int[] comboSet : comboPieces) {
+                    System.out.print(Arrays.toString(comboSet) + " | ");
+                }
                 res.setCombo(comboPieces);
             }
         } else if (message.equals("USE_ITEM")) {
@@ -214,12 +217,12 @@ public class GameService {
             for (int i = 0; i < arr.length; i++) {
                 PieceDto now = arr[i];
                 int[] p = ourPuzzle.getIdxToCoordinate().get(now.getIndex());
-                if (ourPuzzle.getBoard()[0][p[0]][p[1]].isLocked()) {
+                if (ourPuzzle.getBoard()[p[0]][p[1]].isLocked()) {
                     res.setMessage("BLOCKED");
                     return res;
                 }
 
-                ourPuzzle.getBoard()[0][p[0]][p[1]].setLocked(true);
+                ourPuzzle.getBoard()[p[0]][p[1]].setLocked(true);
             }
 
             System.out.println(targets + " 피스 잠금");
@@ -232,7 +235,7 @@ public class GameService {
                 PieceDto now = arr[i];
                 int[] p = ourPuzzle.getIdxToCoordinate().get(now.getIndex());
 
-                ourPuzzle.getBoard()[0][p[0]][p[1]].setLocked(false);
+                ourPuzzle.getBoard()[p[0]][p[1]].setLocked(false);
             }
 
             System.out.println(targets + " 피스 잠금 해제");
@@ -247,8 +250,8 @@ public class GameService {
                 PieceDto now = arr[i];
                 int[] p = ourPuzzle.getIdxToCoordinate().get(now.getIndex());
 
-                ourPuzzle.getBoard()[0][p[0]][p[1]].setPosition_x(now.getX());
-                ourPuzzle.getBoard()[0][p[0]][p[1]].setPosition_y(now.getY());
+                ourPuzzle.getBoard()[p[0]][p[1]].setPosition_x(now.getX());
+                ourPuzzle.getBoard()[p[0]][p[1]].setPosition_y(now.getY());
             }
 
             res.setTargets(targets);
