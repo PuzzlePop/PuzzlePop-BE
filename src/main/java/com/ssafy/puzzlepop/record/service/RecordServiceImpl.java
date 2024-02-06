@@ -282,7 +282,7 @@ public class RecordServiceImpl implements RecordService {
 
             for (Record record : recordList) {
                 GameInfoDto gameInfoDto = gameInfoService.readGameInfo(record.getGameId()); // 각 record에 대해 gid로 gameinfo 조회
-                if ("battle".equals(gameInfoDto.getType()) && gameInfoDto.getCurPlayerCount() == 2) { // 배틀 게임 + 2명 게임이면
+                if ("battle".equals(gameInfoDto.getType()) && gameInfoDto.getMaxPlayerCount() == 2) { // 배틀 게임 + 2명 게임이면
                     playedSoloBattleGameCount++; // 1:1 배틀 게임 플레이 횟수 ++
 
                     if (didUserWin(user.getId(), gameInfoDto.getId())) { // 이 게임에서 이겼으면
@@ -318,7 +318,7 @@ public class RecordServiceImpl implements RecordService {
 
             for (Record record : recordList) {
                 GameInfoDto gameInfoDto = gameInfoService.readGameInfo(record.getGameId()); // 각 record에 대해 gid로 gameinfo 조회
-                if ("battle".equals(gameInfoDto.getType()) && gameInfoDto.getCurPlayerCount() >= 4) { // 배틀 게임 + 4명 이상 게임이면
+                if ("battle".equals(gameInfoDto.getType()) && gameInfoDto.getMaxPlayerCount() >= 4) { // 배틀 게임 + 4명 이상 게임이면
                     playedTeamBattleGameCount++; // n:n 배틀 게임 플레이 횟수 ++
 
                     if (didUserWin(user.getId(), gameInfoDto.getId())) { // 이 게임에서 이겼으면
