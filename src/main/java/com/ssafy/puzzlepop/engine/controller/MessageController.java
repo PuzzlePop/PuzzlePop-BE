@@ -62,7 +62,8 @@ public class MessageController {
 
         if (game.isEmpty()) {
             System.out.println("game.isEmpty()");
-            Thread.sleep(5000);
+            //잠시 대기
+            Thread.sleep(1500);
             if (game.isEmpty()) {
                 System.out.println("진짜 나간것같아. 게임 지울게!");
                 gameService.deleteRoom(gameId);
@@ -150,10 +151,8 @@ public class MessageController {
             if (allRoom.get(i).isStarted()) {
                 //확률 계산
                 int possibility = random.nextInt(100);
-                System.out.println(possibility + " %");
-                if (possibility <= 70) {
+                if (possibility <= 30) {
                     DropItem item = DropItem.randomCreate();
-                    System.out.println(item + "을 생성합니다.");
                     allRoom.get(i).getDropRandomItem().put(item.getUuid(), item);
                     ResponseMessage res = new ResponseMessage();
                     res.setMessage("DROP_ITEM");
