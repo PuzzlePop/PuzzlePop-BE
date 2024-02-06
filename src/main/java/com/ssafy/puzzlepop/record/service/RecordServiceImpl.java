@@ -14,7 +14,6 @@ import com.ssafy.puzzlepop.user.domain.UserDto;
 import com.ssafy.puzzlepop.user.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -210,11 +209,7 @@ public class RecordServiceImpl implements RecordService {
             userRecordInfoDto.setUserId(userId);
 
             // 전체 맞춘 피스수
-            int totalMatchedPieceCount = 0;
-            List<TeamUserResponseDto> userTeamDtoList = teamUserService.findAllByUserId(userId);
-            for (TeamUserResponseDto utd : userTeamDtoList) {
-                totalMatchedPieceCount += utd.getMatchedPieceCount();
-            }
+            int totalMatchedPieceCount = getTotalMatchedPieceCount(userId);
             userRecordInfoDto.setTotalMatchedPieceCount(totalMatchedPieceCount);
 
             // 전체 플레이 게임 횟수
@@ -233,18 +228,8 @@ public class RecordServiceImpl implements RecordService {
                     playedBattleGameCount++; // 횟수 카운트 ++
 
                     // 소속 팀 확인
-                    int teamNumber = getTeamNumber(userId, gameInfoDto.getId());
-                    List<TeamDto> teamDtoList = teamService.findAllByGameId(gameInfoDto.getId());
-                    if (teamNumber == 1) { // team1 소속
-                        if (teamDtoList.get(0).getMatchedPieceCount() > teamDtoList.get(1).getMatchedPieceCount()) {
-                            battleGameWinCount++;
-                        }
-                    } else if (teamNumber == 2) { // team2 소속
-                        if (teamDtoList.get(0).getMatchedPieceCount() < teamDtoList.get(1).getMatchedPieceCount()) {
-                            battleGameWinCount++;
-                        }
-                    } else if (teamNumber == 0) { // 오류 상황
-                        throw new RecordException("BAD REQUEST");
+                    if (didUserWin(userId, gameInfoDto.getId())) {
+                        battleGameWinCount++;
                     }
                 }
             }
@@ -265,40 +250,94 @@ public class RecordServiceImpl implements RecordService {
         try {
 
             List<RankingQueryDto> queryDtoList = recordRepository.countGamesByUserId();
-            for(RankingQueryDto qd : queryDtoList) {
+            for (RankingQueryDto qd : queryDtoList) {
                 playedGameCountRanking.add(new PlayedGameCountRankingDto(new UserDto(), 1));
-//                playedGameCountRanking.add(new PlayedGameCountRankingDto(userService.getUserById(qd.getUserId()));
+//                playedGameCountRanking.add(new PlayedGameCountRankingDto(userService.getUserById(qd.getUserId(), qd.getQueriedCount()));
                 // TODO: 머지 확인해서 주석 해제
             }
 
-        } catch (Exception e){
-            e.printStackTrace();
-            throw new RecordException("DB ERROR");
+            return playedGameCountRanking;
+
+        } catch (Exception e) {
+            throw new RecordException("ERROR");
         }
 
-        // 맨 처음엔 플레이된 게임이 없을 테니 리스트가 null일 수도 있긴 함.. ^_^
-
-        return playedGameCountRanking;
+        // 서비스 시작할 땐 플레이된 게임이 없을 테니 리스트가 null일 수도 있긴 함.. ^_^
     }
 
     @Override
     public List<WinCountRankingDto> rankSoloBattleWinCount() throws RecordException {
-        return null;
+        List<WinCountRankingDto> soloBattleWinCountRanking = new ArrayList<>();
+
+
+        return soloBattleWinCountRanking;
     }
 
     @Override
     public List<WinCountRankingDto> rankTeamBattleWinCount() throws RecordException {
-        return null;
+        List<WinCountRankingDto> teamBattleWinCountRanking = new ArrayList<>();
+
+
+        return teamBattleWinCountRanking;
     }
 
     @Override
     public List<WinningRateRankingDto> rankWinningRate() throws RecordException {
-        return null;
+        List<WinningRateRankingDto> winningRateRanking = new ArrayList<>();
+
+        // 필요한 값 : 전체 유저에 대한 전체 게임 플레이 횟수, 전체 이긴 횟수
+
+
+        return winningRateRanking;
     }
 
     @Override
     public UserRankingDto getRankByUserId(Long userId) throws RecordException {
-        return null;
+        UserRankingDto userRankingDto = new UserRankingDto();
+
+        userRankingDto.setUserId(userId);
+
+        int pgcRank = -1;
+        List<PlayedGameCountRankingDto> pgcRanking = rankPlayedGameCount();
+        for (int i = 0; i < pgcRanking.size(); ++i) {
+            if (userId.equals(pgcRanking.get(i).getUser().getId())) {
+                pgcRank = i + 1;
+                break;
+            }
+        }
+        userRankingDto.setPlayedGameCountRank(pgcRank);
+
+        int sbwcRank = -1;
+        List<WinCountRankingDto> sbwcRanking = rankSoloBattleWinCount();
+        for (int i = 0; i < sbwcRanking.size(); ++i) {
+            if (userId.equals(sbwcRanking.get(i).getUser().getId())) {
+                sbwcRank = i + 1;
+                break;
+            }
+        }
+        userRankingDto.setSoloBattleWinCountRank(sbwcRank);
+
+        int tbwcRank = -1;
+        List<WinCountRankingDto> tbwcRanking = rankTeamBattleWinCount();
+        for (int i = 0; i < tbwcRanking.size(); ++i) {
+            if (userId.equals(tbwcRanking.get(i).getUser().getId())) {
+                tbwcRank = i + 1;
+                break;
+            }
+        }
+        userRankingDto.setTeamBattleWinCountRank(tbwcRank);
+
+        int wrRank = -1;
+        List<WinningRateRankingDto> wrRanking = rankWinningRate();
+        for (int i = 0; i < wrRanking.size(); ++i) {
+            if (userId.equals(wrRanking.get(i).getUser().getId())) {
+                wrRank = i + 1;
+                break;
+            }
+        }
+        userRankingDto.setWinningRateRank(wrRank);
+
+        return userRankingDto;
     }
 
     /////////
@@ -307,12 +346,14 @@ public class RecordServiceImpl implements RecordService {
 
         List<TeamDto> teamDtoList = teamService.findAllByGameId(gameId);
 
+        // 레드 팀 멤버였는지 확인
         List<TeamUserResponseDto> userTeamDtoList = teamUserService.findAllByTeamId(teamDtoList.get(0).getId());
         for (TeamUserResponseDto utd : userTeamDtoList) {
             if (userId.equals(utd.getUser().getId())) {
                 return 1;
             }
         }
+        // 레드 팀 아니면 블루 팀도 확인
         userTeamDtoList = teamUserService.findAllByTeamId(teamDtoList.get(1).getId());
         for (TeamUserResponseDto utd : userTeamDtoList) {
             if (userId.equals(utd.getUser().getId())) {
@@ -320,9 +361,31 @@ public class RecordServiceImpl implements RecordService {
             }
         }
 
+        // 둘 다 아니면 이 게임 플레이하지 않은 유저인 것
         return 0;
-
     }
 
+    private int getTotalMatchedPieceCount(Long userId) {
+        int totalMatchedPieceCount = 0;
+        List<TeamUserResponseDto> userTeamDtoList = teamUserService.findAllByUserId(userId);
+        for (TeamUserResponseDto utd : userTeamDtoList) {
+            totalMatchedPieceCount += utd.getMatchedPieceCount();
+        }
+        return totalMatchedPieceCount;
+    }
+
+    private boolean didUserWin(Long userId, Long gameId) throws RecordException {
+
+        int teamNumber = getTeamNumber(userId, gameId); // 해당 게임에서 어떤 팀이었는지 확인
+        List<TeamDto> teamDtoList = teamService.findAllByGameId(gameId); // 해당 게임의 두 팀 정보 불러오기
+
+        if (teamNumber == 1) { // team1 소속
+            return teamDtoList.get(0).getMatchedPieceCount() > teamDtoList.get(1).getMatchedPieceCount();
+        } else if (teamNumber == 2) { // team2 소속
+            return teamDtoList.get(0).getMatchedPieceCount() < teamDtoList.get(1).getMatchedPieceCount();
+        } else { // 오류 상황
+            throw new RecordException("BAD REQUEST");
+        }
+    }
 
 }
