@@ -1,12 +1,9 @@
 package com.ssafy.puzzlepop.record.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.puzzlepop.record.domain.RecordCreateDto;
-import com.ssafy.puzzlepop.record.domain.RecordDetailDto;
-import com.ssafy.puzzlepop.record.domain.RecordDto;
-import com.ssafy.puzzlepop.record.domain.UserRecordInfoDto;
+import com.ssafy.puzzlepop.record.domain.*;
 import com.ssafy.puzzlepop.record.exception.RecordException;
 import com.ssafy.puzzlepop.record.service.RecordService;
+import org.apache.catalina.WebResourceRoot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +68,40 @@ public class RecordController {
 
         UserRecordInfoDto userRecordInfoDto = recordService.getUserRecordInfo(userId);
         return ResponseEntity.status(HttpStatus.OK).body(userRecordInfoDto);
+    }
+
+    //////////
+
+    /* Ranking */
+
+    @GetMapping("/ranking/playedGameCount")
+    public ResponseEntity<?> getPlayedGameCountRanking() throws RecordException {
+        List<PlayedGameCountRankingDto> playedGameCountRanking = recordService.rankPlayedGameCount();
+        return ResponseEntity.status(HttpStatus.OK).body(playedGameCountRanking);
+    }
+
+    @GetMapping("/ranking/soloBattleWinCountRanking")
+    public ResponseEntity<?> getSoloBattleWinCountRanking() throws RecordException{
+        List<WinCountRankingDto> soloBattleWinCountRanking = recordService.rankSoloBattleWinCount();
+        return ResponseEntity.status(HttpStatus.OK).body(soloBattleWinCountRanking);
+    }
+
+    @GetMapping("/ranking/teamBattleWinCountRanking")
+    public ResponseEntity<?> getTeamBattleWinCountRanking() throws RecordException{
+        List<WinCountRankingDto> teamBattleWinCountRanking = recordService.rankTeamBattleWinCount();
+        return ResponseEntity.status(HttpStatus.OK).body(teamBattleWinCountRanking);
+    }
+
+    @GetMapping("/ranking/winningRate")
+    public ResponseEntity<?> getWinningRateRanking() throws RecordException{
+        List<WinningRateRankingDto> winningRateRanking = recordService.rankWinningRate();
+        return ResponseEntity.status(HttpStatus.OK).body(winningRateRanking);
+    }
+
+    @PostMapping("/ranking/personal")
+    public ResponseEntity<?> getRankByUserId(@RequestBody Long userId) throws RecordException{
+        UserRankingDto userRankingDto = recordService.getRankByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(userRankingDto);
     }
 
 }

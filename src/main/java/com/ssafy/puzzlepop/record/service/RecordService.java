@@ -1,9 +1,6 @@
 package com.ssafy.puzzlepop.record.service;
 
-import com.ssafy.puzzlepop.record.domain.RecordCreateDto;
-import com.ssafy.puzzlepop.record.domain.RecordDetailDto;
-import com.ssafy.puzzlepop.record.domain.RecordDto;
-import com.ssafy.puzzlepop.record.domain.UserRecordInfoDto;
+import com.ssafy.puzzlepop.record.domain.*;
 import com.ssafy.puzzlepop.record.exception.RecordException;
 
 import java.util.List;
@@ -20,4 +17,14 @@ public interface RecordService {
     List<RecordDetailDto> getRecentRecordsByUserId(Long userId) throws RecordException;
 
     UserRecordInfoDto getUserRecordInfo(Long userId) throws RecordException;
+
+    List<PlayedGameCountRankingDto> rankPlayedGameCount() throws RecordException;
+
+    List<WinCountRankingDto> rankSoloBattleWinCount() throws RecordException;
+
+    List<WinCountRankingDto> rankTeamBattleWinCount() throws RecordException;
+
+    List<WinningRateRankingDto> rankWinningRate() throws RecordException;
+
+    UserRankingDto getRankByUserId(Long userId) throws RecordException;
 }

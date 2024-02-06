@@ -8,11 +8,13 @@ import com.ssafy.puzzlepop.record.exception.RecordException;
 import com.ssafy.puzzlepop.record.repository.RecordRepository;
 import com.ssafy.puzzlepop.team.domain.TeamDto;
 import com.ssafy.puzzlepop.team.service.TeamService;
-import com.ssafy.puzzlepop.teamuser.domain.TeamUserRequestDto;
 import com.ssafy.puzzlepop.teamuser.domain.TeamUserResponseDto;
 import com.ssafy.puzzlepop.teamuser.service.TeamUserService;
+import com.ssafy.puzzlepop.user.domain.UserDto;
+import com.ssafy.puzzlepop.user.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,14 +28,16 @@ public class RecordServiceImpl implements RecordService {
     private final GameInfoService gameInfoService;
     private final TeamService teamService;
     private final TeamUserService teamUserService;
+    private final UserService userService;
 
 
     @Autowired
-    public RecordServiceImpl(RecordRepository recordRepository, GameInfoService gameInfoService, TeamService teamService, TeamUserService teamUserService) {
+    public RecordServiceImpl(RecordRepository recordRepository, GameInfoService gameInfoService, TeamService teamService, TeamUserService teamUserService, UserService userService) {
         this.recordRepository = recordRepository;
         this.gameInfoService = gameInfoService;
         this.teamService = teamService;
         this.teamUserService = teamUserService;
+        this.userService = userService;
     }
 
     ///////
@@ -161,7 +165,7 @@ public class RecordServiceImpl implements RecordService {
                 }
                 // 협동 게임인 경우
                 // teamList1에 담고 teamList2는 null로 리턴
-                else if ("multi".equals(gameInfoDto.getType())) {
+                else if ("cooperate".equals(gameInfoDto.getType())) {
                     List<TeamUserResponseDto> userTeamDtoList = teamUserService.findAllByTeamId(teamDtoList.get(0).getId());
                     recordDetailDto.setUserTeamList1(userTeamDtoList);
                     recordDetailList.add(recordDetailDto);
@@ -240,7 +244,7 @@ public class RecordServiceImpl implements RecordService {
                             battleGameWinCount++;
                         }
                     } else if (teamNumber == 0) { // 오류 상황
-                        throw new RecordException("something wrong...");
+                        throw new RecordException("BAD REQUEST");
                     }
                 }
             }
@@ -254,10 +258,52 @@ public class RecordServiceImpl implements RecordService {
 
     }
 
+    @Override
+    public List<PlayedGameCountRankingDto> rankPlayedGameCount() throws RecordException {
+        List<PlayedGameCountRankingDto> playedGameCountRanking = new ArrayList<>();
+
+        try {
+
+            List<RankingQueryDto> queryDtoList = recordRepository.countGamesByUserId();
+            for(RankingQueryDto qd : queryDtoList) {
+                playedGameCountRanking.add(new PlayedGameCountRankingDto(new UserDto(), 1));
+//                playedGameCountRanking.add(new PlayedGameCountRankingDto(userService.getUserById(qd.getUserId()));
+                // TODO: 머지 확인해서 주석 해제
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new RecordException("DB ERROR");
+        }
+
+        // 맨 처음엔 플레이된 게임이 없을 테니 리스트가 null일 수도 있긴 함.. ^_^
+
+        return playedGameCountRanking;
+    }
+
+    @Override
+    public List<WinCountRankingDto> rankSoloBattleWinCount() throws RecordException {
+        return null;
+    }
+
+    @Override
+    public List<WinCountRankingDto> rankTeamBattleWinCount() throws RecordException {
+        return null;
+    }
+
+    @Override
+    public List<WinningRateRankingDto> rankWinningRate() throws RecordException {
+        return null;
+    }
+
+    @Override
+    public UserRankingDto getRankByUserId(Long userId) throws RecordException {
+        return null;
+    }
+
     /////////
 
-    // 1: team1 / 2: team2 / 0: X
-    private int getTeamNumber(Long userId, Long gameId) {
+    private int getTeamNumber(Long userId, Long gameId) { // 1: team1 / 2: team2 / 0: 이 게임을 플레이하지 않았음
 
         List<TeamDto> teamDtoList = teamService.findAllByGameId(gameId);
 
@@ -273,6 +319,7 @@ public class RecordServiceImpl implements RecordService {
                 return 2;
             }
         }
+
         return 0;
 
     }
