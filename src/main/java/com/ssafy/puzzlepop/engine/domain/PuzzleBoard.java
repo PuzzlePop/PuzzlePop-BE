@@ -498,6 +498,8 @@ public class PuzzleBoard {
 
         System.out.println("조각 뭉탱이들 정보");
         for (Set<Piece> set : bundles) {
+            if (set == null)
+                continue;
             System.out.println(set);
         }
 
