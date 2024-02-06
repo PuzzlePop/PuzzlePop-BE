@@ -8,6 +8,9 @@ import com.ssafy.puzzlepop.record.exception.RecordException;
 import com.ssafy.puzzlepop.record.repository.RecordRepository;
 import com.ssafy.puzzlepop.team.domain.TeamDto;
 import com.ssafy.puzzlepop.team.service.TeamService;
+import com.ssafy.puzzlepop.teamuser.domain.TeamUserRequestDto;
+import com.ssafy.puzzlepop.teamuser.domain.TeamUserResponseDto;
+import com.ssafy.puzzlepop.teamuser.service.TeamUserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,18 +25,15 @@ public class RecordServiceImpl implements RecordService {
     private final RecordRepository recordRepository;
     private final GameInfoService gameInfoService;
     private final TeamService teamService;
-
-//    TODO: UserTeam 개발 완료 시 주석 해제
-//    private final UserTeamService userTeamService;
+    private final TeamUserService teamUserService;
 
 
     @Autowired
-    public RecordServiceImpl(RecordRepository recordRepository, GameInfoService gameInfoService, TeamService teamService) {
+    public RecordServiceImpl(RecordRepository recordRepository, GameInfoService gameInfoService, TeamService teamService, TeamUserService teamUserService) {
         this.recordRepository = recordRepository;
         this.gameInfoService = gameInfoService;
         this.teamService = teamService;
-//        TODO: UserTeam 개발 완료 시 주석 해제
-//        this.userTeamService = userTeamService;
+        this.teamUserService = teamUserService;
     }
 
     ///////
@@ -147,7 +147,7 @@ public class RecordServiceImpl implements RecordService {
                 RecordDetailDto recordDetailDto = new RecordDetailDto();
 
                 // gameId 바탕으로 gameInfo 가져오기
-                GameInfoDto gameInfoDto = gameInfoService.getGameInfoById(record.getGameId());
+                GameInfoDto gameInfoDto = gameInfoService.readGameInfo(record.getGameId());
                 recordDetailDto.setGameInfo(gameInfoDto);
 
                 // gameId 바탕으로 teamList 가져오기
@@ -162,19 +162,20 @@ public class RecordServiceImpl implements RecordService {
                 // 협동 게임인 경우
                 // teamList1에 담고 teamList2는 null로 리턴
                 else if ("multi".equals(gameInfoDto.getType())) {
-                    // TODO: UserTeam 개발 완료 시 주석 해제
-//                    List<UserTeamDto> userTeamDtoList = userTeamService.findAllByTeamId(teamDtoList.get(0).getId());
-//                    recordDetailDto.setUserTeamList1(userTeamDtoList);
+                    List<TeamUserResponseDto> userTeamDtoList = teamUserService.findAllByTeamId(teamDtoList.get(0).getId());
+                    recordDetailDto.setUserTeamList1(userTeamDtoList);
                     recordDetailList.add(recordDetailDto);
                 }
                 // 배틀 게임인 경우
                 // teamList1과 teamList2 모두 정보 담아 리턴
                 else if ("battle".equals(gameInfoDto.getType())) {
-                    // TODO: UserTeam 개발 완료 시 주석 해제
-//                    List<UserTeamDto> userTeamDtoList = userTeamService.findAllByTeamId(teamDtoList.get(0).getId());
-//                    recordDetailDto.setUserTeamList1(userTeamDtoList);
-//                    List<UserTeamDto> userTeamDtoList2 = userTeamService.findAllByTeamId(teamDtoList.get(1).getId());
-//                    recordDetailDto.setUserTeamList2(userTeamDtoList2);
+
+                    List<TeamUserResponseDto> userTeamDtoList = teamUserService.findAllByTeamId(teamDtoList.get(0).getId());
+                    recordDetailDto.setUserTeamList1(userTeamDtoList);
+
+                    List<TeamUserResponseDto> userTeamDtoList2 = teamUserService.findAllByTeamId(teamDtoList.get(1).getId());
+                    recordDetailDto.setUserTeamList2(userTeamDtoList2);
+
                     recordDetailList.add(recordDetailDto);
                 }
                 // 셋 다 아님. 여기까지 왔다는 건 뭔가 문제가 있다는 것...
@@ -185,7 +186,7 @@ public class RecordServiceImpl implements RecordService {
 
             return recordDetailList;
         } catch (Exception e) {
-            throw new RecordException("error occurred during find record data");
+            throw new RecordException("ERROR");
         }
 
     }
@@ -206,11 +207,10 @@ public class RecordServiceImpl implements RecordService {
 
             // 전체 맞춘 피스수
             int totalMatchedPieceCount = 0;
-            // TODO: UserTeam 개발 완료 시 주석 해제
-//        List<UserTeamDto> userTeamDtoList = userTeamService.getByUserId(userId);
-//        for(UserTeamDto utd : userTeamDtoList) {
-//            totalMatchedPieceCount += utd.getMatchedPieceCount();
-//        }
+            List<TeamUserResponseDto> userTeamDtoList = teamUserService.findAllByUserId(userId);
+            for (TeamUserResponseDto utd : userTeamDtoList) {
+                totalMatchedPieceCount += utd.getMatchedPieceCount();
+            }
             userRecordInfoDto.setTotalMatchedPieceCount(totalMatchedPieceCount);
 
             // 전체 플레이 게임 횟수
@@ -224,7 +224,7 @@ public class RecordServiceImpl implements RecordService {
 
             List<Record> recordList = recordRepository.findByUserId(userId);
             for (Record record : recordList) {
-                GameInfoDto gameInfoDto = gameInfoService.getGameInfoById(record.getGameId());
+                GameInfoDto gameInfoDto = gameInfoService.readGameInfo(record.getGameId());
                 if ("battle".equals(gameInfoDto.getType())) { // 배틀 게임이면
                     playedBattleGameCount++; // 횟수 카운트 ++
 
@@ -261,21 +261,21 @@ public class RecordServiceImpl implements RecordService {
 
         List<TeamDto> teamDtoList = teamService.findAllByGameId(gameId);
 
-        // TODO: UserTeam 개발 완료 시 주석 해제
-//        List<UserTeamDto> userTeamDtoList = userTeamService.findAllByTeamId(teamDtoList.get(0).getId());
-//        for (UserTeamDto utd : userTeamDtoList) {
-//            if (userId.equals(utd.getUserId())) {
-//                return 1;
-//            }
-//        }
-//        userTeamDtoList = userTeamService.findAllByTeamId(teamDtoList.get(1).getId());
-//        for (UserTeamDto utd : userTeamDtoList) {
-//            if (userId.equals(utd.getUserId())) {
-//                return 2;
-//            }
-//        }
-//        return 0;
+        List<TeamUserResponseDto> userTeamDtoList = teamUserService.findAllByTeamId(teamDtoList.get(0).getId());
+        for (TeamUserResponseDto utd : userTeamDtoList) {
+            if (userId.equals(utd.getUser().getId())) {
+                return 1;
+            }
+        }
+        userTeamDtoList = teamUserService.findAllByTeamId(teamDtoList.get(1).getId());
+        for (TeamUserResponseDto utd : userTeamDtoList) {
+            if (userId.equals(utd.getUser().getId())) {
+                return 2;
+            }
+        }
+        return 0;
 
-        return 1; // TODO: UserTeam 개발 완료 시 삭제
     }
+
+
 }

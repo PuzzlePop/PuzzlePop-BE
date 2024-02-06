@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.ssafy.puzzlepop.gameinfo.domain.GameInfoDto;
 import com.ssafy.puzzlepop.team.domain.TeamDto;
+import com.ssafy.puzzlepop.teamuser.domain.TeamUserDto;
+import com.ssafy.puzzlepop.teamuser.domain.TeamUserResponseDto;
 import lombok.*;
 
 import java.util.List;
@@ -19,8 +21,7 @@ public class RecordDetailDto {
 
     private GameInfoDto gameInfo;
     private List<TeamDto> teamList;
-// TODO: TeamMember 구현 완료 시 주석 해제
-//    private List<UserTeamDto> userTeamList1;
-//    private List<UserTeamDto> userTeamList2;
+    private List<TeamUserResponseDto> userTeamList1;
+    private List<TeamUserResponseDto> userTeamList2;
 
 }
