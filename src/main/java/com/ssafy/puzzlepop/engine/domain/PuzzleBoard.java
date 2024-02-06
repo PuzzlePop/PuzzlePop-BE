@@ -38,15 +38,16 @@ public class PuzzleBoard {
     private final int CANVAS_WIDTH = 2580;
     private final int CANVAS_LENGTH = 1440;
 
-    public void addItem(ItemType type) {
+    public Item addItem(ItemType type) {
         if (itemCount > 5) {
             System.out.println("아이템 추가 실패");
-            return;
+            return null;
         }
 
         Item item = new Item(type);
         itemList[itemCount++] = item;
         System.out.println("아이템 추가 성공");
+        return item;
     }
 
     public void swapItem(int from, int to) {

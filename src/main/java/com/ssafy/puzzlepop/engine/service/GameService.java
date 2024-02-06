@@ -186,12 +186,14 @@ public class GameService {
 
                 //둘다 없을 때
                 if (mirror != -1 && shield != -1) {
-                    res.setMessage("ATTACKED");
+                    res.setMessage("ATTACK");
+                    res.setTargets(yourColor);
                     res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), yourPuzzle));
                 }
                 //반사됨
                 else if (mirror != -1 && shield == -1) {
                     res.setMessage("MIRROR");
+                    res.setTargets(ourColor);
                     res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
                 }
                 //방어됨
@@ -203,21 +205,62 @@ public class GameService {
                 else {
                     //반사부터 적용됨
                     res.setMessage("MIRROR");
+                    res.setTargets(ourColor);
                     res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
                 }
             } else if (type == ItemType.HINT || type == ItemType.FRAME || type == ItemType.MAGNET) {
                 res.setMessage(String.valueOf(type));
+                res.setTargets(ourColor);
                 res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
             }
 
 
         } else if (message.equals("USE_RANDOM_ITEM")) {
+            //공격형 아이템 3가지만 나옴
             DropItem item = game.getDropRandomItem().get(targets);
             game.getDropRandomItem().remove(targets);
+
+            Item[] yourItemList = yourPuzzle.getItemList();
+            int shield = -1;
+            int mirror = -1;
+            for (int i = 0; i < 5; i++) {
+                if (yourItemList[i].getName() == ItemType.MIRROR) {
+                    mirror = i;
+                } else if (yourItemList[i].getName() == ItemType.SHIELD) {
+                    shield = i;
+                }
+            }
+
+
+            //둘다 없을 때
+            if (mirror != -1 && shield != -1) {
+                res.setMessage("ATTACK");
+                res.setTargets(yourColor);
+                res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), yourPuzzle));
+            }
+            //반사됨
+            else if (mirror != -1 && shield == -1) {
+                res.setMessage("MIRROR");
+                res.setTargets(ourColor);
+                res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
+            }
+            //방어됨
+            else if (mirror == -1 && shield != -1) {
+                //아무일 없음
+                res.setMessage("SHIELD");
+            }
+            //둘다 있을 때
+            else {
+                //반사부터 적용됨
+                res.setMessage("MIRROR");
+                res.setTargets(ourColor);
+                res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
+            }
 
             targetsList = ourPuzzle.useRandomItem(item, yourPuzzle);
 
             res.setMessage("USE_RANDOM_ITEM");
+            res.setRandomItem(item);
             res.setTargets(yourColor);
             res.setTargetList(targetsList);
         } else if (message.equals("MOUSE_DOWN")) {
@@ -265,17 +308,16 @@ public class GameService {
 
             res.setTargets(targets);
         } else if (message.equals("ADD_ITEM")) {
-            res.setMessage("GET_ITEM");
-
-            ourPuzzle.addItem(ItemType.valueOf(targets));
+            res.setMessage("ADD_ITEM");
+            res.setTargets(ourColor);
+            Item item = ourPuzzle.addItem(ItemType.valueOf(targets));
+            res.setItem(item);
         } else {
             System.out.println("구현중인 명령어 : " + message);
             System.out.println("targets = " + targets);
         }
 
         //게임 끝났는지 마지막에 확인
-        //TODO
-        //끝났을 때 게임 인포에 저장해야함.
         if (game.getGameType().equals("BATTLE")) {
             if (ourPuzzle.isCompleted() || yourPuzzle.isCompleted()) {
                 //게임 정보 업데이트
@@ -315,17 +357,8 @@ public class GameService {
                 );
 
         Long gameInfo = gameInfoService.createGameInfo(gameInfoDto);
-    }
 
-    public static void main(String[] args) throws Exception {
-        Date now = new Date();
-        Thread.sleep(5000);
-        Date next = new Date();
-
-        LocalDateTime x = LocalDateTime.now();
-        LocalDateTime y = LocalDateTime.now();
-
-        System.out.println((next.getTime() - now.getTime())/1000);
+        //TODO 그 외 정보들도 여기서 함께 저장해야함
     }
 
     public boolean enterGame(String gameId, String userId, String sessionId) {

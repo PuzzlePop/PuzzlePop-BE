@@ -16,5 +16,6 @@ public class ResponseMessage {
     private String targets;
     private List<int[]> combo;
     private boolean isFinished;
+    private Item item;
     private DropItem randomItem;
 }
