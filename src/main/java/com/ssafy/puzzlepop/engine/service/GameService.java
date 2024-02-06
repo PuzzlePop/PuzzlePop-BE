@@ -3,11 +3,15 @@ package com.ssafy.puzzlepop.engine.service;
 import com.google.gson.Gson;
 import com.ssafy.puzzlepop.engine.InGameMessage;
 import com.ssafy.puzzlepop.engine.domain.*;
+import com.ssafy.puzzlepop.gameinfo.domain.GameInfoDto;
+import com.ssafy.puzzlepop.gameinfo.service.GameInfoService;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -16,6 +20,8 @@ import java.util.*;
 public class GameService {
     private Map<String, Game> gameRooms;
     private Gson gson;
+
+    private final GameInfoService gameInfoService;
 
     @PostConstruct
     //의존관게 주입완료되면 실행되는 코드
@@ -272,14 +278,54 @@ public class GameService {
         //끝났을 때 게임 인포에 저장해야함.
         if (game.getGameType().equals("BATTLE")) {
             if (ourPuzzle.isCompleted() || yourPuzzle.isCompleted()) {
+                //게임 정보 업데이트
+                game.setFinished(true);
+                game.setFinishTime(new Date());
+
                 res.setFinished(true);
+
+                save(game);
             }
         } else if (game.getGameType().equals("COOPERATION")) {
             if (ourPuzzle.isCompleted()) {
+                //게임 정보 업데이트
+                game.setFinished(true);
+                game.setFinishTime(new Date());
+
                 res.setFinished(true);
+
+                save(game);
             }
         }
         return res;
+    }
+
+    private void save(Game game) {
+        GameInfoDto gameInfoDto = new GameInfoDto(
+                null,
+                game.getGameType(),
+                game.isFinished(),
+                game.getPlayers().size(),
+                game.getRoomSize(),
+                game.getRedPuzzle().getWidthCnt() * game.getRedPuzzle().getLengthCnt(),
+                null,
+                null,
+                game.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                game.getFinishTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+                );
+
+        Long gameInfo = gameInfoService.createGameInfo(gameInfoDto);
+    }
+
+    public static void main(String[] args) throws Exception {
+        Date now = new Date();
+        Thread.sleep(5000);
+        Date next = new Date();
+
+        LocalDateTime x = LocalDateTime.now();
+        LocalDateTime y = LocalDateTime.now();
+
+        System.out.println((next.getTime() - now.getTime())/1000);
     }
 
     public boolean enterGame(String gameId, String userId, String sessionId) {
