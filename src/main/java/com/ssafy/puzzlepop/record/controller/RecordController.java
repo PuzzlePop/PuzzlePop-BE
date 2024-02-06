@@ -80,13 +80,13 @@ public class RecordController {
         return ResponseEntity.status(HttpStatus.OK).body(playedGameCountRanking);
     }
 
-    @GetMapping("/ranking/soloBattleWinCountRanking")
+    @GetMapping("/ranking/soloBattle")
     public ResponseEntity<?> getSoloBattleWinCountRanking() throws RecordException{
         List<WinCountRankingDto> soloBattleWinCountRanking = recordService.rankSoloBattleWinCount();
         return ResponseEntity.status(HttpStatus.OK).body(soloBattleWinCountRanking);
     }
 
-    @GetMapping("/ranking/teamBattleWinCountRanking")
+    @GetMapping("/ranking/teamBattle")
     public ResponseEntity<?> getTeamBattleWinCountRanking() throws RecordException{
         List<WinCountRankingDto> teamBattleWinCountRanking = recordService.rankTeamBattleWinCount();
         return ResponseEntity.status(HttpStatus.OK).body(teamBattleWinCountRanking);
@@ -98,8 +98,8 @@ public class RecordController {
         return ResponseEntity.status(HttpStatus.OK).body(winningRateRanking);
     }
 
-    @PostMapping("/ranking/personal")
-    public ResponseEntity<?> getRankByUserId(@RequestBody Long userId) throws RecordException{
+    @GetMapping("/ranking/personal")
+    public ResponseEntity<?> getRankByUserId(@RequestParam("user_id") Long userId) throws RecordException{
         UserRankingDto userRankingDto = recordService.getRankByUserId(userId);
         return ResponseEntity.status(HttpStatus.OK).body(userRankingDto);
     }

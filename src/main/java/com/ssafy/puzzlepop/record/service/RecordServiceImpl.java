@@ -253,7 +253,7 @@ public class RecordServiceImpl implements RecordService {
             for (RankingQueryDto qd : queryDtoList) {
                 playedGameCountRanking.add(new PlayedGameCountRankingDto(new UserDto(), 1));
 //                playedGameCountRanking.add(new PlayedGameCountRankingDto(userService.getUserById(qd.getUserId(), qd.getQueriedCount()));
-                // TODO: 머지 확인해서 주석 해제
+                // TODO: UserService에 getUserById 추가 확인해서 주석 해제
             }
 
             return playedGameCountRanking;
@@ -269,6 +269,34 @@ public class RecordServiceImpl implements RecordService {
     public List<WinCountRankingDto> rankSoloBattleWinCount() throws RecordException {
         List<WinCountRankingDto> soloBattleWinCountRanking = new ArrayList<>();
 
+        List<UserDto> userList = userService.getAllUsers();
+        for (UserDto user : userList) {
+            int playedSoloBattleGameCount = 0;
+            int soloBattleWinCount = 0;
+
+            List<Record> recordList = recordRepository.findByUserId(user.getId());
+            if (recordList == null) { // 한 판도 플레이하지 않은 유저
+                // 랭킹에 포함되지 않음. 패스
+                continue;
+            }
+
+            for (Record record : recordList) {
+                GameInfoDto gameInfoDto = gameInfoService.readGameInfo(record.getGameId()); // 각 record에 대해 gid로 gameinfo 조회
+                if ("battle".equals(gameInfoDto.getType()) && gameInfoDto.getCurPlayerCount() == 2) { // 배틀 게임 + 2명 게임이면
+                    playedSoloBattleGameCount++; // 1:1 배틀 게임 플레이 횟수 ++
+
+                    if (didUserWin(user.getId(), gameInfoDto.getId())) { // 이 게임에서 이겼으면
+                        soloBattleWinCount++; // 1:1 배틀 승리 횟수 ++
+                    }
+                }
+            }
+
+            soloBattleWinCountRanking.add(new WinCountRankingDto(user, soloBattleWinCount, playedSoloBattleGameCount));
+        }
+
+        // sort by win count desc
+        Collections.sort(soloBattleWinCountRanking);
+        Collections.reverse(soloBattleWinCountRanking);
 
         return soloBattleWinCountRanking;
     }
@@ -277,6 +305,34 @@ public class RecordServiceImpl implements RecordService {
     public List<WinCountRankingDto> rankTeamBattleWinCount() throws RecordException {
         List<WinCountRankingDto> teamBattleWinCountRanking = new ArrayList<>();
 
+        List<UserDto> userList = userService.getAllUsers();
+        for (UserDto user : userList) {
+            int playedTeamBattleGameCount = 0;
+            int teamBattleWinCount = 0;
+
+            List<Record> recordList = recordRepository.findByUserId(user.getId());
+            if (recordList == null) { // 한 판도 플레이하지 않은 유저
+                // 랭킹에 포함되지 않음. 패스
+                continue;
+            }
+
+            for (Record record : recordList) {
+                GameInfoDto gameInfoDto = gameInfoService.readGameInfo(record.getGameId()); // 각 record에 대해 gid로 gameinfo 조회
+                if ("battle".equals(gameInfoDto.getType()) && gameInfoDto.getCurPlayerCount() >= 4) { // 배틀 게임 + 4명 이상 게임이면
+                    playedTeamBattleGameCount++; // n:n 배틀 게임 플레이 횟수 ++
+
+                    if (didUserWin(user.getId(), gameInfoDto.getId())) { // 이 게임에서 이겼으면
+                        teamBattleWinCount++; // n:n 배틀 승리 횟수 ++
+                    }
+                }
+            }
+
+            teamBattleWinCountRanking.add(new WinCountRankingDto(user, teamBattleWinCount, playedTeamBattleGameCount));
+        }
+
+        // sort
+        Collections.sort(teamBattleWinCountRanking);
+        Collections.reverse(teamBattleWinCountRanking);
 
         return teamBattleWinCountRanking;
     }
@@ -285,8 +341,41 @@ public class RecordServiceImpl implements RecordService {
     public List<WinningRateRankingDto> rankWinningRate() throws RecordException {
         List<WinningRateRankingDto> winningRateRanking = new ArrayList<>();
 
-        // 필요한 값 : 전체 유저에 대한 전체 게임 플레이 횟수, 전체 이긴 횟수
+        // 필요한 값 : 전체 유저에 대해 전체 게임 플레이 횟수 / 전체 이긴 횟수
+        // 그에 따라 백분율 승률 계산하기
 
+        List<UserDto> userList = userService.getAllUsers();
+        for (UserDto user : userList) {
+            int playedBattleGameCount = 0;
+            int battleWinCount = 0;
+
+            List<Record> recordList = recordRepository.findByUserId(user.getId());
+            if (recordList == null) { // 한 판도 플레이하지 않은 유저
+                // 랭킹에 포함되지 않음. 패스
+                continue;
+            } else if (recordList.isEmpty()) {
+                continue;
+            }
+
+            for (Record record : recordList) {
+                GameInfoDto gameInfoDto = gameInfoService.readGameInfo(record.getGameId()); // 각 record에 대해 gid로 gameinfo 조회
+                if ("battle".equals(gameInfoDto.getType())) { // 배틀 게임 + 2명 게임이면
+                    playedBattleGameCount++; // 1:1 배틀 게임 플레이 횟수 ++
+
+                    if (didUserWin(user.getId(), gameInfoDto.getId())) { // 이 게임에서 이겼으면
+                        battleWinCount++; // 1:1 배틀 승리 횟수 ++
+                    }
+                }
+            }
+
+            double winningRate = (double) battleWinCount / playedBattleGameCount * 100;
+
+            winningRateRanking.add(new WinningRateRankingDto(user, winningRate, battleWinCount, playedBattleGameCount));
+        }
+
+        // sort
+        Collections.sort(winningRateRanking);
+        Collections.reverse(winningRateRanking);
 
         return winningRateRanking;
     }
@@ -340,7 +429,9 @@ public class RecordServiceImpl implements RecordService {
         return userRankingDto;
     }
 
-    /////////
+
+    ////////////////////////////////////////////////////////////////////////
+
 
     private int getTeamNumber(Long userId, Long gameId) { // 1: team1 / 2: team2 / 0: 이 게임을 플레이하지 않았음
 

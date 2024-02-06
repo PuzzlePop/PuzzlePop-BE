@@ -11,8 +11,19 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class PlayedGameCountRankingDto {
+public class PlayedGameCountRankingDto implements Comparable<PlayedGameCountRankingDto> {
 
     private UserDto user; // 사용자 정보
     private int playedGameCount; // 전체 플레이한 게임 수
+
+    @Override
+    public int compareTo(PlayedGameCountRankingDto o) {
+        if(this.playedGameCount > o.playedGameCount) {
+            return 1;
+        } else if(this.playedGameCount < o.playedGameCount) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 }
