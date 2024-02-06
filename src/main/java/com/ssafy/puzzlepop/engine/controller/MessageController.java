@@ -150,10 +150,8 @@ public class MessageController {
             if (allRoom.get(i).isStarted()) {
                 //확률 계산
                 int possibility = random.nextInt(100);
-                System.out.println(possibility + " %");
-                if (possibility <= 70) {
+                if (possibility <= 30) {
                     DropItem item = DropItem.randomCreate();
-                    System.out.println(item + "을 생성합니다.");
                     allRoom.get(i).getDropRandomItem().put(item.getUuid(), item);
                     ResponseMessage res = new ResponseMessage();
                     res.setMessage("DROP_ITEM");

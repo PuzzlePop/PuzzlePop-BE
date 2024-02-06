@@ -152,7 +152,9 @@ public class GameService {
             int comboCnt = comboCheck(ourPuzzle);
             if (comboCnt != 0) {
                 List<int[]> comboPieces = ourPuzzle.combo(pieces, comboCnt);
-                System.out.println("콤보 대상 : ");
+                if (comboPieces == null) {
+                    return res;
+                }
                 for (int[] comboSet : comboPieces) {
                     System.out.print(Arrays.toString(comboSet) + " | ");
                 }
