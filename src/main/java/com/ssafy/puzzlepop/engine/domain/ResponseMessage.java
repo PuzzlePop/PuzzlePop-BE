@@ -3,6 +3,7 @@ package com.ssafy.puzzlepop.engine.domain;
 import lombok.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter @Setter @ToString
 @AllArgsConstructor
@@ -21,4 +22,7 @@ public class ResponseMessage {
     private DropItem randomItem;
     private double redProgressPercent = -1;
     private double blueProgressPercent = -1;
+    private Map<Integer, double[]> deleted;
+    private Item[] redItemList;
+    private Item[] blueItemList;
 }
