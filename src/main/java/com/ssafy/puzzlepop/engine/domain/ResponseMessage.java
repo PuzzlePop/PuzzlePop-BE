@@ -1,13 +1,10 @@
 package com.ssafy.puzzlepop.engine.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
-@Getter @Setter
+@Getter @Setter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseMessage {
@@ -17,7 +14,7 @@ public class ResponseMessage {
     private int position_x;
     private int position_y;
     private String targets;
-    private List<Integer> combo;
+    private List<int[]> combo;
     private boolean isFinished;
     private DropItem randomItem;
 }

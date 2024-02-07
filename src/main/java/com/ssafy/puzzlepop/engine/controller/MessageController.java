@@ -62,7 +62,8 @@ public class MessageController {
 
         if (game.isEmpty()) {
             System.out.println("game.isEmpty()");
-            Thread.sleep(5000);
+            //잠시 대기
+            Thread.sleep(1500);
             if (game.isEmpty()) {
                 System.out.println("진짜 나간것같아. 게임 지울게!");
                 gameService.deleteRoom(gameId);
@@ -141,7 +142,7 @@ public class MessageController {
     //배틀 드랍 아이템 제공
     //20초에 한번씩 제공하기로 함
     //테스트용 확률 조정
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 20000)
     public void sendDropItem() {
         //배틀로 변경해야함
         List<Game> allRoom = gameService.findAllCooperationRoom();
@@ -150,10 +151,9 @@ public class MessageController {
             if (allRoom.get(i).isStarted()) {
                 //확률 계산
                 int possibility = random.nextInt(100);
-                System.out.println(possibility + " %");
-                if (possibility <= 70) {
+                if (possibility <= 30) {
                     DropItem item = DropItem.randomCreate();
-                    System.out.println(item + "을 생성합니다.");
+                    allRoom.get(i).getDropRandomItem().put(item.getUuid(), item);
                     ResponseMessage res = new ResponseMessage();
                     res.setMessage("DROP_ITEM");
                     res.setRandomItem(item);

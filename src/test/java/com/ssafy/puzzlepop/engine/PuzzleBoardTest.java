@@ -21,12 +21,12 @@ class PuzzleBoardTest {
 
         PuzzleBoard puzzle = new PuzzleBoard();
         puzzle.init(p);
-        Piece[][][] board = puzzle.getBoard();
+        Piece[][] board = puzzle.getBoard();
 
         for (int i = 0; i < puzzle.getLengthCnt(); i++) {
             for (int j = 0; j < puzzle.getWidthCnt(); j++) {
 //                System.out.print(board[0][i][j].getIndex() + " " + board[0][i][j].getPosition_x()+ " "+board[0][i][j].getPosition_y() + " | ");
-                System.out.print(Arrays.toString(board[0][i][j].getType()));
+                System.out.print(Arrays.toString(board[i][j].getType()));
 
             }
             System.out.println();

@@ -97,14 +97,14 @@ public class GameService {
         int position_x = inGameMessage.getPosition_x();
         int position_y = inGameMessage.getPosition_y();
 
-        System.out.println("GameService.playGame");
-        System.out.println(gameRooms);
+//        System.out.println("GameService.playGame");
+//        System.out.println(gameRooms);
         ResponseMessage res = new ResponseMessage();
         Game game = findById(roomId);
         //res.setGame(game);
 
-        System.out.println("sender = " + sender);
-        System.out.println("targets = " + targets);
+//        System.out.println("sender = " + sender);
+//        System.out.println("targets = " + targets);
 
         PuzzleBoard ourPuzzle;
         String ourColor;
@@ -115,19 +115,19 @@ public class GameService {
 
 
         if (game.getRedTeam().isIn(sender)) {
-            System.out.println("얘 레드팀임");
+//            System.out.println("얘 레드팀임");
             ourPuzzle = game.getRedPuzzle();
             ourColor = "RED";
             yourPuzzle = game.getBluePuzzle();
             yourColor = "BLUE";
         } else if (game.getBlueTeam().isIn(sender)){
-            System.out.println("얘 블루팀임");
+//            System.out.println("얘 블루팀임");
             ourPuzzle = game.getBluePuzzle();
             ourColor = "BLUE";
             yourPuzzle = game.getRedPuzzle();
             yourColor = "RED";
         } else {
-            System.out.println("팀이 없는데, 이거 맞아?");
+//            System.out.println("팀이 없는데, 이거 맞아?");
             res.setMessage("팀 없는데?");
             return res;
         }
@@ -147,14 +147,20 @@ public class GameService {
             ourPuzzle.addPiece(pieces);
             ourPuzzle.print();
 
+            res.setMessage("ADD_PIECE");
+            res.setTargets(targets);
             int comboCnt = comboCheck(ourPuzzle);
             if (comboCnt != 0) {
-                List<Integer> comboPieces = ourPuzzle.combo(pieces, comboCnt);
-                System.out.println("콤보 대상 : " + comboPieces);
-                res.setMessage("ADD_PIECE");
-                res.setTargets(targets);
+                List<int[]> comboPieces = ourPuzzle.combo(pieces, comboCnt);
+                if (comboPieces == null) {
+                    return res;
+                }
+                for (int[] comboSet : comboPieces) {
+                    System.out.print(Arrays.toString(comboSet) + " | ");
+                }
                 res.setCombo(comboPieces);
             }
+            ourPuzzle.print();
         } else if (message.equals("USE_ITEM")) {
             Item item = ourPuzzle.getItemList()[Integer.parseInt(targets)];
             ItemType type = item.getName();
@@ -200,7 +206,9 @@ public class GameService {
 
 
         } else if (message.equals("USE_RANDOM_ITEM")) {
-            DropItem item = new DropItem(ItemType.valueOf(targets), 0, 0);
+            DropItem item = game.getDropRandomItem().get(targets);
+            game.getDropRandomItem().remove(targets);
+
             targetsList = ourPuzzle.useRandomItem(item, yourPuzzle);
 
             res.setMessage("USE_RANDOM_ITEM");
@@ -212,12 +220,12 @@ public class GameService {
             for (int i = 0; i < arr.length; i++) {
                 PieceDto now = arr[i];
                 int[] p = ourPuzzle.getIdxToCoordinate().get(now.getIndex());
-                if (ourPuzzle.getBoard()[0][p[0]][p[1]].isLocked()) {
+                if (ourPuzzle.getBoard()[p[0]][p[1]].isLocked()) {
                     res.setMessage("BLOCKED");
                     return res;
                 }
 
-                ourPuzzle.getBoard()[0][p[0]][p[1]].setLocked(true);
+                ourPuzzle.getBoard()[p[0]][p[1]].setLocked(true);
             }
 
             System.out.println(targets + " 피스 잠금");
@@ -230,7 +238,7 @@ public class GameService {
                 PieceDto now = arr[i];
                 int[] p = ourPuzzle.getIdxToCoordinate().get(now.getIndex());
 
-                ourPuzzle.getBoard()[0][p[0]][p[1]].setLocked(false);
+                ourPuzzle.getBoard()[p[0]][p[1]].setLocked(false);
             }
 
             System.out.println(targets + " 피스 잠금 해제");
@@ -245,8 +253,8 @@ public class GameService {
                 PieceDto now = arr[i];
                 int[] p = ourPuzzle.getIdxToCoordinate().get(now.getIndex());
 
-                ourPuzzle.getBoard()[0][p[0]][p[1]].setPosition_x(now.getX());
-                ourPuzzle.getBoard()[0][p[0]][p[1]].setPosition_y(now.getY());
+                ourPuzzle.getBoard()[p[0]][p[1]].setPosition_x(now.getX());
+                ourPuzzle.getBoard()[p[0]][p[1]].setPosition_y(now.getY());
             }
 
             res.setTargets(targets);
@@ -260,6 +268,8 @@ public class GameService {
         }
 
         //게임 끝났는지 마지막에 확인
+        //TODO
+        //끝났을 때 게임 인포에 저장해야함.
         if (game.getGameType().equals("BATTLE")) {
             if (ourPuzzle.isCompleted() || yourPuzzle.isCompleted()) {
                 res.setFinished(true);

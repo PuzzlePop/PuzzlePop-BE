@@ -35,6 +35,18 @@ public class Item {
         }
     }
 
+    public static Item randomCreate() {
+        Random random = new Random();
+
+        //공격형 아이템만 추첨 리스트에 추가
+        List<ItemType> list = new LinkedList<>();
+        list.add(ItemType.HINT);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.MAGNET);
+
+        return new Item(list.get(random.nextInt(list.size())));
+    }
+
     public List<Integer> run(PuzzleBoard puzzle) {
         List<Set<Piece>> bundles;
         Set<Piece> mostManyBundle;
@@ -47,9 +59,9 @@ public class Item {
                 for (int i = 0; i < puzzle.getLengthCnt(); i++) {
                     for (int j = 0; j < puzzle.getWidthCnt()-1; j++) {
                         if (!tmp[i][j] && !tmp[i][j+1]) {
-                            System.out.println(puzzle.getBoard()[0][i][j] + " " + puzzle.getBoard()[0][i][j+1]);
-                            targets.add(puzzle.getBoard()[0][i][j].getIndex());
-                            targets.add(puzzle.getBoard()[0][i][j+1].getIndex());
+                            System.out.println(puzzle.getBoard()[i][j] + " " + puzzle.getBoard()[i][j+1]);
+                            targets.add(puzzle.getBoard()[i][j].getIndex());
+                            targets.add(puzzle.getBoard()[i][j+1].getIndex());
                         }
                     }
                 }
@@ -68,25 +80,25 @@ public class Item {
             case 4:
                 for (int i = 0; i < puzzle.getLengthCnt(); i++) {
                     if (!puzzle.getIsCorrected()[i][0]) {
-                        targets.add(puzzle.getBoard()[0][i][0].getIndex());
+                        targets.add(puzzle.getBoard()[i][0].getIndex());
                     }
                 }
 
                 for (int i = 0; i < puzzle.getWidthCnt(); i++) {
                     if (!puzzle.getIsCorrected()[0][i]) {
-                        targets.add(puzzle.getBoard()[0][0][i].getIndex());
+                        targets.add(puzzle.getBoard()[0][i].getIndex());
                     }
                 }
 
                 for (int i = 0; i < puzzle.getLengthCnt(); i++) {
                     if (!puzzle.getIsCorrected()[i][puzzle.getWidthCnt()-1]) {
-                        targets.add(puzzle.getBoard()[0][i][puzzle.getWidthCnt()-1].getIndex());
+                        targets.add(puzzle.getBoard()[i][puzzle.getWidthCnt()-1].getIndex());
                     }
                 }
 
                 for (int i = 0; i < puzzle.getWidthCnt(); i++) {
                     if (!puzzle.getIsCorrected()[puzzle.getLengthCnt()-1][i]) {
-                        targets.add(puzzle.getBoard()[0][puzzle.getLengthCnt()-1][i].getIndex());
+                        targets.add(puzzle.getBoard()[puzzle.getLengthCnt()-1][i].getIndex());
                     }
                 }
 
@@ -103,9 +115,9 @@ public class Item {
                 for (int i = 0; i < puzzle.getLengthCnt(); i++) {
                     for (int j = 0; j < puzzle.getWidthCnt(); j++) {
                         if (!puzzle.getIsCorrected()[i][j]) {
-                            targets.add(puzzle.getBoard()[0][i][j].getIndex());
+                            targets.add(puzzle.getBoard()[i][j].getIndex());
 
-                            int bottom = puzzle.getBoard()[0][i][j].getCorrectBottomIndex();
+                            int bottom = puzzle.getBoard()[i][j].getCorrectBottomIndex();
                             if (bottom != -1) {
                                 int[] coor = puzzle.getIdxToCoordinate().get(bottom);
                                 if (!puzzle.getIsCorrected()[coor[0]][coor[1]]) {
@@ -113,7 +125,7 @@ public class Item {
                                 }
                             }
 
-                            int top = puzzle.getBoard()[0][i][j].getCorrectTopIndex();
+                            int top = puzzle.getBoard()[i][j].getCorrectTopIndex();
                             if (top != -1) {
                                 int[] coor = puzzle.getIdxToCoordinate().get(top);
                                 if (!puzzle.getIsCorrected()[coor[0]][coor[1]]) {
@@ -121,7 +133,7 @@ public class Item {
                                 }
                             }
 
-                            int left = puzzle.getBoard()[0][i][j].getCorrectLeftIndex();
+                            int left = puzzle.getBoard()[i][j].getCorrectLeftIndex();
                             if (left != -1) {
                                 int[] coor = puzzle.getIdxToCoordinate().get(left);
                                 if (!puzzle.getIsCorrected()[coor[0]][coor[1]]) {
@@ -129,7 +141,7 @@ public class Item {
                                 }
                             }
 
-                            int right = puzzle.getBoard()[0][i][j].getCorrectRightIndex();
+                            int right = puzzle.getBoard()[i][j].getCorrectRightIndex();
                             if (right != -1) {
                                 int[] coor = puzzle.getIdxToCoordinate().get(right);
                                 if (!puzzle.getIsCorrected()[coor[0]][coor[1]]) {
@@ -188,7 +200,7 @@ public class Item {
                 for (Piece p : mostManyBundle) {
                     setToList.add(p.getIndex());
                 }
-                Piece target = puzzle.getBoard()[0][puzzle.getIdxToCoordinate().get(setToList.get(randomIdx))[0]][puzzle.getIdxToCoordinate().get(setToList.get(randomIdx))[1]];
+                Piece target = puzzle.getBoard()[puzzle.getIdxToCoordinate().get(setToList.get(randomIdx))[0]][puzzle.getIdxToCoordinate().get(setToList.get(randomIdx))[1]];
 
                 targets.add(target.getIndex());
 
