@@ -4,7 +4,6 @@ import com.ssafy.puzzlepop.image.domain.ImageRequestDto;
 import com.ssafy.puzzlepop.image.domain.ImageDto;
 import com.ssafy.puzzlepop.image.domain.ImageResponseDto;
 import com.ssafy.puzzlepop.image.exception.ImageException;
-import org.springframework.core.io.UrlResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public interface ImageService {
 
     void deleteImage(Long id) throws ImageException;
 
-    UrlResource getImageById(Long id) throws ImageException;
+    String getBase64ImageById(Long id) throws ImageException;
 
     ImageResponseDto getImageInfoById(Long id) throws ImageException;
 
