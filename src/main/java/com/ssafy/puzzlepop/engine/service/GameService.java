@@ -340,6 +340,29 @@ public class GameService {
                 save(game);
             }
         }
+
+        //진행도 추가
+        if (game.getGameType().equals("BATTLE")) {
+            if (ourColor.equals("RED")) {
+                res.setRedProgressPercent(
+                        (double)ourPuzzle.getCorrectedCount()/
+                        ((double)ourPuzzle.getWidthCnt()*(double)ourPuzzle.getLengthCnt())*100);
+                res.setBlueProgressPercent(
+                        (double)yourPuzzle.getCorrectedCount()/
+                                ((double)yourPuzzle.getWidthCnt()*(double)yourPuzzle.getLengthCnt())*100);
+            } else {
+                res.setBlueProgressPercent(
+                        (double)ourPuzzle.getCorrectedCount()/
+                                ((double)ourPuzzle.getWidthCnt()*(double)ourPuzzle.getLengthCnt())*100);
+                res.setRedProgressPercent(
+                        (double)yourPuzzle.getCorrectedCount()/
+                                ((double)yourPuzzle.getWidthCnt()*(double)yourPuzzle.getLengthCnt())*100);
+            }
+        } else {
+            res.setRedProgressPercent(
+                    (double)ourPuzzle.getCorrectedCount()/
+                            ((double)ourPuzzle.getWidthCnt()*(double)ourPuzzle.getLengthCnt())*100);
+        }
         return res;
     }
 

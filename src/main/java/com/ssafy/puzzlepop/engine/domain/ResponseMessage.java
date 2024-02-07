@@ -19,4 +19,6 @@ public class ResponseMessage {
     private boolean isFinished;
     private Item item;
     private DropItem randomItem;
+    private double redProgressPercent = -1;
+    private double blueProgressPercent = -1;
 }
