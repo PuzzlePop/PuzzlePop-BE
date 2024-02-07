@@ -155,9 +155,9 @@ public class GameService {
 
             res.setMessage("ADD_PIECE");
             res.setTargets(targets);
-            int comboCnt = comboCheck(ourPuzzle);
-            if (comboCnt != 0) {
-                List<int[]> comboPieces = ourPuzzle.combo(pieces, comboCnt);
+            int[] comboCnt = comboCheck(ourPuzzle);
+            if (comboCnt != null) {
+                List<int[]> comboPieces = ourPuzzle.combo(pieces, comboCnt[1]);
                 if (comboPieces == null) {
                     return res;
                 }
@@ -165,6 +165,7 @@ public class GameService {
                     System.out.print(Arrays.toString(comboSet) + " | ");
                 }
                 res.setCombo(comboPieces);
+                res.setComboCnt(comboCnt[0]);
             }
             ourPuzzle.print();
         } else if (message.equals("USE_ITEM")) {
@@ -370,7 +371,7 @@ public class GameService {
         return false;
     }
 
-    public int comboCheck(PuzzleBoard puzzle) {
+    public int[] comboCheck(PuzzleBoard puzzle) {
         Date now = new Date();
         if (puzzle.getComboTimer().isEmpty()) {
             puzzle.getComboTimer().add(now);
@@ -384,9 +385,9 @@ public class GameService {
         }
 
         if (puzzle.getComboTimer().size() % 3 == 0) {
-            return puzzle.getComboTimer().size()/3;
+            return new int[] {puzzle.getComboTimer().size(), puzzle.getComboTimer().size() / 3};
         } else {
-            return 0;
+            return null;
         }
     }
 }
