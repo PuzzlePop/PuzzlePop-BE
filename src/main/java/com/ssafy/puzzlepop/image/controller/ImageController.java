@@ -21,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/image")
+@CrossOrigin("*")
 public class ImageController {
 
     private static final Long ADMIN_USER_ID = (long) 0;

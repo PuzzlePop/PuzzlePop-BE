@@ -280,9 +280,9 @@ public class ImageServiceImpl implements ImageService {
 
         try {
             List<Image> sPuzzleList = imageRepository.findAllByType(STANDARD_PUZZLE_IMAGE_TYPE);
-            if (sPuzzleList == null || sPuzzleList.isEmpty()) { // 존재하는 id에 대한 요청만 허용한다고 가정. 필요 시 수정
-                throw new ImageException("이미지 조회 중 오류 발생");
-            }
+//            if (sPuzzleList == null || sPuzzleList.isEmpty()) { // 존재하는 id에 대한 요청만 허용한다고 가정. 필요 시 수정
+//                throw new ImageException("이미지 조회 중 오류 발생");
+//            }
 
             for (Image image : sPuzzleList) {
                 Path imagePath = Paths.get(image.getFilepath() + "." + image.getFilenameExtension());
