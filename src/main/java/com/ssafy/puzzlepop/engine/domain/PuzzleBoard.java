@@ -411,12 +411,13 @@ public class PuzzleBoard {
     //파라미터 : 콤보가 터질 조각 뭉탱이
     public List<int[]> combo(List<Integer> pieceList, int comboCnt) {
         //4방 탐색용
-        int[] dx = {1,-1,0,0};
-        int[] dy = {0,0,-1,1};
+        //상 우 하 좌
+        int[] dx = {-1,0,1,0};
+        int[] dy = {0,1,0,-1};
 
         //입력받은 뭉탱이 주변 조각들(콤보 효과로 달라붙을 수 있는 조건을 가진 조각들)
 
-        Map<Integer, Integer> choiceSet = new HashMap<>();
+        Map<Integer, int[]> choiceSet = new HashMap<>();
         for (int pieceIdx : pieceList) {
             Piece x = board[idxToCoordinate.get(pieceIdx)[0]][idxToCoordinate.get(pieceIdx)[1]];
             for (Set<Piece> bundle : bundles) {
@@ -430,7 +431,7 @@ public class PuzzleBoard {
 
                             if (nr >= 0 && nc >= 0 && nr < lengthCnt && nc < widthCnt) {
                                 if (!isCorrected[nr][nc]) {
-                                    choiceSet.put(board[nr][nc].getIndex(), board[xy[0]][xy[1]].getIndex());
+                                    choiceSet.put(board[nr][nc].getIndex(), new int[] {board[xy[0]][xy[1]].getIndex(), i});
                                 }
                             }
                         }
@@ -460,7 +461,7 @@ public class PuzzleBoard {
             int randomPieceIdx = random(choiceList.size())-1;
             int chosenPiece = choiceList.get(randomPieceIdx);
             choiceList.remove(randomPieceIdx);
-            comboPieces.add(new int[] {chosenPiece, choiceSet.get(chosenPiece)});
+            comboPieces.add(new int[] {chosenPiece, choiceSet.get(chosenPiece)[0], choiceSet.get(chosenPiece)[1]});
         }
 
         //랜덤 결정 했으니, 입력 받은 리스트에 추가
