@@ -20,24 +20,23 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+
+@Component
 public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationProcessingFilter.class);
 
     private final UserService userService;
-    private final UserPrincipalService userPrincipalService;
-
+    private UserPrincipalService userPrincipalService;
     private final AuthenticationFailureHandler failureHandler;
-
     private final JwtProvider tokenProvider;
-
     private final JwtResolver tokenResolver;
-
     private AuthenticationSuccessHandler successHandler; // this is not necessary, for future usage
 
     /**
@@ -50,7 +49,8 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
             JwtProvider tokenProvider,
             JwtResolver tokenResolver,
             TokenAuthenticationFailureHandler failureHandler,
-            UserPrincipalService userPrincipalService, UserService userService) {
+            UserService userService,
+            UserPrincipalService userPrincipalService) {
 
         this.failureHandler = failureHandler;
         this.tokenProvider = tokenProvider;
@@ -58,7 +58,6 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
         this.userService = userService;
         this.userPrincipalService = userPrincipalService;
     }
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -72,12 +71,12 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
                     throw new InvalidTokenException("유효하지 않은 토큰");
 
                 JwtAuthenticationResult authentication = (JwtAuthenticationResult) tokenProvider.decode(token);
-//                Object principal = UserPrincipalService.loadUserPrincipal(authentication);
-//                authentication.setPrincipal(principal);
-                PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+                PrincipalDetails principal = userPrincipalService.loadUserPrincipal(authentication);
+                authentication.setPrincipal(principal);
 //                String provider = "google";
-                Long userId = principalDetails.getUser().getId();
-                String email = principalDetails.getEmail();
+                Long userId = principal.getUser().getId();
+                String email = principal.getEmail();
+
                 userService.getUserByIdAndEmail(userId, email);
 
                 // handle for authentication success

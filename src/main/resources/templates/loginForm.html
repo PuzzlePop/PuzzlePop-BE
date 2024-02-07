@@ -1,19 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>로그인 페이지</title>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Please sign in</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body>
-<h1>로그인 페이지</h1>
-<hr/>
-<form action="/login" method="POST">
-    <input type="text" name="username" placeholder="Username" /> <br/>
-    <input type="password" name="password" placeholder="Password" /> <br/>
-    <button>로그인</button>
-</form>
-
-<a href="/oauth2/authorization/google">구글 로그인</a>
-<a href="/joinForm">회원가입</a>
-</body>
-</html>
+<div class="container">
+    <h2 class="form-signin-heading">My custom login page</h2><table class="table table-striped">
+    <tbody><tr><td><a href="/oauth2/authorization/github">GitHub</a></td></tr>
+    <tr><td><a href="/oauth2/authorization/google">Google</a></td></tr>
+    </tbody></table>
+</div>
+</body></html>

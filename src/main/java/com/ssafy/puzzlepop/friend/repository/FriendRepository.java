@@ -13,8 +13,12 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     @Query("SELECT f FROM Friend f WHERE f.fromUserId = :userId OR f.toUserId = :userId")
     List<Friend> findAllByFromUserIdOrToUserId(@Param("userId") Long userId);
+    @Query("SELECT CASE WHEN f.toUserId = :userId THEN f.fromUserId ELSE f.toUserId END " +
+            "FROM Friend f WHERE f.fromUserId = :userId OR f.toUserId = :userId")
+    List<Long> findAllFriendIdByUserId(@Param("userId") Long userId);
     List<Friend> findAllByFromUserIdAndRequestStatus(Long fromUserId, String requestStatus);
     List<Friend> findAllByToUserIdAndRequestStatus(Long toUserId, String requestStatus);
-    @Query("SELECT f FROM Friend f WHERE (f.fromUserId = :id1 AND f.toUserId = :id2) OR (f.fromUserId = :id2 AND f.toUserId = :id1)")
+    @Query("SELECT f FROM Friend f " +
+            "WHERE (f.fromUserId = :id1 AND f.toUserId = :id2) OR (f.fromUserId = :id2 AND f.toUserId = :id1)")
     Friend findFriendById1AndId2(@Param("id1") Long id1, @Param("id2") Long id2);
 }

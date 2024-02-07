@@ -1,5 +1,6 @@
 package com.ssafy.puzzlepop.user.handler;
 
+import com.ssafy.puzzlepop.user.cookie.CookieUtils;
 import com.ssafy.puzzlepop.user.domain.PrincipalDetails;
 import com.ssafy.puzzlepop.user.provider.JwtProvider;
 import jakarta.servlet.ServletException;
@@ -8,14 +9,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Component
 @RequiredArgsConstructor
 public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtProvider jwtProvider;
-
+//    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
 
     @Override
@@ -34,13 +37,15 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // JWT 토큰을 response에 담아서 전송
         response.setContentType("application/json");
         response.getWriter().write("{\"token\": \"" + accessToken + "\"}");
-        System.out.println("TOKEN : "+ accessToken);
-        System.out.println("TOKEN : "+ refreshToken);
+        System.out.println("ACCESSTOKEN : "+ accessToken);
+        System.out.println("REFRESHTOKEN : "+ refreshToken);
 
+        CookieUtils.setCookie(response, "accessTokenName", accessToken, 600);
+        CookieUtils.setCookie(response, "refreshTokenName", refreshToken, 1800);
 
         //코드 내로 리디렉트 설정
 //        String redirectUrl = "/user/oauth-success?token="+token;
-        String redirectUrl = "/";
+        String redirectUrl = "http://localhost:8080/";  // 프론트로 이동
 
 //        //한국어 인코딩 설정
 //        String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8.toString());
@@ -53,8 +58,8 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
 
 //    private final AuthProperities authProperties;  // @ConfigurationProperties
-//    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
-//
+
+
 //    @Override
 //    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 //        String targetUrl = this.determineTargetUrl(request, response, authentication);  // 1~3 번 과정 진행

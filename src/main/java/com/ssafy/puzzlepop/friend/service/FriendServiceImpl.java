@@ -41,6 +41,11 @@ public class FriendServiceImpl implements FriendService{
     }
 
     @Override
+    public List<Long> getAllFriendIdByUserId(Long userId) {
+        return friendRepository.findAllFriendIdByUserId(userId);
+    }
+
+    @Override
     public Long createFriend(FriendDto friendDto) {
         Friend friend = friendRepository.save(friendDto.toEtity());
         return friend.getId();

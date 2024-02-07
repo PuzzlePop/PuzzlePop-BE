@@ -2,10 +2,13 @@ package com.ssafy.puzzlepop.user.controller;
 
 import com.ssafy.puzzlepop.user.domain.TokenDto;
 import com.ssafy.puzzlepop.user.exception.InvalidTokenException;
+import com.ssafy.puzzlepop.user.provider.JwtProvider;
 import com.ssafy.puzzlepop.user.provider.JwtReIssuer;
+import com.ssafy.puzzlepop.user.resolver.JwtResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class JwtController {
 
-    private JwtReIssuer jwtReIssuer;
+    private final JwtProvider jwtProvider;
+    private final JwtReIssuer jwtReIssuer;
+    private final JwtResolver jwtResolver;
 
     @PostMapping("/token/refresh")
 //    @Operation(summary = "access token 재발급을 요청한다.", description = "request 헤더 Authenticate 에 refreshToken 넣어서 보내줘야함.")
@@ -27,5 +32,17 @@ public class JwtController {
 
         return ResponseEntity.ok(newAccessToken);
     }
+
+
+    @GetMapping("/token")
+    public ResponseEntity<?> validation(HttpServletRequest request) {
+
+        Boolean b = jwtProvider.validate(jwtResolver.resolveTokenOrNull(request));
+
+        return ResponseEntity.ok(b);
+    }
+
+
+
 
 }
