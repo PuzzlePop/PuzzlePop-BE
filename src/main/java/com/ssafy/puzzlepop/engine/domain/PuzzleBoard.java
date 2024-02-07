@@ -86,28 +86,9 @@ public class PuzzleBoard {
     //2. 조각 수 판별, 가로 세로 조각수 판별
     //3. 퍼즐 판 초기화 및 고유 인덱스 번호 할당, 동시에 각각의 조각들이 상하좌우에 있는 조각들의 고유 인덱스 번호를 가지고 있음
     //4. 판에 조각들 랜덤 모양으로 할당하기
-    public Piece[][] init(Picture p) {
+    public Piece[][] init(Picture p, String gameType) {
         picture = p;
-
-        //TODO
-        //1. 사진 비율에 따른 여러가지 피스 제공
-        //2. 소수인 사이즈를 가진 사진이 들어왔을 때
-//        pieceSize = GCD(picture.getWidth(), picture.getLength());
-//        widthCnt = picture.getWidth()/pieceSize;
-//        lengthCnt = picture.getLength()/pieceSize;
         pieceSize = p.getPieceSize();
-//        Map<Integer, Integer> levelSize = new HashMap<>();
-//        levelSize.put(1, 500);
-//        levelSize.put(2, 600);
-//        levelSize.put(3, 800);
-//
-//        int originHeight = p.getLength();
-//        int originWidth = p.getWidth();
-//        int imgWidth = originHeight >= originWidth ? Math.round((levelSize.get(3)*originWidth) / originHeight / 100) * 100 : levelSize.get(3);
-//        int imgHeight = originHeight >= originWidth ? levelSize.get(3) : Math.round((levelSize.get(3)*originHeight) /  originWidth/ 100) * 100;
-//        widthCnt = (int) Math.floor((double)imgWidth / (double)pieceSize);
-//        lengthCnt = (int) Math.floor((double) imgHeight / (double)pieceSize);
-
         widthCnt = p.getWidthPieceCnt();
         lengthCnt = p.getLengthPieceCnt();
 
@@ -280,7 +261,11 @@ public class PuzzleBoard {
                 Random random = new Random();
                 int possibility = random.nextInt(100);
                 if (possibility <= 10) {
-                    board[i][j].setItem(Item.randomCreate());
+                    if (gameType.equals("COOPERATION")) {
+                        board[i][j].setItem(Item.randomCreateForCooperation());
+                    } else if (gameType.equals("BATTLE")) {
+                        board[i][j].setItem(Item.randomCreateForBattle());
+                    }
                 }
             }
         }
