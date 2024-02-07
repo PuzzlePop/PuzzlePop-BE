@@ -36,13 +36,9 @@ public class JwtController {
 
     @GetMapping("/token")
     public ResponseEntity<?> validation(HttpServletRequest request) {
-
+        System.out.println("validating");
         Boolean b = jwtProvider.validate(jwtResolver.resolveTokenOrNull(request));
-
+        System.out.println(b);
         return ResponseEntity.ok(b);
     }
-
-
-
-
 }

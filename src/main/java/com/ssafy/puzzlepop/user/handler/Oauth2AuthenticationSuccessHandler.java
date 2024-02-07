@@ -45,7 +45,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         //코드 내로 리디렉트 설정
 //        String redirectUrl = "/user/oauth-success?token="+token;
-        String redirectUrl = "http://localhost:8080/";  // 프론트로 이동
+        String redirectUrl = "http://localhost:5173/";  // 프론트로 이동
 
 //        //한국어 인코딩 설정
 //        String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8.toString());
