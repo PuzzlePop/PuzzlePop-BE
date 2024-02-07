@@ -1,9 +1,6 @@
 package com.ssafy.puzzlepop.image.service;
 
-import com.ssafy.puzzlepop.image.domain.Image;
-import com.ssafy.puzzlepop.image.domain.ImageRequestDto;
-import com.ssafy.puzzlepop.image.domain.ImageDto;
-import com.ssafy.puzzlepop.image.domain.ImageResponseDto;
+import com.ssafy.puzzlepop.image.domain.*;
 import com.ssafy.puzzlepop.image.exception.ImageException;
 import com.ssafy.puzzlepop.image.repository.ImageRepository;
 import org.apache.commons.io.FileUtils;
@@ -16,12 +13,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ImageServiceImpl implements ImageService {
     private static final Long ADMIN_USER_ID = (long) 0;
     private static final String CUSTOM_PUZZLE_IMAGE_TYPE = "cPuzzle";
+    private static final String STANDARD_PUZZLE_IMAGE_TYPE = "sPuzzle";
 
     private final ImageRepository imageRepository;
 
@@ -266,11 +267,42 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public ImageDto getImageDtoById(Long id) throws ImageException {
         Image image = imageRepository.findById(id).orElse(null);
-        if(image == null) {
+        if (image == null) {
             throw new ImageException("image matches to id doesn't exist");
         }
 
         return new ImageDto(image);
+    }
+
+    @Override
+    public List<ImageDataResponseDto> getAllPuzzleImages() throws ImageException {
+        List<ImageDataResponseDto> puzzleImageDataList = new ArrayList<>();
+
+        try {
+            List<Image> sPuzzleList = imageRepository.findAllByType(STANDARD_PUZZLE_IMAGE_TYPE);
+            if (sPuzzleList == null || sPuzzleList.isEmpty()) { // 존재하는 id에 대한 요청만 허용한다고 가정. 필요 시 수정
+                throw new ImageException("이미지 조회 중 오류 발생");
+            }
+
+            for (Image image : sPuzzleList) {
+                Path imagePath = Paths.get(image.getFilepath() + "." + image.getFilenameExtension());
+                File file = new File(String.valueOf(imagePath));
+                byte[] fileContent = FileUtils.readFileToByteArray(file);
+                String base64Image = Base64.getEncoder().encodeToString(fileContent);
+
+                ImageDataResponseDto imageData = new ImageDataResponseDto();
+                imageData.setId(image.getId());
+                imageData.setFilename(image.getFilename());
+                imageData.setBase64Image(base64Image);
+
+                puzzleImageDataList.add(imageData);
+            }
+
+            return puzzleImageDataList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ImageException(e.getMessage());
+        }
     }
 
 }

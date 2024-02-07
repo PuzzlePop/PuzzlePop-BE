@@ -1,5 +1,6 @@
 package com.ssafy.puzzlepop.image.service;
 
+import com.ssafy.puzzlepop.image.domain.ImageDataResponseDto;
 import com.ssafy.puzzlepop.image.domain.ImageRequestDto;
 import com.ssafy.puzzlepop.image.domain.ImageDto;
 import com.ssafy.puzzlepop.image.domain.ImageResponseDto;
@@ -27,4 +28,6 @@ public interface ImageService {
     List<ImageResponseDto> getImagesByUserId(Long userId) throws ImageException;
 
     ImageDto getImageDtoById(Long id) throws ImageException;
+
+    List<ImageDataResponseDto> getAllPuzzleImages() throws ImageException;
 }

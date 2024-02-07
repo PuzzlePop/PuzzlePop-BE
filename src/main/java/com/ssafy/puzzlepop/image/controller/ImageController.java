@@ -1,5 +1,6 @@
 package com.ssafy.puzzlepop.image.controller;
 
+import com.ssafy.puzzlepop.image.domain.ImageDataResponseDto;
 import com.ssafy.puzzlepop.image.domain.ImageRequestDto;
 import com.ssafy.puzzlepop.image.domain.ImageDto;
 import com.ssafy.puzzlepop.image.domain.ImageResponseDto;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.*;
 import java.util.List;
 
 // TODO: exception catch 시 에러 메세지 그대로 보내는 리턴하는 부분 리팩토링 필요
@@ -97,7 +99,17 @@ public class ImageController {
         }
     }
 
-    @GetMapping("/list/{type}")
+    @GetMapping("/list/puzzle")
+    public ResponseEntity<?> findAllPuzzleImages() {
+        try {
+            List<ImageDataResponseDto> imageDataList = imageService.getAllPuzzleImages();
+            return ResponseEntity.status(HttpStatus.OK).body(imageDataList);
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("FAIL");
+        }
+    }
+
+    @GetMapping("/list/info/{type}")
     public ResponseEntity<?> findImagesByType(@PathVariable String type) {
         // TODO: 요청 보낸 사용자의 userID로 대체해야 함
         Long userId = ADMIN_USER_ID;
