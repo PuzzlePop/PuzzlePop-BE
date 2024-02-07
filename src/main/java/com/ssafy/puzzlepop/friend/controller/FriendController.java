@@ -14,6 +14,7 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
+@CrossOrigin("*")
 public class FriendController {
 
     private final FriendService friendService;
