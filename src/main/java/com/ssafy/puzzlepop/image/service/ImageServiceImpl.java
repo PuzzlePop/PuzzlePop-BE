@@ -1,13 +1,10 @@
 package com.ssafy.puzzlepop.image.service;
 
-import com.ssafy.puzzlepop.image.domain.Image;
-import com.ssafy.puzzlepop.image.domain.ImageRequestDto;
-import com.ssafy.puzzlepop.image.domain.ImageDto;
-import com.ssafy.puzzlepop.image.domain.ImageResponseDto;
+import com.ssafy.puzzlepop.image.domain.*;
 import com.ssafy.puzzlepop.image.exception.ImageException;
 import com.ssafy.puzzlepop.image.repository.ImageRepository;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,12 +13,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ImageServiceImpl implements ImageService {
     private static final Long ADMIN_USER_ID = (long) 0;
     private static final String CUSTOM_PUZZLE_IMAGE_TYPE = "cPuzzle";
+    private static final String STANDARD_PUZZLE_IMAGE_TYPE = "sPuzzle";
 
     private final ImageRepository imageRepository;
 
@@ -37,12 +38,12 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Long createImage(MultipartFile file, ImageRequestDto imageRequestDto) throws ImageException {
 
-        // 권한 체크
-        if ("sPuzzle".equals(imageRequestDto.getType()) || "item".equals(imageRequestDto.getType())) { //
-            if (!ADMIN_USER_ID.equals(imageRequestDto.getUserId())) { // TODO: accessToken 발급받은 userId가 admin인지 확인
-                throw new ImageException("업로드 권한이 없습니다.");
-            }
-        }
+//        // 권한 체크
+//        if ("sPuzzle".equals(imageRequestDto.getType()) || "item".equals(imageRequestDto.getType())) { //
+//            if (!ADMIN_USER_ID.equals(imageRequestDto.getUserId())) { // TODO: accessToken 발급받은 userId가 admin인지 확인
+//                throw new ImageException("업로드 권한이 없습니다.");
+//            }
+//        }
 
         // 이미지 저장
         Path basePath = Paths.get(System.getProperty("user.dir"));
@@ -154,7 +155,7 @@ public class ImageServiceImpl implements ImageService {
 
 
     @Override
-    public UrlResource getImageById(Long id) throws ImageException {
+    public String getBase64ImageById(Long id) throws ImageException {
         Image image;
 
         try {
@@ -164,13 +165,18 @@ public class ImageServiceImpl implements ImageService {
             }
 
             Path imagePath = Paths.get(image.getFilepath() + "." + image.getFilenameExtension());
-            UrlResource imageResource = new UrlResource(imagePath.toUri());
+            File file = new File(String.valueOf(imagePath));
+            byte[] fileContent = FileUtils.readFileToByteArray(file);
+            String base64Image = Base64.getEncoder().encodeToString(fileContent);
 
-            if (imageResource.exists()) {
-                return imageResource;
-            } else {
-                throw new ImageException("이미지 파일이 존재하지 않습니다...");
-            }
+            return base64Image;
+
+//            UrlResource imageResource = new UrlResource(imagePath.toUri());
+//            if (imageResource.exists()) {
+//                return imageResource;
+//            } else {
+//                throw new ImageException("이미지 파일이 존재하지 않습니다...");
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -223,7 +229,7 @@ public class ImageServiceImpl implements ImageService {
         List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
 
         if (CUSTOM_PUZZLE_IMAGE_TYPE.equals(type)) {
-            if (!Objects.equals(userId, ADMIN_USER_ID)) {
+            if (!ADMIN_USER_ID.equals(userId)) {
                 throw new ImageException("not allowed");
             }
         }
@@ -261,11 +267,42 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public ImageDto getImageDtoById(Long id) throws ImageException {
         Image image = imageRepository.findById(id).orElse(null);
-        if(image == null) {
+        if (image == null) {
             throw new ImageException("image matches to id doesn't exist");
         }
 
         return new ImageDto(image);
+    }
+
+    @Override
+    public List<ImageDataResponseDto> getAllPuzzleImages() throws ImageException {
+        List<ImageDataResponseDto> puzzleImageDataList = new ArrayList<>();
+
+        try {
+            List<Image> sPuzzleList = imageRepository.findAllByType(STANDARD_PUZZLE_IMAGE_TYPE);
+//            if (sPuzzleList == null || sPuzzleList.isEmpty()) { // 존재하는 id에 대한 요청만 허용한다고 가정. 필요 시 수정
+//                throw new ImageException("이미지 조회 중 오류 발생");
+//            }
+
+            for (Image image : sPuzzleList) {
+                Path imagePath = Paths.get(image.getFilepath() + "." + image.getFilenameExtension());
+                File file = new File(String.valueOf(imagePath));
+                byte[] fileContent = FileUtils.readFileToByteArray(file);
+                String base64Image = Base64.getEncoder().encodeToString(fileContent);
+
+                ImageDataResponseDto imageData = new ImageDataResponseDto();
+                imageData.setId(image.getId());
+                imageData.setFilename(image.getFilename());
+                imageData.setBase64Image(base64Image);
+
+                puzzleImageDataList.add(imageData);
+            }
+
+            return puzzleImageDataList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ImageException(e.getMessage());
+        }
     }
 
 }

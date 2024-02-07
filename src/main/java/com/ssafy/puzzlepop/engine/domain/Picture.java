@@ -15,13 +15,14 @@ public class Picture {
     private String name;
     private int width;
     private int length;
-    private String encodedString;
+
 
     private int pieceSize;
     private int widthPieceCnt;
     private int lengthPieceCnt;
     private Map<Integer, Integer> levelSize;
 
+    private String encodedString;
     //사진 업로드의 경우
     public void create(int width, int length, String name, int pieceSize, String encodedString) {
         this.width = width;
