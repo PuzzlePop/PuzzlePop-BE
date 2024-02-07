@@ -1,28 +1,36 @@
-package com.ssafy.puzzlepop.gameinfo.service;
-
-import com.ssafy.puzzlepop.gameinfo.domain.GameInfo;
-import com.ssafy.puzzlepop.gameinfo.domain.GameInfoDto;
-import com.ssafy.puzzlepop.gameinfo.exception.GameInfoNotFoundException;
-import com.ssafy.puzzlepop.gameinfo.repository.GameInfoRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.assertj.core.api.Assertions.*;
-
-//@SpringBootTest
-class GameInfoServiceTest {
-//    @Autowired
-//    private GameInfoService gameInfoService;
-//    @Autowired
+//package com.ssafy.puzzlepop.gameinfo.service;
+//
+//import com.ssafy.puzzlepop.gameinfo.domain.GameInfo;
+//import com.ssafy.puzzlepop.gameinfo.domain.GameInfoDto;
+//import com.ssafy.puzzlepop.gameinfo.exception.GameInfoNotFoundException;
+//import com.ssafy.puzzlepop.gameinfo.repository.GameInfoRepository;
+//import org.junit.jupiter.api.AfterEach;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.DisplayName;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.extension.ExtendWith;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.mockito.junit.jupiter.MockitoExtension;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.test.context.SpringBootTest;
+//
+//import java.time.LocalDateTime;
+//import java.util.List;
+//import java.util.Optional;
+//import java.util.Random;
+//
+//import static org.junit.jupiter.api.Assertions.*;
+//import static org.assertj.core.api.Assertions.*;
+//import static org.mockito.ArgumentMatchers.any;
+//import static org.mockito.Mockito.when;
+//
+//@ExtendWith(MockitoExtension.class)
+//class GameInfoServiceTest {
+//    @Mock
 //    private GameInfoRepository gameInfoRepository;
+//    @InjectMocks
+//    private GameInfoServiceImpl gameInfoService;
 //
 //    @BeforeEach
 //    void setUp() {
@@ -182,23 +190,35 @@ class GameInfoServiceTest {
 //                now.plusMinutes(5), now.plusMinutes(3),
 //                now.plusMinutes(0), null);
 //
+//        GameInfo gameInfo = new GameInfo();
+//        gameInfo.setId(1L);
+//        gameInfo.setType("single");
+//        gameInfo.setIsCleared(false);
+//        gameInfo.setCurPlayerCount(4);
+//        gameInfo.setMaxPlayerCount(8);
+//        gameInfo.setTotalPieceCount(256);
+//        gameInfo.setLimitTime(now.plusMinutes(5));
+//        gameInfo.setPassedTime(now.plusMinutes(3));
+//        gameInfo.setStartedTime(now.plusMinutes(0));
+//        gameInfo.setFinishedTime(null);
+//
+//        when(gameInfoRepository.save(any(GameInfo.class))).thenReturn(gameInfo);
+//        when(gameInfoRepository.findById(1L)).thenReturn(Optional.of(gameInfo));
+//
 //        // when
 //        Long id = gameInfoService.createGameInfo(gameInfoDto);
 //        GameInfoDto response = gameInfoService.readGameInfo(id);
 //
 //        // then
-//        assertThat(response).isNotNull();
-//        assertThat(response.getIsCleared()).isFalse();
-//        assertThat(response.getType()).isEqualTo("single");
-//
-//        assertThat(response.getCurPlayerCount()).isEqualTo(4);
-//        assertThat(response.getMaxPlayerCount()).isEqualTo(8);
-//        assertThat(response.getTotalPieceCount()).isEqualTo(256);
-//
-//        assertThat(response.getLimitTime()).isEqualTo(now.plusMinutes(5));
-//        assertThat(response.getPassedTime()).isEqualTo(now.plusMinutes(3));
-//        assertThat(response.getStartedTime()).isEqualTo(now.plusMinutes(0));
-//        assertThat(response.getFinishedTime()).isNull();
+//        assertEquals(gameInfoDto.getIsCleared(), response.getIsCleared());
+//        assertEquals(gameInfoDto.getType(), response.getType());
+//        assertEquals(gameInfoDto.getCurPlayerCount(), response.getCurPlayerCount());
+//        assertEquals(gameInfoDto.getMaxPlayerCount(), response.getMaxPlayerCount());
+//        assertEquals(gameInfoDto.getTotalPieceCount(), response.getTotalPieceCount());
+//        assertEquals(gameInfoDto.getLimitTime(), response.getLimitTime());
+//        assertEquals(gameInfoDto.getPassedTime(), response.getPassedTime());
+//        assertEquals(gameInfoDto.getStartedTime(), response.getStartedTime());
+//        assertEquals(gameInfoDto.getFinishedTime(), response.getFinishedTime());
 //    }
 //
 //    @Test
@@ -245,4 +265,4 @@ class GameInfoServiceTest {
 //        // then
 //        assertThrows(GameInfoNotFoundException.class, () -> gameInfoService.readGameInfo(id));
 //    }
-}
+//}
