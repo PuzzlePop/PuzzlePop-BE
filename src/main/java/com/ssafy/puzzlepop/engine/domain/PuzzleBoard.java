@@ -45,7 +45,13 @@ public class PuzzleBoard {
         }
 
         Item item = new Item(type);
-        itemList[itemCount++] = item;
+        for (int i = 0; i < 5; i++) {
+            if (itemList[i] == null) {
+                itemList[i] = item;
+                itemCount++;
+                break;
+            }
+        }
         System.out.println("아이템 추가 성공");
         return item;
     }
