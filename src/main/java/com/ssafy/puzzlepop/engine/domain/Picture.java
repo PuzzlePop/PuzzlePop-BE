@@ -1,5 +1,6 @@
 package com.ssafy.puzzlepop.engine.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,16 +9,42 @@ import java.util.Map;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Picture {
+    private Long id;
+    private String name;
     private int width;
     private int length;
-    private String encodedString;
+
 
     private int pieceSize;
     private int widthPieceCnt;
     private int lengthPieceCnt;
     private Map<Integer, Integer> levelSize;
 
+    private String encodedString;
+    //사진 업로드의 경우
+    public void create(int width, int length, String name, int pieceSize, String encodedString) {
+        this.width = width;
+        this.length = length;
+        this.name = name;
+        this.encodedString = encodedString;
+
+        this.pieceSize = pieceSize;
+        this.levelSize = new HashMap<>();
+        this.levelSize.put(1, 500);
+        this.levelSize.put(2, 600);
+        this.levelSize.put(3, 800);
+
+        int originHeight = this.getLength();
+        int originWidth = this.getWidth();
+        int imgWidth = originHeight >= originWidth ? Math.round((this.levelSize.get(3)*originWidth) / originHeight / 100) * 100 : this.levelSize.get(3);
+        int imgHeight = originHeight >= originWidth ? this.levelSize.get(3) : Math.round((this.levelSize.get(3)*originHeight) /  originWidth/ 100) * 100;
+        this.widthPieceCnt = (int) Math.floor((double)imgWidth / (double)this.pieceSize);
+        this.lengthPieceCnt = (int) Math.floor((double) imgHeight / (double)this.pieceSize);
+    }
+
+    //디폴트
     public static Picture create() {
         Picture p = new Picture();
         p.width = 1000;

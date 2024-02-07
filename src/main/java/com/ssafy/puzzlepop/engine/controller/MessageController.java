@@ -62,7 +62,8 @@ public class MessageController {
 
         if (game.isEmpty()) {
             System.out.println("game.isEmpty()");
-            Thread.sleep(5000);
+            //잠시 대기
+            Thread.sleep(1500);
             if (game.isEmpty()) {
                 System.out.println("진짜 나간것같아. 게임 지울게!");
                 gameService.deleteRoom(gameId);
@@ -103,6 +104,9 @@ public class MessageController {
                 System.out.println("GAME_START");
                 Game game = gameService.startGame(message.getRoomId());
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
+            } else if (message.getMessage().equals("GAME_INFO")) {
+                Game game = gameService.findById(message.getRoomId());
+                sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
             } else {
                 if (!gameService.findById(message.getRoomId()).isStarted()) {
                     System.out.println("게임 시작 안했음! 명령 무시함");
@@ -111,7 +115,7 @@ public class MessageController {
                 System.out.println("명령어 : " + message.getMessage());
                 System.out.println("게임방 : " + message.getRoomId());
                 ResponseMessage res = gameService.playGame(message);
-                sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), res);
+                sendingOperations.convertAndSend("/topic/game/room/" + message.getRoomId(), res);
             }
         }
     }
@@ -143,17 +147,15 @@ public class MessageController {
     //테스트용 확률 조정
     @Scheduled(fixedRate = 20000)
     public void sendDropItem() {
-        //배틀로 변경해야함
+        //TODO 배틀로 변경해야함
         List<Game> allRoom = gameService.findAllCooperationRoom();
         Random random = new Random();
         for (int i = allRoom.size()-1; i >= 0 ; i--) {
             if (allRoom.get(i).isStarted()) {
                 //확률 계산
                 int possibility = random.nextInt(100);
-                System.out.println(possibility + " %");
-                if (possibility <= 70) {
+                if (possibility <= 30) {
                     DropItem item = DropItem.randomCreate();
-                    System.out.println(item + "을 생성합니다.");
                     allRoom.get(i).getDropRandomItem().put(item.getUuid(), item);
                     ResponseMessage res = new ResponseMessage();
                     res.setMessage("DROP_ITEM");
