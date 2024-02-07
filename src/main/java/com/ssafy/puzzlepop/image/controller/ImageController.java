@@ -60,7 +60,7 @@ public class ImageController {
 
         try {
             imageService.deleteImage(id);
-            return ResponseEntity.status(HttpStatus.OK).body("delete ok");
+            return ResponseEntity.status(HttpStatus.OK).body("DELETE OK: "+id);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -79,8 +79,8 @@ public class ImageController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findImageById(@PathVariable Long id) {
         try {
-            UrlResource imageResource = imageService.getImageById(id);
-            return ResponseEntity.status(HttpStatus.OK).body(imageResource);
+            String base64Image = imageService.getBase64ImageById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(base64Image);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
