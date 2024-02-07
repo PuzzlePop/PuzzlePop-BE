@@ -14,7 +14,7 @@ public class ResponseMessage {
     private int position_x;
     private int position_y;
     private String targets;
-    private List<Integer> combo;
+    private List<int[]> combo;
     private boolean isFinished;
     private DropItem randomItem;
 }

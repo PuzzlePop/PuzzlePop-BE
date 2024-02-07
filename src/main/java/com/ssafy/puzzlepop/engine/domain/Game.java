@@ -198,6 +198,10 @@ public class Game {
         return (now-start)/1000;
     }
 
+    public void updatePicture(Picture p) {
+        this.picture = p;
+    }
+
 //    public static void main(String[] args) {
 //        Scanner sc = new Scanner(System.in);
 //        Picture picture = new Picture(64, 48, ".");
