@@ -281,7 +281,6 @@ public class PuzzleBoard {
 
 
         correctedCount = 0;
-        randomArrange();
         return board;
     }
 
@@ -347,11 +346,11 @@ public class PuzzleBoard {
 
 
     //결합된 조각 삭제
-    public void deletePiece(int targetIdx) {
+    public double[] deletePiece(int targetIdx) {
         int r = idxToCoordinate.get(targetIdx)[0];
         int c = idxToCoordinate.get(targetIdx)[1];
         if (!isCorrected[r][c])
-            return;
+            return null;
 
 
         for (Set<Piece> bundle : bundles) {
@@ -361,12 +360,12 @@ public class PuzzleBoard {
                     it.remove();
                     isCorrected[r][c] = false;
                     updatePieceCount();
-                    return;
+                    return randomArrange(p.getIndex());
                 }
             }
         }
 
-
+        return null;
     }
 
     public void searchForGroupDisbandment() {
@@ -509,22 +508,13 @@ public class PuzzleBoard {
 //        System.out.println(Arrays.toString(itemList));
         System.out.println("---------------------------------------");
     }
-    
-    
-    //TODO : 알고리즘 다시 작성
-    public void randomArrange() {
-        LinkedList<Piece> list = new LinkedList<>();
-        for (int i = 0; i < lengthCnt; i++) {
-            for (int j = 0; j < widthCnt; j++) {
-                if (!isCorrected[i][j]) {
-                    list.add(board[i][j]);
-                } else {
-                    list.add(null);
-                }
-            }
-        }
 
-        Collections.shuffle(list);
+    public double[] randomArrange(int pieceIdx) {
+        int r = idxToCoordinate.get(pieceIdx)[0];
+        int c = idxToCoordinate.get(pieceIdx)[1];
+        board[r][c].setPosition_x(random(CANVAS_WIDTH));
+        board[r][c].setPosition_y(random(CANVAS_LENGTH));
+        return new double[]{board[r][c].getPosition_x(), board[r][c].getPosition_y()};
     }
 
     public int random(int range) {
