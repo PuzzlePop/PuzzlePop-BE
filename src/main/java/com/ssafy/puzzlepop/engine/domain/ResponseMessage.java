@@ -23,4 +23,6 @@ public class ResponseMessage {
     private double redProgressPercent = -1;
     private double blueProgressPercent = -1;
     private Map<Integer, double[]> deleted;
+    private Item[] redItemList;
+    private Item[] blueItemList;
 }
