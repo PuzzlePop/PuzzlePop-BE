@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 
@@ -20,14 +21,16 @@ public class StompHandler implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         String sessionId = accessor.getSessionId();
-        String gameId = gameService.sessionToGame.get(sessionId);
 
-        Game game = gameService.findById(gameId);
+        if (accessor.getCommand().equals(StompCommand.DISCONNECT)) {
+            String gameId = gameService.sessionToGame.get(sessionId);
+            Game game = gameService.findById(gameId);
 
-        if (game.isFinished()) {
-            return message;
-        } else {
-            return null;
+            if (game.isFinished()) {
+                return message;
+            } else {
+                return null;
+            }
         }
     }
 }
