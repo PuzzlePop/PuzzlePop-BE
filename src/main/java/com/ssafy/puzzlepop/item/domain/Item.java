@@ -27,11 +27,12 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
     List<TeamItem> teamItems;
 
-    public void update(ItemDto itemDto) {
+    public Item update(ItemDto itemDto) {
         this.name = itemDto.getName();
         this.type = itemDto.getType();
         this.price = itemDto.getPrice();
         this.description = itemDto.getDescription();
         this.imageId = itemDto.getImageId();
+        return this;
     }
 }
