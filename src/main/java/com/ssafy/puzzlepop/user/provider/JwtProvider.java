@@ -5,6 +5,7 @@ import com.ssafy.puzzlepop.user.domain.TokenDto;
 import com.ssafy.puzzlepop.user.domain.User;
 import com.ssafy.puzzlepop.user.exception.InvalidTokenException;
 import com.ssafy.puzzlepop.user.filter.TokenAuthenticationProcessingFilter;
+import com.ssafy.puzzlepop.user.jwtUtils.JwtAuthenticationResult;
 import com.ssafy.puzzlepop.user.service.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -96,7 +97,7 @@ public class JwtProvider {
 
 
     public boolean validate(String token) {
-        System.out.println("validating token...");
+        System.out.println("validating token..." + token );
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             System.out.println("validation complete");
@@ -120,23 +121,7 @@ public class JwtProvider {
 
     /* web request 에 대한 인증 정보를 반환함. */
     @SuppressWarnings("unchecked")
-//    public JwtAuthenticationResult decode(String token) throws JwtException {
-//
-//        Claims claims = this.parseClaims(token);
-//        String uid = claims.getSubject();
-//        String provider = claims.get("provider", String.class);
-//        String email = claims.get("email", String.class);
-//        List<? extends GrantedAuthority> grantedAuthorities =
-//                (List<SimpleGrantedAuthority>) claims.get("authority", List.class).stream()
-//                        .map(authority-> new SimpleGrantedAuthority((String) authority))
-//                        .collect(Collectors.toList());
-//
-//        return new JwtAuthenticationResult(uid, provider, email, grantedAuthorities);
-//    }
-
-    public Map<String,String> decode(String token) throws JwtException {
-
-        Map<String, String> map = new HashMap<>();
+    public JwtAuthenticationResult decode(String token) throws JwtException {
 
         Claims claims = this.parseClaims(token);
         String uid = claims.getSubject();
@@ -147,10 +132,26 @@ public class JwtProvider {
                         .map(authority-> new SimpleGrantedAuthority((String) authority))
                         .collect(Collectors.toList());
 
-
-
-        return map;
+        return new JwtAuthenticationResult(uid, provider, email, grantedAuthorities);
     }
+
+//    public Map<String,String> decode(String token) throws JwtException {
+//
+//        Map<String, String> map = new HashMap<>();
+//
+//        Claims claims = this.parseClaims(token);
+//        String uid = claims.getSubject();
+//        String provider = claims.get("provider", String.class);
+//        String email = claims.get("email", String.class);
+//        List<? extends GrantedAuthority> grantedAuthorities =
+//                (List<SimpleGrantedAuthority>) claims.get("authority", List.class).stream()
+//                        .map(authority-> new SimpleGrantedAuthority((String) authority))
+//                        .collect(Collectors.toList());
+//
+//
+//
+//        return map;
+//    }
 
     private Claims parseClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
