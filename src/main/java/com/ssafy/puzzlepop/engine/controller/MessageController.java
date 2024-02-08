@@ -26,13 +26,11 @@ import java.util.*;
 @EnableScheduling
 @Slf4j
 public class MessageController {
-
-    @Autowired
-    private GameService gameService;
+    private final GameService gameService;
     private final SimpMessageSendingOperations sendingOperations;
     private final int BATTLE_TIMER = 300;
     private String sessionId;
-    private Map<String, String> sessionToGame;
+    public Map<String, String> sessionToGame;
 
     @PostConstruct
     public void init() {
