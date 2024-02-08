@@ -65,7 +65,7 @@ public class MessageController {
         if (game.isEmpty()) {
             System.out.println("game.isEmpty()");
             //잠시 대기
-            Thread.sleep(1500);
+            Thread.sleep(5000);
             if (game.isEmpty()) {
                 System.out.println("진짜 나간것같아. 게임 지울게!");
                 gameService.deleteRoom(gameId);
