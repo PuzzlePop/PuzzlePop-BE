@@ -79,10 +79,10 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                                .anyRequest().permitAll()
-//                        .requestMatchers("/","/login/**").permitAll()
+//                                .anyRequest().permitAll()
+                        .requestMatchers("/","/login/**").permitAll()
 
-//                        .anyRequest().authenticated()
+                        .anyRequest().authenticated()
                 );
 
         http
