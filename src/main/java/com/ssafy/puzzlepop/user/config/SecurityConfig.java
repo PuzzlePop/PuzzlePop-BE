@@ -27,7 +27,7 @@ public class SecurityConfig {
     private final TokenAuthenticationProcessingFilter tokenAuthenticationProcessingFilter;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-    private String frontendUrl = "http://localhost:5173";
+    private String frontendUrl = "https://i10a304.p.ssafy.io";
 
     public SecurityConfig(UserService userService, Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler, Oauth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler, TokenAuthenticationProcessingFilter tokenAuthenticationProcessingFilter, HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
         this.userService = userService;
