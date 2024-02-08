@@ -2,7 +2,9 @@ package com.ssafy.puzzlepop.user.handler;
 
 import com.ssafy.puzzlepop.user.cookie.CookieUtils;
 import com.ssafy.puzzlepop.user.domain.PrincipalDetails;
+import com.ssafy.puzzlepop.user.domain.UserDto;
 import com.ssafy.puzzlepop.user.provider.JwtProvider;
+import com.ssafy.puzzlepop.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +19,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    private final UserService userService;
     private final JwtProvider jwtProvider;
 //    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
@@ -39,6 +42,14 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         response.getWriter().write("{\"token\": \"" + accessToken + "\"}");
         System.out.println("ACCESSTOKEN : "+ accessToken);
         System.out.println("REFRESHTOKEN : "+ refreshToken);
+
+        // REFRESH 토큰
+        UserDto userDto = userService.getUserById(principalDetails.getUser().getId());
+//        userDto.setRefreshToken(refreshToken);
+//        userDto.setAccessToken(accessToken);
+//        userDto.setCreatedDate();
+//        userDto.setExpiredDate();
+
 
         CookieUtils.setCookie(response, "accessTokenName", accessToken, 600);
         CookieUtils.setCookie(response, "refreshTokenName", refreshToken, 1800);
