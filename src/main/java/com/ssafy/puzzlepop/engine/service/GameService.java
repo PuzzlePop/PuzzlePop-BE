@@ -20,6 +20,7 @@ import java.util.*;
 public class GameService {
     private Map<String, Game> gameRooms;
     private Gson gson;
+    public Map<String, String> sessionToGame;
 
     private final GameInfoService gameInfoService;
 
@@ -29,6 +30,9 @@ public class GameService {
         gameRooms = new LinkedHashMap<>();
         gameRooms = Collections.synchronizedMap(gameRooms);
         gson = new Gson();
+
+        sessionToGame = new LinkedHashMap<>();
+        sessionToGame = Collections.synchronizedMap(sessionToGame);
     }
 
     //협동 게임방 불러오기

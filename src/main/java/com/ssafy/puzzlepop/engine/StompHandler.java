@@ -15,13 +15,13 @@ import org.springframework.messaging.support.ChannelInterceptor;
 public class StompHandler implements ChannelInterceptor {
 
     private final GameService gameService;
-    private final MessageController messageController;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         String sessionId = accessor.getSessionId();
-        String gameId = messageController.sessionToGame.get(sessionId);
+        String gameId = gameService.sessionToGame.get(sessionId);
+
         Game game = gameService.findById(gameId);
 
         if (game.isFinished()) {

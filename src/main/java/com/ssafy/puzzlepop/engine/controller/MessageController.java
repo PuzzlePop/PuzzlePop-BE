@@ -30,13 +30,7 @@ public class MessageController {
     private final SimpMessageSendingOperations sendingOperations;
     private final int BATTLE_TIMER = 300;
     private String sessionId;
-    public Map<String, String> sessionToGame;
 
-    @PostConstruct
-    public void init() {
-        sessionToGame = new LinkedHashMap<>();
-        sessionToGame = Collections.synchronizedMap(sessionToGame);
-    }
 
     //세션 아이디 설정
     @EventListener
@@ -51,14 +45,14 @@ public class MessageController {
         System.out.println("MessageController.handleDisconnectEvent");
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
-        String gameId = sessionToGame.get(sessionId);
+        String gameId = gameService.sessionToGame.get(sessionId);
         Game game = gameService.findById(gameId);
         if (game == null) {
             return;
         }
         System.out.println(game.getSessionToUser().get(sessionId).getId() + " 님이 퇴장하십니다.");
         game.exitPlayer(sessionId);
-        sessionToGame.remove(sessionId);
+        gameService.sessionToGame.remove(sessionId);
 
         if (game.isEmpty()) {
             System.out.println("game.isEmpty()");
@@ -83,7 +77,7 @@ public class MessageController {
         if (message.getType().equals(InGameMessage.MessageType.ENTER)) {
             Game game = gameService.findById(message.getRoomId());
 
-            sessionToGame.put(sessionId, message.getRoomId());
+            gameService.sessionToGame.put(sessionId, message.getRoomId());
 
             if (game.enterPlayer(new User(message.getSender()), sessionId)) {
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
