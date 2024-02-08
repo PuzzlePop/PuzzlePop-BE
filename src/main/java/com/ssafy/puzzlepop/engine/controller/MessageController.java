@@ -59,21 +59,21 @@ public class MessageController {
             return;
         }
         System.out.println(game.getSessionToUser().get(sessionId).getId() + " 님이 퇴장하십니다.");
-//        game.exitPlayer(sessionId);
-//        sessionToGame.remove(sessionId);
+        game.exitPlayer(sessionId);
+        sessionToGame.remove(sessionId);
 
-//        if (game.isEmpty()) {
-//            System.out.println("game.isEmpty()");
-//            //잠시 대기
-//            Thread.sleep(5000);
-//            if (game.isEmpty()) {
-//                System.out.println("진짜 나간것같아. 게임 지울게!");
-//                gameService.deleteRoom(gameId);
-//            } else {
-//                System.out.println("새로고침이였어. 다시 연결한다!");
-//                return;
-//            }
-//        }
+        if (game.isEmpty()) {
+            System.out.println("game.isEmpty()");
+            //잠시 대기
+            Thread.sleep(5000);
+            if (game.isEmpty()) {
+                System.out.println("진짜 나간것같아. 게임 지울게!");
+                gameService.deleteRoom(gameId);
+            } else {
+                System.out.println("새로고침이였어. 다시 연결한다!");
+                return;
+            }
+        }
 
         sendingOperations.convertAndSend("/topic/game/room/"+gameId, game);
     }
