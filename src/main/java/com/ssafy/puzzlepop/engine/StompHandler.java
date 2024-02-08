@@ -32,5 +32,7 @@ public class StompHandler implements ChannelInterceptor {
                 return null;
             }
         }
+
+        return message;
     }
 }
