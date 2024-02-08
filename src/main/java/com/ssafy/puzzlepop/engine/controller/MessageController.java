@@ -106,15 +106,11 @@ public class MessageController {
                     System.out.println("게임 시작 안했음! 명령 무시함");
                     return;
                 }
-                Game game = gameService.startGame(message.getRoomId());
-                log.info("지금 게임 서비스 들어감");
+                Game game = gameService.findById(message.getRoomId());
                 ResponseMessage res = gameService.playGame(message);
                 res.setRedItemList(game.getRedPuzzle().getItemList());
                 res.setBlueItemList(game.getBluePuzzle().getItemList());
-                log.info("게임 서비스에서 나옴");
-                log.info("브로드 캐스팅 하기 직전");
                 sendingOperations.convertAndSend("/topic/game/room/" + message.getRoomId(), res);
-                log.info("브로드 캐스팅 완료");
             }
         }
     }
