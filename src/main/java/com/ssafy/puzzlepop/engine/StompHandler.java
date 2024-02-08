@@ -24,18 +24,18 @@ public class StompHandler implements ChannelInterceptor {
         String sessionId = accessor.getSessionId();
 
         System.out.println(accessor.getCommand());
-        if (accessor.getCommand().equals(StompCommand.DISCONNECT)) {
-            String gameId = gameService.sessionToGame.get(sessionId);
-            Game game = gameService.findById(gameId);
-
-            if (game.isFinished()) {
-                System.out.println("끝났으니 messagecontroller로 감");
-                return message;
-            } else {
-                System.out.println("안끝났으니 disconnect 무시한다.");
-                return null;
-            }
-        }
+//        if (accessor.getCommand().equals(StompCommand.DISCONNECT)) {
+//            String gameId = gameService.sessionToGame.get(sessionId);
+//            Game game = gameService.findById(gameId);
+//
+//            if (game.isFinished()) {
+//                System.out.println("끝났으니 messagecontroller로 감");
+//                return message;
+//            } else {
+//                System.out.println("안끝났으니 disconnect 무시한다.");
+//                return null;
+//            }
+//        }
 
         return message;
     }

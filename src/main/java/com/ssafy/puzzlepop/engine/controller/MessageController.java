@@ -12,6 +12,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -51,20 +52,24 @@ public class MessageController {
             return;
         }
 
-        System.out.println(game.getSessionToUser().get(sessionId).getId() + " 님이 퇴장하십니다.");
-        game.exitPlayer(sessionId);
-        gameService.sessionToGame.remove(sessionId);
-
-        if (game.isEmpty()) {
-            System.out.println("game.isEmpty()");
-            //잠시 대기
-            Thread.sleep(5000);
-            if (game.isEmpty()) {
-                System.out.println("진짜 나간것같아. 게임 지울게!");
-                gameService.deleteRoom(gameId);
+        if (accessor.getCommand().equals(StompCommand.DISCONNECT)) {
+            if (game.isFinished()) {
+                System.out.println(game.getSessionToUser().get(sessionId).getId() + " 님이 퇴장하십니다.");
+                game.exitPlayer(sessionId);
+                gameService.sessionToGame.remove(sessionId);
             } else {
-                System.out.println("새로고침이였어. 다시 연결한다!");
-                return;
+                if (game.isEmpty()) {
+                    System.out.println("game.isEmpty()");
+                    //잠시 대기
+                    Thread.sleep(5000);
+                    if (game.isEmpty()) {
+                        System.out.println("진짜 나간것같아. 게임 지울게!");
+                        gameService.deleteRoom(gameId);
+                    } else {
+                        System.out.println("새로고침이였어. 다시 연결한다!");
+                        return;
+                    }
+                }
             }
         }
 
