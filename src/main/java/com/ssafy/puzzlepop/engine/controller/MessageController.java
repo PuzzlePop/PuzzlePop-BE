@@ -145,11 +145,9 @@ public class MessageController {
 
     //배틀 드랍 아이템 제공
     //20초에 한번씩 제공하기로 함
-    //테스트용 확률 조정
     @Scheduled(fixedRate = 20000)
     public void sendDropItem() {
-        //TODO 배틀로 변경해야함
-        List<Game> allRoom = gameService.findAllCooperationRoom();
+        List<Game> allRoom = gameService.findAllBattleRoom();
         Random random = new Random();
         for (int i = allRoom.size()-1; i >= 0 ; i--) {
             if (allRoom.get(i).isStarted()) {
