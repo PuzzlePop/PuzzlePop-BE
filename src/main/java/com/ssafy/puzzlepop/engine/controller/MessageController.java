@@ -59,8 +59,8 @@ public class MessageController {
             return;
         }
         System.out.println(game.getSessionToUser().get(sessionId).getId() + " 님이 퇴장하십니다.");
-        game.exitPlayer(sessionId);
-        sessionToGame.remove(sessionId);
+//        game.exitPlayer(sessionId);
+//        sessionToGame.remove(sessionId);
 
 //        if (game.isEmpty()) {
 //            System.out.println("game.isEmpty()");
