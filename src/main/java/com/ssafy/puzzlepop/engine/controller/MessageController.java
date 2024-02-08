@@ -6,6 +6,7 @@ import com.ssafy.puzzlepop.engine.domain.*;
 import com.ssafy.puzzlepop.engine.service.GameService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.*;
 @Controller
 @RequiredArgsConstructor
 @EnableScheduling
+@Slf4j
 public class MessageController {
 
     @Autowired
@@ -113,12 +115,14 @@ public class MessageController {
                     return;
                 }
                 Game game = gameService.startGame(message.getRoomId());
-                System.out.println("명령어 : " + message.getMessage());
-                System.out.println("게임방 : " + message.getRoomId());
+                log.info("지금 게임 서비스 들어감");
                 ResponseMessage res = gameService.playGame(message);
                 res.setRedItemList(game.getRedPuzzle().getItemList());
                 res.setBlueItemList(game.getBluePuzzle().getItemList());
+                log.info("게임 서비스에서 나옴");
+                log.info("브로드 캐스팅 하기 직전");
                 sendingOperations.convertAndSend("/topic/game/room/" + message.getRoomId(), res);
+                log.info("브로드 캐스팅 완료");
             }
         }
     }
