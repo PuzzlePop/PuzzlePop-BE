@@ -63,6 +63,7 @@ public class MessageController {
                     game.exitPlayer(sessionId);
                     gameService.sessionToGame.remove(sessionId);
                 } else {
+                    game.exitPlayer(sessionId);
                     System.out.println("어딜 나가 이자식아");
                     return;
 //                    //잠시 대기
@@ -170,5 +171,17 @@ public class MessageController {
         }
     }
 
+    //60초에 한번씩 방 청소
+    @Scheduled(fixedRate = 60000)
+    public void deleteGame() {
+        List<Game> allRoom = gameService.findAllBattleRoom();
+        allRoom.addAll(gameService.findAllCooperationRoom());
+        for (int i = allRoom.size()-1; i >= 0 ; i--) {
+            if (allRoom.get(i).isEmpty()) {
+                System.out.println(allRoom.get(i).getGameName() + " 방 삭제");
+                gameService.deleteRoom(allRoom.get(i).getGameId());
+            }
+        }
+    }
 }
 
