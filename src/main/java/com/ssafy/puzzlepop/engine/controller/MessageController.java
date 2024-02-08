@@ -50,6 +50,7 @@ public class MessageController {
         if (game == null) {
             return;
         }
+
         System.out.println(game.getSessionToUser().get(sessionId).getId() + " 님이 퇴장하십니다.");
         game.exitPlayer(sessionId);
         gameService.sessionToGame.remove(sessionId);
