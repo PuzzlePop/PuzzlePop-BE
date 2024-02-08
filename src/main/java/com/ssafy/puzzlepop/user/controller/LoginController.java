@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @Controller
-@CrossOrigin("*")
+//@CrossOrigin("*")
 public class LoginController {
 
     @GetMapping("/login")

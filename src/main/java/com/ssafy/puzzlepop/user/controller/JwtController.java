@@ -8,10 +8,9 @@ import com.ssafy.puzzlepop.user.resolver.JwtResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@RequestMapping(value="/", method = {RequestMethod.GET, RequestMethod.POST})
 @RestController
 @RequiredArgsConstructor
 public class JwtController {
