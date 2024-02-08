@@ -58,17 +58,22 @@ public class MessageController {
                 game.exitPlayer(sessionId);
                 gameService.sessionToGame.remove(sessionId);
             } else {
-                if (game.isEmpty()) {
-                    System.out.println("game.isEmpty()");
-                    //잠시 대기
-                    Thread.sleep(5000);
-                    if (game.isEmpty()) {
-                        System.out.println("진짜 나간것같아. 게임 지울게!");
-                        gameService.deleteRoom(gameId);
-                    } else {
-                        System.out.println("새로고침이였어. 다시 연결한다!");
-                        return;
-                    }
+                if (!game.isStarted()) {
+                    System.out.println(game.getSessionToUser().get(sessionId).getId() + " 님이 퇴장하십니다.");
+                    game.exitPlayer(sessionId);
+                    gameService.sessionToGame.remove(sessionId);
+                } else {
+                    System.out.println("어딜 나가 이자식아");
+                    return;
+//                    //잠시 대기
+//                    Thread.sleep(5000);
+//                    if (game.isEmpty()) {
+//                        System.out.println("진짜 나간것같아. 게임 지울게!");
+//                        gameService.deleteRoom(gameId);
+//                    } else {
+//                        System.out.println("새로고침이였어. 다시 연결한다!");
+//                        return;
+//                    }
                 }
             }
         }
