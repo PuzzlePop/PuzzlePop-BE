@@ -1,6 +1,7 @@
 package com.ssafy.puzzlepop.user.filter;
 
 import com.ssafy.puzzlepop.user.domain.PrincipalDetails;
+import com.ssafy.puzzlepop.user.domain.UserDto;
 import com.ssafy.puzzlepop.user.exception.InvalidTokenException;
 import com.ssafy.puzzlepop.user.exception.UserPrincipalNotFoundException;
 import com.ssafy.puzzlepop.user.handler.TokenAuthenticationFailureHandler;
@@ -71,13 +72,9 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
                     throw new InvalidTokenException("유효하지 않은 토큰");
 
                 JwtAuthenticationResult authentication = (JwtAuthenticationResult) tokenProvider.decode(token);
-                PrincipalDetails principal = userPrincipalService.loadUserPrincipal(authentication);
-                authentication.setPrincipal(principal);
-//                String provider = "google";
-                Long userId = principal.getUser().getId();
-                String email = principal.getEmail();
-
-                userService.getUserByIdAndEmail(userId, email);
+//                Long userId = Long.parseLong(authentication.getUid());
+//                String email = authentication.getEmail();
+//                UserDto userDto = userService.getUserByIdAndEmail(userId, email);
 
                 // handle for authentication success
                 successfulAuthentication(request, response, filterChain, authentication);
