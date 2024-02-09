@@ -4,16 +4,20 @@ import com.ssafy.puzzlepop.friend.domain.Friend;
 import com.ssafy.puzzlepop.friend.domain.FriendDto;
 import com.ssafy.puzzlepop.friend.exception.FriendNotFoundException;
 import com.ssafy.puzzlepop.friend.repository.FriendRepository;
+import com.ssafy.puzzlepop.user.domain.UserDto;
+import com.ssafy.puzzlepop.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class FriendServiceImpl implements FriendService{
+public class FriendServiceImpl implements FriendService {
 
+    private final UserService userService;
     private final FriendRepository friendRepository;
 
     @Override
@@ -64,5 +68,21 @@ public class FriendServiceImpl implements FriendService{
         Friend friend = friendRepository.findById(friendDto.getId()).orElseThrow(
                 () -> new FriendNotFoundException("Friend not found with id: " + friendDto.getId()));
         friendRepository.delete(friend);
+    }
+
+    @Override
+    public List<UserDto> getAcceptedFriendsByUserId(Long userId) {
+        List<UserDto> filteredList = new ArrayList<>();
+
+        List<Friend> fromList = friendRepository.findAllByFromUserIdAndRequestStatus(userId, "accepted");
+        for (Friend f : fromList) {
+            filteredList.add(userService.getUserById(f.getToUserId()));
+        }
+        List<Friend> toList = friendRepository.findAllByToUserIdAndRequestStatus(userId, "accepted");
+        for (Friend f : toList) {
+            filteredList.add(userService.getUserById(f.getFromUserId()));
+        }
+
+        return filteredList;
     }
 }
