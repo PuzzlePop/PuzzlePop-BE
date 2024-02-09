@@ -1,12 +1,15 @@
 package com.ssafy.puzzlepop.teamuser.service;
 
 import com.ssafy.puzzlepop.team.domain.Team;
+import com.ssafy.puzzlepop.team.exception.TeamNotFoundException;
 import com.ssafy.puzzlepop.team.repository.TeamRepository;
 import com.ssafy.puzzlepop.teamuser.domain.TeamUser;
 import com.ssafy.puzzlepop.teamuser.domain.TeamUserRequestDto;
 import com.ssafy.puzzlepop.teamuser.domain.TeamUserResponseDto;
+import com.ssafy.puzzlepop.teamuser.exception.TeamUserNotFoundException;
 import com.ssafy.puzzlepop.teamuser.repository.TeamUserRepository;
 import com.ssafy.puzzlepop.user.domain.User;
+import com.ssafy.puzzlepop.user.exception.UserNotFoundException;
 import com.ssafy.puzzlepop.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +29,7 @@ public class TeamUserServiceImpl implements TeamUserService{
     @Transactional
     public TeamUserResponseDto readTeamUser(Long id) {
         TeamUser teamUser = teamUserRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("TeamUser Not Found with id: " + id));
+                () -> new TeamUserNotFoundException(id));
         return new TeamUserResponseDto(teamUser);
     }
 
@@ -49,9 +52,9 @@ public class TeamUserServiceImpl implements TeamUserService{
     @Transactional
     public Long createTeamUser(TeamUserRequestDto requestDto) {
         User user = userRepository.findById(requestDto.getUserId()).orElseThrow(
-                () -> new IllegalArgumentException("User Not Found with id: " + requestDto.getUserId()));
+                () -> new UserNotFoundException("User Not Found with id: " + requestDto.getUserId()));
         Team team = teamRepository.findById(requestDto.getTeamId()).orElseThrow(
-                () -> new IllegalArgumentException("Team Not Found with id: " + requestDto.getTeamId()));
+                () -> new TeamNotFoundException("Team Not Found with id: " + requestDto.getTeamId()));
         TeamUser teamuser = TeamUser.builder()
                 .team(team).user(user)
                 .matchedPieceCount(requestDto.getMatchedPieceCount())
@@ -63,11 +66,11 @@ public class TeamUserServiceImpl implements TeamUserService{
     @Transactional
     public Long updateTeamUser(TeamUserRequestDto requestDto) {
         TeamUser entity = teamUserRepository.findById(requestDto.getId()).orElseThrow(
-                () -> new IllegalArgumentException("TeamUser Not Found with id: " + requestDto.getId()));
+                () -> new TeamUserNotFoundException(requestDto.getId()));
         Team team = teamRepository.findById(requestDto.getTeamId()).orElseThrow(
-                () -> new IllegalArgumentException("Team Not Found with id: " + requestDto.getTeamId()));
+                () -> new TeamNotFoundException(requestDto.getTeamId()));
         User user = userRepository.findById(requestDto.getUserId()).orElseThrow(
-                () -> new IllegalArgumentException("User Not Found with id: " + requestDto.getUserId()));
+                () -> new UserNotFoundException("User Not Found with id: " + requestDto.getUserId()));
         entity.updateTeam(team); entity.updateUser(user);
         entity.updateMatchedPieceCount(requestDto.getMatchedPieceCount());
         return teamUserRepository.save(entity).getId();
@@ -77,7 +80,7 @@ public class TeamUserServiceImpl implements TeamUserService{
     @Transactional
     public Long deleteTeamUser(Long id) {
         TeamUser entity = teamUserRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("TeamUser Not Found with id: " + id));
+                () -> new TeamUserNotFoundException(id));
         teamUserRepository.delete(entity);
         return id;
     }

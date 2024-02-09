@@ -15,21 +15,19 @@ import java.util.List;
 public class TeamUserController {
     private final TeamUserServiceImpl teamUserService;
 
-    @GetMapping("/teamuser/byId")
+    @GetMapping("/teamuser")
     public ResponseEntity<?> readTeamUser(Long id) {
         TeamUserResponseDto responseDto = teamUserService.readTeamUser(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    @GetMapping("/teamuser/byTeamId")
-    public ResponseEntity<?> findAllByTeamId(@RequestParam Long teamId) {
-        List<TeamUserResponseDto> responseDtos = teamUserService.findAllByTeamId(teamId);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
-    }
-
-    @GetMapping("/teamuser/byUserId")
-    public ResponseEntity<?> findAllByUserId(@RequestParam Long userId) {
-        List<TeamUserResponseDto> responseDtos = teamUserService.findAllByUserId(userId);
+    @GetMapping("/teamuser/search")
+    public ResponseEntity<?> findAllByFilter(@RequestParam String filter, @RequestParam Long id) {
+        List<TeamUserResponseDto> responseDtos = switch (filter) {
+            case "teamId" -> teamUserService.findAllByTeamId(id);
+            case "userId" -> teamUserService.findAllByUserId(id);
+            default -> null;
+        };
         return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 
