@@ -20,6 +20,7 @@ import java.util.*;
 public class GameService {
     private Map<String, Game> gameRooms;
     private Gson gson;
+    public Map<String, String> sessionToGame;
 
     private final GameInfoService gameInfoService;
 
@@ -29,6 +30,9 @@ public class GameService {
         gameRooms = new LinkedHashMap<>();
         gameRooms = Collections.synchronizedMap(gameRooms);
         gson = new Gson();
+
+        sessionToGame = new LinkedHashMap<>();
+        sessionToGame = Collections.synchronizedMap(sessionToGame);
     }
 
     //협동 게임방 불러오기
@@ -296,12 +300,14 @@ public class GameService {
             }
 
             res.setTargets(targets);
-        } else if (message.equals("ADD_ITEM")) {
-            res.setMessage("ADD_ITEM");
-            res.setTargets(ourColor);
-            Item item = ourPuzzle.addItem(ItemType.valueOf(targets));
-            res.setItem(item);
-        } else {
+        }
+//        else if (message.equals("ADD_ITEM")) {
+//            res.setMessage("ADD_ITEM");
+//            res.setTargets(ourColor);
+//            Item item = ourPuzzle.addItem(ItemType.valueOf(targets));
+//            res.setItem(item);
+//        }
+        else {
             System.out.println("구현중인 명령어 : " + message);
             System.out.println("targets = " + targets);
         }

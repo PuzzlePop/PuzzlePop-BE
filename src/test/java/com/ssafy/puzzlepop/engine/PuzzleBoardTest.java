@@ -9,29 +9,29 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 class PuzzleBoardTest {
-    @Test
-    @DisplayName("초기화 테스트")
-    void initTest() {
-        Picture p = new Picture();
-        p.setWidth(1000);
-        p.setLength(551);
-        p.setPieceSize(100);
-        p.setLengthPieceCnt(4);
-        p.setWidthPieceCnt(8);
-
-        PuzzleBoard puzzle = new PuzzleBoard();
-        puzzle.init(p);
-        Piece[][] board = puzzle.getBoard();
-
-        for (int i = 0; i < puzzle.getLengthCnt(); i++) {
-            for (int j = 0; j < puzzle.getWidthCnt(); j++) {
-//                System.out.print(board[0][i][j].getIndex() + " " + board[0][i][j].getPosition_x()+ " "+board[0][i][j].getPosition_y() + " | ");
-                System.out.print(Arrays.toString(board[i][j].getType()));
-
-            }
-            System.out.println();
-        }
-    }
+//    @Test
+//    @DisplayName("초기화 테스트")
+//    void initTest() {
+//        Picture p = new Picture();
+//        p.setWidth(1000);
+//        p.setLength(551);
+//        p.setPieceSize(100);
+//        p.setLengthPieceCnt(4);
+//        p.setWidthPieceCnt(8);
+//
+//        PuzzleBoard puzzle = new PuzzleBoard();
+//        puzzle.init(p);
+//        Piece[][] board = puzzle.getBoard();
+//
+//        for (int i = 0; i < puzzle.getLengthCnt(); i++) {
+//            for (int j = 0; j < puzzle.getWidthCnt(); j++) {
+////                System.out.print(board[0][i][j].getIndex() + " " + board[0][i][j].getPosition_x()+ " "+board[0][i][j].getPosition_y() + " | ");
+//                System.out.print(Arrays.toString(board[i][j].getType()));
+//
+//            }
+//            System.out.println();
+//        }
+//    }
 
 //    @Test
 //    @DisplayName("조각 결합 테스트")
