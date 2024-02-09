@@ -22,7 +22,7 @@ public class FriendController {
     private final FriendService friendService;
     private final UserService userService;
 
-    @GetMapping("/friend")
+    @PostMapping("/friend")
     public ResponseEntity<?> getFriendById1AndId2(@RequestBody FriendDto requestDto) {
         try {
             FriendDto responseDto = friendService.getFriendById1AndId2(requestDto.getFromUserId(), requestDto.getToUserId());
@@ -70,7 +70,7 @@ public class FriendController {
         }
     }
 
-    @GetMapping("/friend/from")
+    @PostMapping("/friend/from")
     public ResponseEntity<?> getAllByFromUserIdAndRequestStatus(@RequestBody FriendDto requestDto) {
         try {
             List<FriendDto> responseDtos = friendService.getAllByFromUserIdAndRequestStatus(requestDto.getFromUserId(), requestDto.getRequestStatus());
@@ -82,7 +82,7 @@ public class FriendController {
         }
     }
 
-    @GetMapping("/friend/to")
+    @PostMapping("/friend/to")
     public ResponseEntity<?> getAllByToUserIdAndRequestStatus(@RequestBody FriendDto requestDto) {
         try {
             List<FriendDto> responseDtos = friendService.getAllByToUserIdAndRequestStatus(requestDto.getToUserId(), requestDto.getRequestStatus());
@@ -94,7 +94,7 @@ public class FriendController {
         }
     }
 
-    @GetMapping("/friend/list")
+    @PostMapping("/friend/list")
     public ResponseEntity<?> getAllByFromUserIdOrToUserId(@RequestBody UserDto requestDto) {
         try {
             List<FriendDto> responseDtos = friendService.getAllByFromUserIdOrToUserId(requestDto.getId());
@@ -106,7 +106,7 @@ public class FriendController {
         }
     }
 
-    @GetMapping("/friend/list/all")
+    @PostMapping("/friend/list/all")
     public ResponseEntity<?> getAllByUserId(@RequestBody UserDto requestDto) {
         try {
             List<Long> friendIds = friendService.getAllFriendIdByUserId(requestDto.getId());
