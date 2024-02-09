@@ -45,7 +45,13 @@ public class PuzzleBoard {
         }
 
         Item item = new Item(type);
-        itemList[itemCount++] = item;
+        for (int i = 0; i < 5; i++) {
+            if (itemList[i] == null) {
+                itemList[i] = item;
+                itemCount++;
+                break;
+            }
+        }
         System.out.println("아이템 추가 성공");
         return item;
     }
@@ -80,28 +86,9 @@ public class PuzzleBoard {
     //2. 조각 수 판별, 가로 세로 조각수 판별
     //3. 퍼즐 판 초기화 및 고유 인덱스 번호 할당, 동시에 각각의 조각들이 상하좌우에 있는 조각들의 고유 인덱스 번호를 가지고 있음
     //4. 판에 조각들 랜덤 모양으로 할당하기
-    public Piece[][] init(Picture p) {
+    public Piece[][] init(Picture p, String gameType) {
         picture = p;
-
-        //TODO
-        //1. 사진 비율에 따른 여러가지 피스 제공
-        //2. 소수인 사이즈를 가진 사진이 들어왔을 때
-//        pieceSize = GCD(picture.getWidth(), picture.getLength());
-//        widthCnt = picture.getWidth()/pieceSize;
-//        lengthCnt = picture.getLength()/pieceSize;
         pieceSize = p.getPieceSize();
-//        Map<Integer, Integer> levelSize = new HashMap<>();
-//        levelSize.put(1, 500);
-//        levelSize.put(2, 600);
-//        levelSize.put(3, 800);
-//
-//        int originHeight = p.getLength();
-//        int originWidth = p.getWidth();
-//        int imgWidth = originHeight >= originWidth ? Math.round((levelSize.get(3)*originWidth) / originHeight / 100) * 100 : levelSize.get(3);
-//        int imgHeight = originHeight >= originWidth ? levelSize.get(3) : Math.round((levelSize.get(3)*originHeight) /  originWidth/ 100) * 100;
-//        widthCnt = (int) Math.floor((double)imgWidth / (double)pieceSize);
-//        lengthCnt = (int) Math.floor((double) imgHeight / (double)pieceSize);
-
         widthCnt = p.getWidthPieceCnt();
         lengthCnt = p.getLengthPieceCnt();
 
@@ -274,14 +261,17 @@ public class PuzzleBoard {
                 Random random = new Random();
                 int possibility = random.nextInt(100);
                 if (possibility <= 10) {
-                    board[i][j].setItem(Item.randomCreate());
+                    if (gameType.equals("COOPERATION")) {
+                        board[i][j].setItem(Item.randomCreateForCooperation());
+                    } else if (gameType.equals("BATTLE")) {
+                        board[i][j].setItem(Item.randomCreateForBattle());
+                    }
                 }
             }
         }
 
 
         correctedCount = 0;
-        randomArrange();
         return board;
     }
 
@@ -347,11 +337,11 @@ public class PuzzleBoard {
 
 
     //결합된 조각 삭제
-    public void deletePiece(int targetIdx) {
+    public double[] deletePiece(int targetIdx) {
         int r = idxToCoordinate.get(targetIdx)[0];
         int c = idxToCoordinate.get(targetIdx)[1];
         if (!isCorrected[r][c])
-            return;
+            return null;
 
 
         for (Set<Piece> bundle : bundles) {
@@ -361,12 +351,12 @@ public class PuzzleBoard {
                     it.remove();
                     isCorrected[r][c] = false;
                     updatePieceCount();
-                    return;
+                    return randomArrange(p.getIndex());
                 }
             }
         }
 
-
+        return null;
     }
 
     public void searchForGroupDisbandment() {
@@ -509,22 +499,13 @@ public class PuzzleBoard {
 //        System.out.println(Arrays.toString(itemList));
         System.out.println("---------------------------------------");
     }
-    
-    
-    //TODO : 알고리즘 다시 작성
-    public void randomArrange() {
-        LinkedList<Piece> list = new LinkedList<>();
-        for (int i = 0; i < lengthCnt; i++) {
-            for (int j = 0; j < widthCnt; j++) {
-                if (!isCorrected[i][j]) {
-                    list.add(board[i][j]);
-                } else {
-                    list.add(null);
-                }
-            }
-        }
 
-        Collections.shuffle(list);
+    public double[] randomArrange(int pieceIdx) {
+        int r = idxToCoordinate.get(pieceIdx)[0];
+        int c = idxToCoordinate.get(pieceIdx)[1];
+        board[r][c].setPosition_x(random(CANVAS_WIDTH));
+        board[r][c].setPosition_y(random(CANVAS_LENGTH));
+        return new double[]{board[r][c].getPosition_x(), board[r][c].getPosition_y()};
     }
 
     public int random(int range) {

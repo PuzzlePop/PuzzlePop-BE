@@ -179,8 +179,8 @@ public class Game {
 
         redPuzzle = new PuzzleBoard();
         bluePuzzle = new PuzzleBoard();
-        redPuzzle.init(picture);
-        bluePuzzle.init(picture);
+        redPuzzle.init(picture, gameType);
+        bluePuzzle.init(picture, gameType);
         players = new LinkedList<>();
         players.addAll(redTeam.getPlayers());
         players.addAll(blueTeam.getPlayers());

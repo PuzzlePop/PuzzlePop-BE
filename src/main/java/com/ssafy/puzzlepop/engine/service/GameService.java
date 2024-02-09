@@ -20,6 +20,7 @@ import java.util.*;
 public class GameService {
     private Map<String, Game> gameRooms;
     private Gson gson;
+    public Map<String, String> sessionToGame;
 
     private final GameInfoService gameInfoService;
 
@@ -29,6 +30,9 @@ public class GameService {
         gameRooms = new LinkedHashMap<>();
         gameRooms = Collections.synchronizedMap(gameRooms);
         gson = new Gson();
+
+        sessionToGame = new LinkedHashMap<>();
+        sessionToGame = Collections.synchronizedMap(sessionToGame);
     }
 
     //협동 게임방 불러오기
@@ -169,53 +173,13 @@ public class GameService {
             }
             ourPuzzle.print();
         } else if (message.equals("USE_ITEM")) {
+            //도움형 아이템 3가지만 나옴
             Item item = ourPuzzle.getItemList()[Integer.parseInt(targets)];
             ItemType type = item.getName();
 
-            if (type == ItemType.FIRE || type == ItemType.EARTHQUAKE || type == ItemType.ROCKET) {
-                Item[] yourItemList = yourPuzzle.getItemList();
-                int shield = -1;
-                int mirror = -1;
-                for (int i = 0; i < 5; i++) {
-                    if (yourItemList[i].getName() == ItemType.MIRROR) {
-                        mirror = i;
-                    } else if (yourItemList[i].getName() == ItemType.SHIELD) {
-                        shield = i;
-                    }
-                }
-
-
-                //둘다 없을 때
-                if (mirror != -1 && shield != -1) {
-                    res.setMessage("ATTACK");
-                    res.setTargets(yourColor);
-                    res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), yourPuzzle));
-                }
-                //반사됨
-                else if (mirror != -1 && shield == -1) {
-                    res.setMessage("MIRROR");
-                    res.setTargets(ourColor);
-                    res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
-                }
-                //방어됨
-                else if (mirror == -1 && shield != -1) {
-                    //아무일 없음
-                    res.setMessage("SHIELD");
-                }
-                //둘다 있을 때
-                else {
-                    //반사부터 적용됨
-                    res.setMessage("MIRROR");
-                    res.setTargets(ourColor);
-                    res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
-                }
-            } else if (type == ItemType.HINT || type == ItemType.FRAME || type == ItemType.MAGNET) {
-                res.setMessage(String.valueOf(type));
-                res.setTargets(ourColor);
-                res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
-            }
-
-
+            res.setMessage(String.valueOf(type));
+            res.setTargets(ourColor);
+            res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
         } else if (message.equals("USE_RANDOM_ITEM")) {
             //공격형 아이템 3가지만 나옴
             DropItem item = game.getDropRandomItem().get(targets);
@@ -237,13 +201,36 @@ public class GameService {
             if (mirror != -1 && shield != -1) {
                 res.setMessage("ATTACK");
                 res.setTargets(yourColor);
+                res.setRandomItem(item);
                 res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), yourPuzzle));
+                Map<Integer, double[]> tmp = new HashMap<>();
+                for (int i = 0; i < res.getTargetList().size(); i++) {
+                    int pieceIdx = res.getTargetList().get(i);
+                    int[] point = yourPuzzle.getIdxToCoordinate().get(pieceIdx);
+                    tmp.put(pieceIdx, new double[]{
+                            yourPuzzle.getBoard()[point[0]][point[1]].getPosition_x(),
+                            yourPuzzle.getBoard()[point[0]][point[1]].getPosition_y()
+                    });
+                }
+                res.setDeleted(tmp);
             }
             //반사됨
             else if (mirror != -1 && shield == -1) {
                 res.setMessage("MIRROR");
                 res.setTargets(ourColor);
+                res.setRandomItem(item);
                 res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
+
+                Map<Integer, double[]> tmp = new HashMap<>();
+                for (int i = 0; i < res.getTargetList().size(); i++) {
+                    int pieceIdx = res.getTargetList().get(i);
+                    int[] point = ourPuzzle.getIdxToCoordinate().get(pieceIdx);
+                    tmp.put(pieceIdx, new double[]{
+                            ourPuzzle.getBoard()[point[0]][point[1]].getPosition_x(),
+                            ourPuzzle.getBoard()[point[0]][point[1]].getPosition_y()
+                    });
+                }
+                res.setDeleted(tmp);
             }
             //방어됨
             else if (mirror == -1 && shield != -1) {
@@ -255,15 +242,20 @@ public class GameService {
                 //반사부터 적용됨
                 res.setMessage("MIRROR");
                 res.setTargets(ourColor);
+                res.setRandomItem(item);
                 res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
+
+                Map<Integer, double[]> tmp = new HashMap<>();
+                for (int i = 0; i < res.getTargetList().size(); i++) {
+                    int pieceIdx = res.getTargetList().get(i);
+                    int[] point = ourPuzzle.getIdxToCoordinate().get(pieceIdx);
+                    tmp.put(pieceIdx, new double[]{
+                            ourPuzzle.getBoard()[point[0]][point[1]].getPosition_x(),
+                            ourPuzzle.getBoard()[point[0]][point[1]].getPosition_y()
+                    });
+                }
+                res.setDeleted(tmp);
             }
-
-            targetsList = ourPuzzle.useRandomItem(item, yourPuzzle);
-
-            res.setMessage("USE_RANDOM_ITEM");
-            res.setRandomItem(item);
-            res.setTargets(yourColor);
-            res.setTargetList(targetsList);
         } else if (message.equals("MOUSE_DOWN")) {
             PieceDto[] arr = gson.fromJson(targets, PieceDto[].class);
 
@@ -308,12 +300,14 @@ public class GameService {
             }
 
             res.setTargets(targets);
-        } else if (message.equals("ADD_ITEM")) {
-            res.setMessage("ADD_ITEM");
-            res.setTargets(ourColor);
-            Item item = ourPuzzle.addItem(ItemType.valueOf(targets));
-            res.setItem(item);
-        } else {
+        }
+//        else if (message.equals("ADD_ITEM")) {
+//            res.setMessage("ADD_ITEM");
+//            res.setTargets(ourColor);
+//            Item item = ourPuzzle.addItem(ItemType.valueOf(targets));
+//            res.setItem(item);
+//        }
+        else {
             System.out.println("구현중인 명령어 : " + message);
             System.out.println("targets = " + targets);
         }

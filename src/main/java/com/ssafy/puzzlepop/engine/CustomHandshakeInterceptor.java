@@ -1,5 +1,7 @@
 package com.ssafy.puzzlepop.engine;
 
+import com.ssafy.puzzlepop.engine.domain.Game;
+import com.ssafy.puzzlepop.engine.domain.User;
 import com.ssafy.puzzlepop.engine.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -20,21 +22,29 @@ public class CustomHandshakeInterceptor implements HandshakeInterceptor {
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        System.out.println("wsHandler = " + wsHandler);
-        String roomId = extractRoomIdFromRequest(request); // 요청에서 방 번호 추출
-        if (!isValidRoomId(roomId)) { // 방 번호가 유효하지 않으면
-            response.setStatusCode(HttpStatus.FORBIDDEN); // 접속을 거부
-            return false;
+        System.out.println("CustomHandshakeInterceptor.beforeHandshake");
+        String userId = extractUserIdFromRequest(request); // 요청에서 유저 세션 추출
+
+        String gameId = gameService.sessionToGame.get(userId);
+        Game game = gameService.findById(gameId);
+        if (game == null) {
+            return true;
         }
-        return true;
+
+        if (game.isStarted() && !game.isFinished()) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    // 요청에서 방 번호 추출
-    private String extractRoomIdFromRequest(ServerHttpRequest request) {
-        // 요청에서 방 번호를 추출하는 로직을 구현
-        System.out.println(request.getURI());
+
+    // 유저 세션 추출
+    private String extractUserIdFromRequest(ServerHttpRequest request) {
         String uri = request.getURI().getPath();
-        return uri.substring(uri.lastIndexOf('/') + 1);
+        System.out.println(uri);
+        String[] tmp = uri.split("/");
+        return tmp[3];
     }
 
     // 클라이언트가 요청한 방 번호가 유효한지 확인

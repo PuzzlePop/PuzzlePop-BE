@@ -34,8 +34,7 @@ public class Item {
             this.id = 8L;
         }
     }
-
-    public static Item randomCreate() {
+    public static Item randomCreateForCooperation() {
         Random random = new Random();
 
         //공격형 아이템만 추첨 리스트에 추가
@@ -43,6 +42,20 @@ public class Item {
         list.add(ItemType.HINT);
         list.add(ItemType.FRAME);
         list.add(ItemType.MAGNET);
+
+        return new Item(list.get(random.nextInt(list.size())));
+    }
+
+    public static Item randomCreateForBattle() {
+        Random random = new Random();
+
+        //공격형 아이템만 추첨 리스트에 추가
+        List<ItemType> list = new LinkedList<>();
+        list.add(ItemType.HINT);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.MAGNET);
+        list.add(ItemType.MIRROR);
+        list.add(ItemType.SHIELD);
 
         return new Item(list.get(random.nextInt(list.size())));
     }
@@ -69,7 +82,15 @@ public class Item {
 
             case 2:
                 System.out.println("EARTHQUAKE EFFECT");
-                puzzle.randomArrange();
+                for (int i = 0; i < puzzle.getLengthCnt(); i++) {
+                    for (int j = 0; j < puzzle.getWidthCnt(); j++) {
+                        if (puzzle.getIsCorrected()[i][j]) {
+                            targets.add(puzzle.getBoard()[i][j].getIndex());
+                            puzzle.randomArrange(puzzle.getBoard()[i][j].getIndex());
+                        }
+                    }
+                }
+
                 break;
 
             case 3:
