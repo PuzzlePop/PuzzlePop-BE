@@ -5,44 +5,46 @@ import com.ssafy.puzzlepop.team.domain.TeamDto;
 import com.ssafy.puzzlepop.team.exception.TeamNotFoundException;
 import com.ssafy.puzzlepop.team.repository.TeamRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@Transactional
+@RequiredArgsConstructor
 public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
 
-    public List<TeamDto> getAllTeams() {
+    public TeamDto readTeam(Long id) {
+        Team team = teamRepository.findById(id).orElseThrow(() -> new TeamNotFoundException(id));
+        return new TeamDto(team);
+    }
+
+    public List<TeamDto> readAllTeams() {
         List<Team> teams = teamRepository.findAll();
         return teams.stream().map(TeamDto::new).collect(Collectors.toList());
     }
 
-    public TeamDto getTeamById(Long id) {
-        Team team = teamRepository.findById(id).orElseThrow(
-                () -> new TeamNotFoundException("Team not found with id: " + id));
-        return new TeamDto(team);
-    }
-
-
-    public Long createTeam(TeamDto teamDto) {
-        Team team = teamRepository.save(teamDto.toEntity());
-        return team.getId();
-    }
-
-    public Long updateTeam(TeamDto teamDto) {
-        Team team = teamRepository.findById(teamDto.getId()).orElseThrow(
-                () -> new TeamNotFoundException("Team not found with id: " + teamDto.getId()));
-        team.update(teamDto);
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public Long createTeam(TeamDto requestDto) {
+        Team team = requestDto.toEntity();
         return teamRepository.save(team).getId();
     }
 
-    public void deleteTeam(Long id) {
+    public Long updateTeam(TeamDto requestDto) {
+        Team team = teamRepository.findById(requestDto.getId()).orElseThrow(
+                () -> new TeamNotFoundException(requestDto.getId()));
+        return teamRepository.save(team.update(requestDto)).getId();
+    }
+
+    public Long deleteTeam(Long id) {
         Team team = teamRepository.findById(id).orElseThrow(
-                () -> new TeamNotFoundException("Team not found with id: " + id));
+                () -> new TeamNotFoundException(id));
         teamRepository.delete(team);
+        return id;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,10 +54,10 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Long updateMatchedPieceCount(TeamDto teamDto) {
-        Team team = teamRepository.findById(teamDto.getId()).orElseThrow(
-                () -> new TeamNotFoundException("Team not found with id: " + teamDto.getId()));
-        return team.updateMatchedPieceCount(teamDto.getMatchedPieceCount());
+    public Long updateMatchedPieceCount(TeamDto requestDto) {
+        Team team = teamRepository.findById(requestDto.getId()).orElseThrow(
+                () -> new TeamNotFoundException(requestDto.getId()));
+        return team.updateMatchedPieceCount(requestDto.getMatchedPieceCount());
     }
 
 }
