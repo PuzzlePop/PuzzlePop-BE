@@ -122,6 +122,8 @@ public class MessageController {
                 ResponseMessage res = gameService.playGame(message);
                 res.setRedItemList(game.getRedPuzzle().getItemList());
                 res.setBlueItemList(game.getBluePuzzle().getItemList());
+                res.setRedProgressPercent((double) game.getRedPuzzle().getCorrectedCount() /(game.getRedPuzzle().getLengthCnt()*game.getRedPuzzle().getWidthCnt()) * 100);
+                res.setBlueProgressPercent((double) game.getBluePuzzle().getCorrectedCount() /(game.getBluePuzzle().getLengthCnt()*game.getBluePuzzle().getWidthCnt()) * 100);
                 sendingOperations.convertAndSend("/topic/game/room/" + message.getRoomId(), res);
             }
         }
@@ -139,7 +141,9 @@ public class MessageController {
                     time = BATTLE_TIMER-time;
                 }
                 if (time >= 0) {
-                    sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), time);
+                    Map<String, Long> timer = new HashMap<>();
+                    timer.put("time", time);
+                    sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), timer);
                 } else {
                     sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), "너 게임 끝났어! 이 방 폭파됨");
                     gameService.deleteRoom(allRoom.get(i).getGameId());
