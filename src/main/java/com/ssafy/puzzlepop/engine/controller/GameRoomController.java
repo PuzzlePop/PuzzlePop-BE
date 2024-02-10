@@ -5,6 +5,7 @@ import com.ssafy.puzzlepop.engine.service.GameService;
 import com.ssafy.puzzlepop.image.domain.ImageDto;
 import com.ssafy.puzzlepop.image.exception.ImageException;
 import com.ssafy.puzzlepop.image.service.ImageService;
+import com.ssafy.puzzlepop.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public class GameRoomController {
 
     private final ImageService imageService;
     private final GameService gameService;
+    private final UserService userService;
 
     //협동 게임 방 리스트
     @GetMapping("/rooms/cooperation")
@@ -89,11 +91,21 @@ public class GameRoomController {
         return Base64.getEncoder().encodeToString(bytes);
     }
 
-    //특정 게임방 조회
+    //게임 대기실 입장
     @PostMapping("/room/{roomId}")
     @ResponseBody
     public ResponseEntity<?> roomInfo(@PathVariable String roomId, @RequestBody User user) {
         Game game = gameService.findById(roomId);
+//
+//        //게임 입장했을때 임시로 여기서 저장
+//        System.out.println(user);
+//        com.ssafy.puzzlepop.user.domain.UserDto dbUser = new com.ssafy.puzzlepop.user.domain.UserDto();
+//        dbUser.setPlayingGameID(Integer.valueOf(game.getGameId().substring(0,1)));
+//        dbUser.setNickname(user.getId());
+//        System.out.println(dbUser);
+//
+//        userService.createUser(dbUser);
+
         if (game == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found");
         } else {

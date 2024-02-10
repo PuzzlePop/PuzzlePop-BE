@@ -157,6 +157,7 @@ public class GameService {
             ourPuzzle.addPiece(pieces);
             ourPuzzle.print();
 
+            res.setTeam(ourColor);
             res.setMessage("ADD_PIECE");
             res.setTargets(targets);
             int[] comboCnt = comboCheck(ourPuzzle);
@@ -264,6 +265,7 @@ public class GameService {
                 int[] p = ourPuzzle.getIdxToCoordinate().get(now.getIndex());
                 if (ourPuzzle.getBoard()[p[0]][p[1]].isLocked()) {
                     res.setMessage("BLOCKED");
+                    res.setTeam(ourColor);
                     return res;
                 }
 
@@ -273,6 +275,8 @@ public class GameService {
             System.out.println(targets + " 피스 잠금");
             res.setMessage("LOCKED");
             res.setTargets(targets);
+
+            res.setTeam(ourColor);
         } else if (message.equals("MOUSE_UP")) {
             PieceDto[] arr = gson.fromJson(targets, PieceDto[].class);
 
@@ -286,6 +290,8 @@ public class GameService {
             System.out.println(targets + " 피스 잠금 해제");
             res.setMessage("UNLOCKED");
             res.setTargets(targets);
+
+            res.setTeam(ourColor);
         } else if (message.equals("MOUSE_DRAG")) {
             res.setMessage("MOVE");
 
@@ -300,6 +306,7 @@ public class GameService {
             }
 
             res.setTargets(targets);
+            res.setTeam(ourColor);
         }
 //        else if (message.equals("ADD_ITEM")) {
 //            res.setMessage("ADD_ITEM");
