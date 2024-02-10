@@ -33,13 +33,29 @@ public class Game {
     private Map<String, DropItem> dropRandomItem;
     private boolean isFinished = false;
 
-    public void changeTeam(User user) {
-        if (redTeam.isIn((user))) {
-            redTeam.deletePlayer(user);
-            blueTeam.addPlayer(user);
-        } else {
-            blueTeam.deletePlayer(user);
-            redTeam.addPlayer(user);
+    public void changeTeam(User a, User b) {
+        if (redTeam.isIn((a)) && blueTeam.isIn((b))) {
+            redTeam.deletePlayer(a);
+            blueTeam.addPlayer(a);
+
+            blueTeam.deletePlayer(b);
+            redTeam.addPlayer(b);
+        } else if (a == null) {
+            if (redTeam.isIn(b)) {
+                redTeam.deletePlayer(b);
+                blueTeam.addPlayer(b);
+            } else if (blueTeam.isIn(b)) {
+                blueTeam.deletePlayer(b);
+                redTeam.addPlayer(b);
+            }
+        } else if (b == null) {
+            if (redTeam.isIn(a)) {
+                redTeam.deletePlayer(a);
+                blueTeam.addPlayer(a);
+            } else if (blueTeam.isIn(a)) {
+                blueTeam.deletePlayer(a);
+                redTeam.addPlayer(a);
+            }
         }
 
     }

@@ -63,7 +63,6 @@ public class MessageController {
                     game.exitPlayer(sessionId);
                     gameService.sessionToGame.remove(sessionId);
                 } else {
-                    game.exitPlayer(sessionId);
                     System.out.println("어딜 나가 이자식아");
                     return;
 //                    //잠시 대기
@@ -113,6 +112,12 @@ public class MessageController {
             } else if (message.getMessage().equals("GAME_INFO")) {
                 Game game = gameService.findById(message.getRoomId());
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
+            } else if (message.getMessage().equals("CHANGE_TEAM")) {
+                Game game = gameService.findById(message.getRoomId());
+                User userA = game.getRedTeam().getPlayer(message.getSender());
+                User userB = game.getBlueTeam().getPlayer(message.getTargets());
+                game.changeTeam(userA, userB);
+                sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
             } else {
                 if (!gameService.findById(message.getRoomId()).isStarted()) {
                     System.out.println("게임 시작 안했음! 명령 무시함");
@@ -122,6 +127,8 @@ public class MessageController {
                 ResponseMessage res = gameService.playGame(message);
                 res.setRedItemList(game.getRedPuzzle().getItemList());
                 res.setBlueItemList(game.getBluePuzzle().getItemList());
+                res.setRedProgressPercent((double) game.getRedPuzzle().getCorrectedCount() / (game.getRedPuzzle().getLengthCnt() * game.getRedPuzzle().getWidthCnt()) * 100);
+                res.setBlueProgressPercent((double) game.getBluePuzzle().getCorrectedCount() / (game.getBluePuzzle().getLengthCnt() * game.getBluePuzzle().getWidthCnt()) * 100);
                 sendingOperations.convertAndSend("/topic/game/room/" + message.getRoomId(), res);
             }
         }
@@ -139,7 +146,9 @@ public class MessageController {
                     time = BATTLE_TIMER-time;
                 }
                 if (time >= 0) {
-                    sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), time);
+                    Map<String, Long> timer = new HashMap<>();
+                    timer.put("time", time);
+                    sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), timer);
                 } else {
                     sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), "너 게임 끝났어! 이 방 폭파됨");
                     gameService.deleteRoom(allRoom.get(i).getGameId());
