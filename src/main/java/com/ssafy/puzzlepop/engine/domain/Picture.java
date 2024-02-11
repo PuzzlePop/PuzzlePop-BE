@@ -42,8 +42,8 @@ public class Picture {
         int originWidth = this.getWidth();
         this.imgWidth = originHeight >= originWidth ? Math.round((this.levelSize.get(1)*originWidth) / originHeight / 100) * 100 : this.levelSize.get(1);
         this.imgHeight = originHeight >= originWidth ? this.levelSize.get(1) : Math.round((this.levelSize.get(1)*originHeight) /  originWidth/ 100) * 100;
-        this.widthPieceCnt = (int) Math.floor((double)imgWidth / (double)this.pieceSize);
-        this.lengthPieceCnt = (int) Math.floor((double) imgHeight / (double)this.pieceSize);
+        this.widthPieceCnt = (int) Math.floor((double)this.imgWidth / (double)this.pieceSize);
+        this.lengthPieceCnt = (int) Math.floor((double) this.imgHeight / (double)this.pieceSize);
     }
 
     //디폴트
