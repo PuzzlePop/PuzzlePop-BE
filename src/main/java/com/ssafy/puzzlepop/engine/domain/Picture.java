@@ -51,7 +51,7 @@ public class Picture {
         p.length = 551;
         p.encodedString = "짱구.jpg";
 
-        p.pieceSize = 100;
+        p.pieceSize = 50;
         p.levelSize = new HashMap<>();
         p.levelSize.put(1, 500);
         p.levelSize.put(2, 600);
