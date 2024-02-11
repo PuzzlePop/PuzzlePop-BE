@@ -1,18 +1,24 @@
 package com.ssafy.puzzlepop.user.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import com.ssafy.puzzlepop.user.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 
-@Controller
-//@CrossOrigin("*")
+@RestController
+@AllArgsConstructor
 public class LoginController {
 
-    @GetMapping("/login")
-    public String loginPage() {
-        System.out.println("LOGIN");
-        return "redirect:/oauth2/authorization/google";
-    }
+    private UserService userService;
 
+    @GetMapping("/login")
+    public void getLogin(HttpServletResponse response) throws IOException {
+        System.out.println("LOGIN 실행");
+
+        response.sendRedirect("/oauth2/authorization/google");
+    }
 }
