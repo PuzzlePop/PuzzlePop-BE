@@ -235,7 +235,7 @@ public class PuzzleBoard {
                         CANVAS_WIDTH/2 -
                                 pieceSize/2 +
                                 pieceSize * ((j*2) + (i % 2)) -
-                                picture.getImgWidth();
+                                picture.getImgWidth() + 50;
                 double y =
                         CANVAS_LENGTH/2 -
                                 pieceSize/2 +
