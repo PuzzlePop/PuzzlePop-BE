@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
 @Entity
@@ -37,14 +37,16 @@ public class User {
     @ColumnDefault("true")
     private Boolean soundEffect;
 
-    private int playingGameID;
+    private Integer playingGameID;
     @ColumnDefault("0")
-    private int gold;
+    private Integer gold;
     @Column(length = 32)
     private String onlineStatus;
 
     /////////////////
+    @Column(length = 1024)
     private String accessToken;
+    @Column(length = 1024)
     private String refreshToken;
     private String tokenType;
 
@@ -52,8 +54,8 @@ public class User {
     private String providerId;
     private String role;
 
-    private Timestamp createdDate;
-    private Timestamp expiredDate;
+    private Date createdDate;
+    private Date expiredDate;
 
 //    private OAuth2UserInfo oAuth2UserInfo;
 //

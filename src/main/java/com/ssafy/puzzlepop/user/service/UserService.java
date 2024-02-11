@@ -51,8 +51,8 @@ public class UserService extends DefaultOAuth2UserService {
         String locale = oAuth2User.getAttribute("locale");
         boolean bgm = true;
         boolean soundEffect = true;
-        int playingGameID = -1;
-        int gold = 0;
+        Integer playingGameID = 0;
+        Integer gold = 0;
         String onlineStatus = "online";
 
         Optional<User> existData = userRepository.findByEmail(email);

@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -30,8 +30,8 @@ public class UserDto {
     private String accessToken;
     private String refreshToken;
     private String tokenType;
-    private Timestamp createdDate;
-    private Timestamp expiredDate;
+    private Date createdDate;
+    private Date expiredDate;
 
     private String provider;
     private String providerId;
