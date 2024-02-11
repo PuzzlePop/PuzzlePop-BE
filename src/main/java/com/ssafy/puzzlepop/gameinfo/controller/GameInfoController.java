@@ -20,14 +20,14 @@ public class GameInfoController {
     public ResponseEntity<?> readGameInfo(@RequestParam Long gameId) {
         log.info("GameInfoController - readGameInfo(): id = " + gameId);
         GameInfoDto responseDto = gameInfoService.readGameInfo(gameId);
-        return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @GetMapping("/gameinfo/all")
     public ResponseEntity<?> readAllGameInfo() {
         log.info("GameInfoController - readAllGameInfo()");
         List<GameInfoDto> responseDtos = gameInfoService.readAllGameInfos();
-        return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ public class GameInfoController {
             case "totalPieceCount" -> gameInfoService.findAllByTotalPieceCount(Integer.parseInt(value));
             default -> null;
         };
-        return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

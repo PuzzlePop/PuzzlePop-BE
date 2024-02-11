@@ -1,4 +1,4 @@
-package com.ssafy.puzzlepop.teamitem.advice;
+package com.ssafy.puzzlepop.teamitem.handler;
 
 import com.ssafy.puzzlepop.teamitem.exception.TeamItemNotFoundException;
 import com.ssafy.puzzlepop.teamitem.exception.TeamItemValidationException;

@@ -1,4 +1,4 @@
-package com.ssafy.puzzlepop.team.advice;
+package com.ssafy.puzzlepop.team.handler;
 
 import com.ssafy.puzzlepop.team.exception.TeamNotFoundException;
 import com.ssafy.puzzlepop.team.exception.TeamValidationException;

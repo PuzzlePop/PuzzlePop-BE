@@ -1,4 +1,4 @@
-package com.ssafy.puzzlepop.teamuser.advice;
+package com.ssafy.puzzlepop.teamuser.handler;
 
 import com.ssafy.puzzlepop.teamuser.exception.TeamUserNotFoundException;
 import com.ssafy.puzzlepop.teamuser.exception.TeamUserValidationException;
