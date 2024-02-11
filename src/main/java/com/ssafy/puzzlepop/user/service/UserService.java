@@ -201,12 +201,10 @@ public class UserService extends DefaultOAuth2UserService {
         return new UserDto(user);
     }
 
-    public UserDto getUserByEmail(String email) {
+    public List<UserDto> getUsersByEmail(String email) {
         // 해당 email을 가진 유저를 반환
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new UserNotFoundException("User not found with email: " + email)
-        );
-        return new UserDto(user);
+        List<User> users = userRepository.findAllByEmailContaining(email);
+        return users.stream().map(UserDto::new).collect(Collectors.toList());
     }
 
     public UserDto getUserByIdAndEmail(Long id, String email) {

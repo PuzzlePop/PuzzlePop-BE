@@ -80,10 +80,10 @@ public class UserController {
     }
 
     @GetMapping("/user/search/email")
-    public ResponseEntity<?> findUserByEmail(@RequestParam String email) {
+    public ResponseEntity<?> findUsersByEmail(@RequestParam String email) {
         try{
-            UserDto responseDto = userService.getUserByEmail(email);
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
+            List<UserDto> responseDtos = userService.getUsersByEmail(email);
+            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
