@@ -76,7 +76,7 @@ public class GameRoomController {
 
         int width = image.getWidth();
         int height = image.getHeight();
-        p.create(width, height, filepath, 100, base64Image);
+        p.create(width, height, filepath, 40, base64Image);
 
         Game game = gameService.findById(gameId);
         game.updatePicture(p);
