@@ -171,7 +171,7 @@ public class GameService {
             ourPuzzle.print();
         } else if (message.equals("USE_ITEM")) {
             //도움형 아이템 3가지만 나옴
-            Item item = ourPuzzle.getItemList()[Integer.parseInt(targets)];
+            Item item = ourPuzzle.getItemList()[Integer.parseInt(targets)-1];
             ItemType type = item.getName();
 
             res.setMessage(String.valueOf(type));
