@@ -35,7 +35,7 @@ public class PuzzleBoard {
     private int itemCount = 0;
     private boolean[][] visited;
 
-    private final int CANVAS_WIDTH = 1300;
+    private final int CANVAS_WIDTH = 1000;
     private final int CANVAS_LENGTH = 750;
 
     public Item addItem(ItemType type) {
