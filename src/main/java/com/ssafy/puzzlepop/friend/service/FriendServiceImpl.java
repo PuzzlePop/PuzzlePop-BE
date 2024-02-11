@@ -2,9 +2,9 @@ package com.ssafy.puzzlepop.friend.service;
 
 import com.ssafy.puzzlepop.friend.domain.Friend;
 import com.ssafy.puzzlepop.friend.domain.FriendDto;
+import com.ssafy.puzzlepop.friend.domain.FriendUserInfoDto;
 import com.ssafy.puzzlepop.friend.exception.FriendNotFoundException;
 import com.ssafy.puzzlepop.friend.repository.FriendRepository;
-import com.ssafy.puzzlepop.user.domain.UserDto;
 import com.ssafy.puzzlepop.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -71,16 +71,30 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public List<UserDto> getAcceptedFriendsByUserId(Long userId) {
-        List<UserDto> filteredList = new ArrayList<>();
+    public List<FriendUserInfoDto> getAcceptedFriendsByUserId(Long userId) {
+        List<FriendUserInfoDto> filteredList = new ArrayList<>();
 
-        List<Friend> fromList = friendRepository.findAllByFromUserIdAndRequestStatus(userId, "accepted");
-        for (Friend f : fromList) {
-            filteredList.add(userService.getUserById(f.getToUserId()));
-        }
-        List<Friend> toList = friendRepository.findAllByToUserIdAndRequestStatus(userId, "accepted");
-        for (Friend f : toList) {
-            filteredList.add(userService.getUserById(f.getFromUserId()));
+        List<FriendDto> friendList = getAllByFromUserIdOrToUserId(userId);
+        for (FriendDto f : friendList) {
+            // 1. accepted 상태인지 확인
+            if (!"accepted".equals(f.getRequestStatus())) {
+                continue;
+            }
+
+            FriendUserInfoDto friendUserInfo = new FriendUserInfoDto();
+            friendUserInfo.setFriendId(f.getId());
+
+            // 2. 사용자 기준 from인지 to인지 판단해서 dto의 userInfo 세팅
+            if (userId.equals(f.getFromUserId())) {
+                friendUserInfo.setFriendUserInfo(userService.getUserById(f.getToUserId()));
+            } else if (userId.equals(f.getToUserId())) {
+                friendUserInfo.setFriendUserInfo(userService.getUserById(f.getFromUserId()));
+            } else {
+                continue;
+            }
+
+            // 3. 리스트에 만든 dto 담기
+            filteredList.add(friendUserInfo);
         }
 
         return filteredList;

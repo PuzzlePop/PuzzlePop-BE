@@ -1,6 +1,7 @@
 package com.ssafy.puzzlepop.friend.controller;
 
 import com.ssafy.puzzlepop.friend.domain.FriendDto;
+import com.ssafy.puzzlepop.friend.domain.FriendUserInfoDto;
 import com.ssafy.puzzlepop.friend.exception.FriendNotFoundException;
 import com.ssafy.puzzlepop.friend.service.FriendService;
 import com.ssafy.puzzlepop.user.domain.UserDto;
@@ -124,7 +125,7 @@ public class FriendController {
     @PostMapping("/friend/list/accepted")
     public ResponseEntity<?> getFriendsByUserIdAndStatus(@RequestBody UserDto requestDto) {
         try {
-            List<UserDto> friendList = friendService.getAcceptedFriendsByUserId(requestDto.getId());
+            List<FriendUserInfoDto> friendList = friendService.getAcceptedFriendsByUserId(requestDto.getId());
             return ResponseEntity.status(HttpStatus.OK).body(friendList);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

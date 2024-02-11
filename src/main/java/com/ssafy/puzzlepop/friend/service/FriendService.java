@@ -1,7 +1,7 @@
 package com.ssafy.puzzlepop.friend.service;
 
 import com.ssafy.puzzlepop.friend.domain.FriendDto;
-import com.ssafy.puzzlepop.user.domain.UserDto;
+import com.ssafy.puzzlepop.friend.domain.FriendUserInfoDto;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -17,5 +17,5 @@ public interface FriendService {
     Long updateFriend(FriendDto friendDto);
     void deleteFriend(FriendDto friendDto);
 
-    List<UserDto> getAcceptedFriendsByUserId(Long userId);
+    List<FriendUserInfoDto> getAcceptedFriendsByUserId(Long userId);
 }
