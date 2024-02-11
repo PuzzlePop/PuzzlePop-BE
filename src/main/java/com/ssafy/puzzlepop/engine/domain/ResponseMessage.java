@@ -10,6 +10,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class ResponseMessage {
     private Game game;
+    private String senderId;
     private String message;
     private String team;
     private List<Integer> targetList;

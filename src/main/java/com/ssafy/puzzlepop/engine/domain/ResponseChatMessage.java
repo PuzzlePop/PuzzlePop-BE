@@ -12,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class ResponseChatMessage {
     private String userid;
+    private String teamColor;
     private String chatMessage;
     private Date time;
 }

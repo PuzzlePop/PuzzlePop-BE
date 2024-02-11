@@ -102,6 +102,14 @@ public class MessageController {
             ResponseChatMessage responseChatMessage = new ResponseChatMessage();
             responseChatMessage.setChatMessage(message.getMessage());
             responseChatMessage.setUserid(message.getSender());
+            Game game = gameService.findById(message.getRoomId());
+
+            if (game.getRedTeam().isIn(message.getSender())) {
+                responseChatMessage.setTeamColor("RED");
+            } else if (game.getBlueTeam().isIn(message.getSender())){
+                responseChatMessage.setTeamColor("BLUE");
+            }
+
             responseChatMessage.setTime(new Date());
             sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(), responseChatMessage);
         } else {

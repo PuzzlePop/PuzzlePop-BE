@@ -123,7 +123,7 @@ public class GameService {
 
         List<Integer> targetsList;
 
-
+        res.setSenderId(sender);
         if (game.getRedTeam().isIn(sender)) {
 //            System.out.println("얘 레드팀임");
             ourPuzzle = game.getRedPuzzle();
@@ -141,11 +141,7 @@ public class GameService {
             res.setMessage("팀 없는데?");
             return res;
         }
-        //TODO
-        //게임 진행 로직
 
-        //TODO
-        // 배틀 형태로도 구현해야함
         if (message.equals("ADD_PIECE")) {
             String[] stringToInt = targets.split(",");
             List<Integer> pieces = new LinkedList<>();
