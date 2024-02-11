@@ -235,12 +235,12 @@ public class PuzzleBoard {
                         CANVAS_WIDTH/2 -
                                 pieceSize/2 +
                                 pieceSize * ((j*2) + (i % 2)) -
-                                picture.getWidth();
+                                picture.getImgWidth();
                 double y =
                         CANVAS_LENGTH/2 -
                                 pieceSize/2 +
                                 pieceSize*i -
-                                picture.getLength()/2;
+                                picture.getImgHeight()/2;
 
                 randomForPiece.setPosition_x(x);
                 randomForPiece.setPosition_y(y);
