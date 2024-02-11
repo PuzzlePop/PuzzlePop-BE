@@ -218,13 +218,9 @@ public class UserService extends DefaultOAuth2UserService {
     }
 
     public List<UserDto> getUsersByNickname(String nickname) {
-        // 해당 닉네임을 가진 유저들 목록 반환
-        List<User> users = userRepository.findAllByNickname(nickname);
-//        .orElseThrow(
-//                () -> new UserRuntimeException("Users not found with nickname: " + nickname)
-//        );
+        // 해당 닉네임을 포함한 유저들 목록 반환
+        List<User> users = userRepository.findAllByNicknameContaining(nickname);
         return users.stream().map(UserDto::new).collect(Collectors.toList());
-//        return new users.stream().map(UserDto::new).collect(Collectors.toList());
     }
 
     public Long createUser(UserDto requestDto) {

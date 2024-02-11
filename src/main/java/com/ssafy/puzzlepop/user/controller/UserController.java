@@ -18,7 +18,7 @@ public class UserController {
 
 
     @GetMapping("/user")
-    public ResponseEntity<?> getUserByEmail(@RequestParam("id") Long id) {
+    public ResponseEntity<?> getUserByEmail(@RequestParam Long id) {
         try {
             UserDto responseDto = userService.getUserById(id);
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
@@ -80,7 +80,7 @@ public class UserController {
     }
 
     @GetMapping("/user/search/email")
-    public ResponseEntity<?> findUserByEmail(@RequestParam("email") String email) {
+    public ResponseEntity<?> findUserByEmail(@RequestParam String email) {
         try{
             UserDto responseDto = userService.getUserByEmail(email);
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
@@ -92,7 +92,7 @@ public class UserController {
     }
 
     @GetMapping("/user/search/nickname")
-    public ResponseEntity<?> findUsersByNickname(@RequestParam("nickname") String nickname) {
+    public ResponseEntity<?> findUsersByNickname(@RequestParam String nickname) {
         try {
             List<UserDto> responseDtos = userService.getUsersByNickname(nickname);
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
