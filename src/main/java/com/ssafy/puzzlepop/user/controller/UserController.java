@@ -4,7 +4,6 @@ import com.ssafy.puzzlepop.user.domain.UserDto;
 import com.ssafy.puzzlepop.user.exception.UserNotFoundException;
 import com.ssafy.puzzlepop.user.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -85,9 +84,6 @@ public class UserController {
     public ResponseEntity<?> findAllUsers() {
         try {
             List<UserDto> responseDtos = userService.getAllUsers();
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Location", "http://localhost:5173/");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

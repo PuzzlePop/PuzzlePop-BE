@@ -5,7 +5,6 @@ import com.ssafy.puzzlepop.user.domain.TokenDto;
 import com.ssafy.puzzlepop.user.exception.InvalidTokenException;
 import com.ssafy.puzzlepop.user.exception.RefreshTokenNotFoundException;
 import com.ssafy.puzzlepop.user.repository.UserRepository;
-import com.ssafy.puzzlepop.user.resolver.JwtResolver;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +21,9 @@ public class JwtReIssuer {
 
     public TokenDto reissueAccessToken(HttpServletRequest request) throws InvalidTokenException {
 
-        Cookie cookie = WebUtils.getCookie(request, "refreshTokenName");
+        Cookie cookie = WebUtils.getCookie(request, "refreshToken");
 
         String refreshToken = cookie.getValue();
-        System.out.println(refreshToken);
 
         if (!tokenProvider.validate(refreshToken) ) {  // 리프레시 토큰 유효성 검사
             throw new InvalidTokenException("유효하지 않은 리프레시 토큰");

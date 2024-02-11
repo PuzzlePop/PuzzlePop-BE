@@ -1,7 +1,5 @@
 package com.ssafy.puzzlepop.user.filter;
 
-import com.ssafy.puzzlepop.user.domain.PrincipalDetails;
-import com.ssafy.puzzlepop.user.domain.UserDto;
 import com.ssafy.puzzlepop.user.exception.InvalidTokenException;
 import com.ssafy.puzzlepop.user.exception.UserPrincipalNotFoundException;
 import com.ssafy.puzzlepop.user.handler.TokenAuthenticationFailureHandler;
