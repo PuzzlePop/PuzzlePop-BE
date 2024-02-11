@@ -175,12 +175,13 @@ public class GameService {
             ourPuzzle.print();
         } else if (message.equals("USE_ITEM")) {
             //도움형 아이템 3가지만 나옴
-            Item item = ourPuzzle.getItemList()[Integer.parseInt(targets)];
-            ItemType type = item.getName();
-
-            res.setMessage(String.valueOf(type));
-            res.setTargets(ourColor);
-            res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
+            Item item = ourPuzzle.getItemList()[Integer.parseInt(targets) - 1]; // index는 0부터 시작
+            if (item != null) {
+                ItemType type = item.getName();
+                res.setMessage(String.valueOf(type));
+                res.setTargets(ourColor);
+                res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
+            }
         } else if (message.equals("USE_RANDOM_ITEM")) {
             //공격형 아이템 3가지만 나옴
             DropItem item = game.getDropRandomItem().get(targets);
