@@ -75,6 +75,7 @@ public class Item {
                             System.out.println(puzzle.getBoard()[i][j] + " " + puzzle.getBoard()[i][j+1]);
                             targets.add(puzzle.getBoard()[i][j].getIndex());
                             targets.add(puzzle.getBoard()[i][j+1].getIndex());
+                            return targets;
                         }
                     }
                 }
@@ -172,6 +173,7 @@ public class Item {
 
                             System.out.println("자석 효과 대상 : " + targets);
                             puzzle.addPiece(targets);
+                            return targets;
                         }
                     }
                 }
