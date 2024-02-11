@@ -17,23 +17,10 @@ public class UserController {
     private final UserService userService;
 
 
-
-//    @PostMapping("/user")
-//    public ResponseEntity<?> createUser(@RequestBody UserDto requestDto) {
-//        try {
-//            Long id = userService.createUser(requestDto);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(id);
-//        } catch (UserNotFoundException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
-
     @GetMapping("/user")
-    public ResponseEntity<?> getUserByEmail(@RequestBody UserDto requestDto) {
+    public ResponseEntity<?> getUserByEmail(@RequestParam Long id) {
         try {
-            UserDto responseDto = userService.getUserByEmail(requestDto.getEmail());
+            UserDto responseDto = userService.getUserById(id);
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -93,9 +80,9 @@ public class UserController {
     }
 
     @GetMapping("/user/search/email")
-    public ResponseEntity<?> findUserByEmail(@RequestBody UserDto requestDto) {
+    public ResponseEntity<?> findUserByEmail(@RequestParam String email) {
         try{
-            UserDto responseDto = userService.getUserByEmail(requestDto.getEmail());
+            UserDto responseDto = userService.getUserByEmail(email);
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -105,9 +92,9 @@ public class UserController {
     }
 
     @GetMapping("/user/search/nickname")
-    public ResponseEntity<?> findUsersByNickname(@RequestBody UserDto requestDto) {
+    public ResponseEntity<?> findUsersByNickname(@RequestParam String nickname) {
         try {
-            List<UserDto> responseDtos = userService.getUsersByNickname(requestDto.getNickname());
+            List<UserDto> responseDtos = userService.getUsersByNickname(nickname);
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
