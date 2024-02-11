@@ -15,6 +15,8 @@ public class Picture {
     private String name;
     private int width;
     private int length;
+    private int imgWidth;
+    private int imgHeight;
 
 
     private int pieceSize;
@@ -38,8 +40,8 @@ public class Picture {
 
         int originHeight = this.getLength();
         int originWidth = this.getWidth();
-        int imgWidth = originHeight >= originWidth ? Math.round((this.levelSize.get(3)*originWidth) / originHeight / 100) * 100 : this.levelSize.get(3);
-        int imgHeight = originHeight >= originWidth ? this.levelSize.get(3) : Math.round((this.levelSize.get(3)*originHeight) /  originWidth/ 100) * 100;
+        this.imgWidth = originHeight >= originWidth ? Math.round((this.levelSize.get(3)*originWidth) / originHeight / 100) * 100 : this.levelSize.get(3);
+        this.imgHeight = originHeight >= originWidth ? this.levelSize.get(3) : Math.round((this.levelSize.get(3)*originHeight) /  originWidth/ 100) * 100;
         this.widthPieceCnt = (int) Math.floor((double)imgWidth / (double)this.pieceSize);
         this.lengthPieceCnt = (int) Math.floor((double) imgHeight / (double)this.pieceSize);
     }
