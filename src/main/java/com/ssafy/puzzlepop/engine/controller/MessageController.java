@@ -102,6 +102,14 @@ public class MessageController {
             ResponseChatMessage responseChatMessage = new ResponseChatMessage();
             responseChatMessage.setChatMessage(message.getMessage());
             responseChatMessage.setUserid(message.getSender());
+            Game game = gameService.findById(message.getRoomId());
+
+            if (game.getRedTeam().isIn(message.getSender())) {
+                responseChatMessage.setTeamColor("RED");
+            } else if (game.getBlueTeam().isIn(message.getSender())){
+                responseChatMessage.setTeamColor("BLUE");
+            }
+
             responseChatMessage.setTime(new Date());
             sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(), responseChatMessage);
         } else {
@@ -129,6 +137,11 @@ public class MessageController {
                 res.setBlueItemList(game.getBluePuzzle().getItemList());
                 res.setRedProgressPercent((double) game.getRedPuzzle().getCorrectedCount() / (game.getRedPuzzle().getLengthCnt() * game.getRedPuzzle().getWidthCnt()) * 100);
                 res.setBlueProgressPercent((double) game.getBluePuzzle().getCorrectedCount() / (game.getBluePuzzle().getLengthCnt() * game.getBluePuzzle().getWidthCnt()) * 100);
+
+                res.setRedBundles(game.getRedPuzzle().getBundles());
+                if (game.getGameType().equals("BATTLE")) {
+                    res.setBlueBundles(game.getBluePuzzle().getBundles());
+                }
                 sendingOperations.convertAndSend("/topic/game/room/" + message.getRoomId(), res);
             }
         }
@@ -160,7 +173,7 @@ public class MessageController {
 
     //배틀 드랍 아이템 제공
     //20초에 한번씩 제공하기로 함
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(fixedRate = 10000)
     public void sendDropItem() {
         List<Game> allRoom = gameService.findAllBattleRoom();
         Random random = new Random();
@@ -168,7 +181,7 @@ public class MessageController {
             if (allRoom.get(i).isStarted()) {
                 //확률 계산
                 int possibility = random.nextInt(100);
-                if (possibility <= 30) {
+                if (possibility <= 100) {
                     DropItem item = DropItem.randomCreate();
                     allRoom.get(i).getDropRandomItem().put(item.getUuid(), item);
                     ResponseMessage res = new ResponseMessage();

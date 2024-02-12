@@ -21,14 +21,14 @@ public class TeamController {
     public ResponseEntity<?> readTeam(@RequestParam Long id) {
         log.info("TeamController - readTeam(): id = " + id);
         TeamDto responseDto = teamService.readTeam(id);
-        return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @GetMapping("/team/all")
     public ResponseEntity<?> readAllTeams() {
         log.info("TeamController - readAllTeams()");
         List<TeamDto> responseDtos = teamService.readAllTeams();
-        return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ public class TeamController {
     public ResponseEntity<?> findTeamsByGameId(@RequestParam Long gameId) {
         log.info("TeamController - findTeamsByGameId(): gameId = " + gameId);
         List<TeamDto> responseDtos = teamService.findAllByGameId(gameId);
-        return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 
     @PutMapping("/team/update")

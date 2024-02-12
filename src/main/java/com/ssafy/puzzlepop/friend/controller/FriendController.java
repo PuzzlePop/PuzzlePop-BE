@@ -27,7 +27,7 @@ public class FriendController {
     public ResponseEntity<?> getFriendById1AndId2(@RequestBody FriendDto requestDto) {
         try {
             FriendDto responseDto = friendService.getFriendById1AndId2(requestDto.getFromUserId(), requestDto.getToUserId());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {

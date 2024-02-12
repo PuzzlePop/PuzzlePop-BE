@@ -123,7 +123,7 @@ public class GameService {
 
         List<Integer> targetsList;
 
-
+        res.setSenderId(sender);
         if (game.getRedTeam().isIn(sender)) {
 //            System.out.println("얘 레드팀임");
             ourPuzzle = game.getRedPuzzle();
@@ -141,11 +141,7 @@ public class GameService {
             res.setMessage("팀 없는데?");
             return res;
         }
-        //TODO
-        //게임 진행 로직
 
-        //TODO
-        // 배틀 형태로도 구현해야함
         if (message.equals("ADD_PIECE")) {
             String[] stringToInt = targets.split(",");
             List<Integer> pieces = new LinkedList<>();
@@ -175,21 +171,31 @@ public class GameService {
             ourPuzzle.print();
         } else if (message.equals("USE_ITEM")) {
             //도움형 아이템 3가지만 나옴
-            Item item = ourPuzzle.getItemList()[Integer.parseInt(targets)];
-            ItemType type = item.getName();
-
-            res.setMessage(String.valueOf(type));
-            res.setTargets(ourColor);
-            res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
+            Item item = ourPuzzle.getItemList()[Integer.parseInt(targets) - 1]; // index는 0부터 시작
+            if (item != null) {
+                ItemType type = item.getName();
+                res.setMessage(String.valueOf(type));
+                res.setTargets(ourColor);
+                res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
+            }
         } else if (message.equals("USE_RANDOM_ITEM")) {
             //공격형 아이템 3가지만 나옴
             DropItem item = game.getDropRandomItem().get(targets);
+            if (item == null) {
+                res.setMessage("INVALID COMMAND");
+                return res;
+            }
             game.getDropRandomItem().remove(targets);
 
             Item[] yourItemList = yourPuzzle.getItemList();
+
             int shield = -1;
             int mirror = -1;
             for (int i = 0; i < 5; i++) {
+                if (yourItemList[i] == null) {
+                    continue;
+                }
+
                 if (yourItemList[i].getName() == ItemType.MIRROR) {
                     mirror = i;
                 } else if (yourItemList[i].getName() == ItemType.SHIELD) {
@@ -199,37 +205,42 @@ public class GameService {
 
 
             //둘다 없을 때
-            if (mirror != -1 && shield != -1) {
+            if (mirror == -1 && shield == -1) {
                 res.setMessage("ATTACK");
                 res.setTargets(yourColor);
                 res.setRandomItem(item);
-                res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), yourPuzzle));
+                res.setTargetList(item.run(yourPuzzle));
                 Map<Integer, double[]> tmp = new HashMap<>();
-                for (int i = 0; i < res.getTargetList().size(); i++) {
-                    int pieceIdx = res.getTargetList().get(i);
-                    int[] point = yourPuzzle.getIdxToCoordinate().get(pieceIdx);
-                    tmp.put(pieceIdx, new double[]{
-                            yourPuzzle.getBoard()[point[0]][point[1]].getPosition_x(),
-                            yourPuzzle.getBoard()[point[0]][point[1]].getPosition_y()
-                    });
+                if (res.getTargetList() != null) {
+                    for (int i = 0; i < res.getTargetList().size(); i++) {
+                        int pieceIdx = res.getTargetList().get(i);
+                        int[] point = yourPuzzle.getIdxToCoordinate().get(pieceIdx);
+                        tmp.put(pieceIdx, new double[]{
+                                yourPuzzle.getBoard()[point[0]][point[1]].getPosition_x(),
+                                yourPuzzle.getBoard()[point[0]][point[1]].getPosition_y()
+                        });
+                    }
                 }
                 res.setDeleted(tmp);
             }
             //반사됨
             else if (mirror != -1 && shield == -1) {
+                yourPuzzle.useItem(mirror, yourPuzzle);
                 res.setMessage("MIRROR");
                 res.setTargets(ourColor);
                 res.setRandomItem(item);
-                res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
+                res.setTargetList(item.run(ourPuzzle));
 
                 Map<Integer, double[]> tmp = new HashMap<>();
-                for (int i = 0; i < res.getTargetList().size(); i++) {
-                    int pieceIdx = res.getTargetList().get(i);
-                    int[] point = ourPuzzle.getIdxToCoordinate().get(pieceIdx);
-                    tmp.put(pieceIdx, new double[]{
-                            ourPuzzle.getBoard()[point[0]][point[1]].getPosition_x(),
-                            ourPuzzle.getBoard()[point[0]][point[1]].getPosition_y()
-                    });
+                if (res.getTargetList() != null) {
+                    for (int i = 0; i < res.getTargetList().size(); i++) {
+                        int pieceIdx = res.getTargetList().get(i);
+                        int[] point = ourPuzzle.getIdxToCoordinate().get(pieceIdx);
+                        tmp.put(pieceIdx, new double[]{
+                                ourPuzzle.getBoard()[point[0]][point[1]].getPosition_x(),
+                                ourPuzzle.getBoard()[point[0]][point[1]].getPosition_y()
+                        });
+                    }
                 }
                 res.setDeleted(tmp);
             }
@@ -237,23 +248,27 @@ public class GameService {
             else if (mirror == -1 && shield != -1) {
                 //아무일 없음
                 res.setMessage("SHIELD");
+                yourPuzzle.useItem(shield, yourPuzzle);
             }
             //둘다 있을 때
             else {
                 //반사부터 적용됨
+                yourPuzzle.useItem(mirror, yourPuzzle);
                 res.setMessage("MIRROR");
                 res.setTargets(ourColor);
                 res.setRandomItem(item);
-                res.setTargetList(ourPuzzle.useItem(Integer.parseInt(targets), ourPuzzle));
+                res.setTargetList(item.run(ourPuzzle));
 
                 Map<Integer, double[]> tmp = new HashMap<>();
-                for (int i = 0; i < res.getTargetList().size(); i++) {
-                    int pieceIdx = res.getTargetList().get(i);
-                    int[] point = ourPuzzle.getIdxToCoordinate().get(pieceIdx);
-                    tmp.put(pieceIdx, new double[]{
-                            ourPuzzle.getBoard()[point[0]][point[1]].getPosition_x(),
-                            ourPuzzle.getBoard()[point[0]][point[1]].getPosition_y()
-                    });
+                if (res.getTargetList() != null) {
+                    for (int i = 0; i < res.getTargetList().size(); i++) {
+                        int pieceIdx = res.getTargetList().get(i);
+                        int[] point = ourPuzzle.getIdxToCoordinate().get(pieceIdx);
+                        tmp.put(pieceIdx, new double[]{
+                                ourPuzzle.getBoard()[point[0]][point[1]].getPosition_x(),
+                                ourPuzzle.getBoard()[point[0]][point[1]].getPosition_y()
+                        });
+                    }
                 }
                 res.setDeleted(tmp);
             }

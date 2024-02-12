@@ -1,4 +1,4 @@
-package com.ssafy.puzzlepop.item.advice;
+package com.ssafy.puzzlepop.item.handler;
 
 import com.ssafy.puzzlepop.item.exception.ItemNotFoundException;
 import com.ssafy.puzzlepop.item.exception.ItemValidationException;

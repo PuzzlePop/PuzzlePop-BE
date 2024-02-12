@@ -40,20 +40,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+        // http settings for cors
+        http.csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable);
 //                .sessionManagement();
 
-        http
-                .formLogin((login) -> login.disable());
-
-        http
+        http.formLogin((login) -> login.disable())
                 .httpBasic((basic) -> basic.disable());
 
-        http
-                .oauth2Login((oauth2) -> oauth2
+        http.oauth2Login((oauth2) -> oauth2
                         .loginPage("/login")
                         .authorizationEndpoint(auth -> auth
                                 .baseUri("/oauth2/authorization")
@@ -61,30 +56,21 @@ public class SecurityConfig {
                         .userInfoEndpoint((userInfoEndpointConfig) ->
                                 userInfoEndpointConfig.userService(userService))
                         .successHandler(oauth2AuthenticationSuccessHandler)
-                        .failureHandler(oauth2AuthenticationFailureHandler)
-                );
+                        .failureHandler(oauth2AuthenticationFailureHandler));
 
-        http
-                .logout((logout) -> logout
+        http.logout((logout) -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
-                        .clearAuthentication(true)
+                        .clearAuthentication(true));
 //                        .deleteCookies("accessTokenName", "refreshTokenName")
-                );
 
-
-        http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .anyRequest().permitAll()
+        http.authorizeHttpRequests((authorize) -> authorize
+                        .anyRequest().permitAll());
 //                        .requestMatchers("/","/login/**").permitAll()
-
 //                        .anyRequest().authenticated()
-                );
 
-        http
-                .addFilterBefore(tokenAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class);
-
+        http.addFilterBefore(tokenAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
