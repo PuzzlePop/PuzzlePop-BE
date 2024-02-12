@@ -1,37 +1,61 @@
 package com.ssafy.puzzlepop.engine;
 
-import com.ssafy.puzzlepop.engine.domain.Picture;
-import com.ssafy.puzzlepop.engine.domain.Piece;
-import com.ssafy.puzzlepop.engine.domain.PuzzleBoard;
+import com.ssafy.puzzlepop.engine.domain.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 class PuzzleBoardTest {
-//    @Test
-//    @DisplayName("초기화 테스트")
-//    void initTest() {
-//        Picture p = new Picture();
-//        p.setWidth(1000);
-//        p.setLength(551);
-//        p.setPieceSize(100);
-//        p.setLengthPieceCnt(4);
-//        p.setWidthPieceCnt(8);
-//
-//        PuzzleBoard puzzle = new PuzzleBoard();
-//        puzzle.init(p);
-//        Piece[][] board = puzzle.getBoard();
-//
-//        for (int i = 0; i < puzzle.getLengthCnt(); i++) {
-//            for (int j = 0; j < puzzle.getWidthCnt(); j++) {
-////                System.out.print(board[0][i][j].getIndex() + " " + board[0][i][j].getPosition_x()+ " "+board[0][i][j].getPosition_y() + " | ");
-//                System.out.print(Arrays.toString(board[i][j].getType()));
-//
-//            }
-//            System.out.println();
-//        }
-//    }
+    @Test
+    @DisplayName("불지르기 테스트")
+    void initTest() {
+        Picture p = new Picture();
+        p.setWidth(1000);
+        p.setLength(551);
+        p.setPieceSize(100);
+        p.setLengthPieceCnt(4);
+        p.setWidthPieceCnt(8);
+
+        PuzzleBoard puzzle = new PuzzleBoard();
+        puzzle.init(p, "COOPERATION");
+        Piece[][] board = puzzle.getBoard();
+
+        for (int i = 0; i < puzzle.getLengthCnt(); i++) {
+            for (int j = 0; j < puzzle.getWidthCnt(); j++) {
+//                System.out.print(board[0][i][j].getIndex() + " " + board[0][i][j].getPosition_x()+ " "+board[0][i][j].getPosition_y() + " | ");
+                System.out.print(Arrays.toString(board[i][j].getType()));
+
+            }
+            System.out.println();
+        }
+
+        puzzle.addItem(ItemType.FIRE);
+        List<Integer> list = new LinkedList<>();
+        list.add(0);
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(8);
+        list.add(9);
+        list.add(10);
+        list.add(11);
+        list.add(16);
+        list.add(17);
+        list.add(18);
+        list.add(19);
+        puzzle.addPiece(list);
+
+        puzzle.print();
+
+        puzzle.useItem(1, puzzle);
+
+        puzzle.print();
+
+
+    }
 
 //    @Test
 //    @DisplayName("조각 결합 테스트")
