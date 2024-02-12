@@ -392,7 +392,6 @@ public class GameService {
 
     private void save(Game game) {
         System.out.println("**************Game Save*****************");
-        System.out.println(game.toString());
 
         // gameinfo 생성
         GameInfoDto gameInfoDto = new GameInfoDto(
@@ -459,8 +458,6 @@ public class GameService {
                 teamUserService.createTeamUser(new TeamUserRequestDto(null, blueTeamId, uid, matchedPieceCount));
             }
         }
-
-        //TODO 그 외 정보들도 여기서 함께 저장해야함
     }
 
     public boolean enterGame(String gameId, String userId, String sessionId) {
