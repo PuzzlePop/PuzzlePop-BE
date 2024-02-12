@@ -85,7 +85,7 @@ public class Item {
                 System.out.println("EARTHQUAKE EFFECT");
                 for (int i = 0; i < puzzle.getLengthCnt(); i++) {
                     for (int j = 0; j < puzzle.getWidthCnt(); j++) {
-                        if (puzzle.getIsCorrected()[i][j]) {
+                        if (!puzzle.getIsCorrected()[i][j]) {
                             targets.add(puzzle.getBoard()[i][j].getIndex());
                             puzzle.randomArrange(puzzle.getBoard()[i][j].getIndex());
                         }
