@@ -139,28 +139,16 @@ public class Item {
                         if (!puzzle.getIsCorrected()[i][j]) {
                             targets.add(puzzle.getBoard()[i][j].getIndex());
 
-                            int bottom = puzzle.getBoard()[i][j].getCorrectBottomIndex();
-                            if (bottom != -1) {
-                                int[] coor = puzzle.getIdxToCoordinate().get(bottom);
-                                if (!puzzle.getIsCorrected()[coor[0]][coor[1]]) {
-                                    targets.add(bottom);
-                                }
-                            }
-
                             int top = puzzle.getBoard()[i][j].getCorrectTopIndex();
                             if (top != -1) {
                                 int[] coor = puzzle.getIdxToCoordinate().get(top);
                                 if (!puzzle.getIsCorrected()[coor[0]][coor[1]]) {
                                     targets.add(top);
+                                } else {
+                                    targets.add(-1);
                                 }
-                            }
-
-                            int left = puzzle.getBoard()[i][j].getCorrectLeftIndex();
-                            if (left != -1) {
-                                int[] coor = puzzle.getIdxToCoordinate().get(left);
-                                if (!puzzle.getIsCorrected()[coor[0]][coor[1]]) {
-                                    targets.add(left);
-                                }
+                            } else {
+                                targets.add(-1);
                             }
 
                             int right = puzzle.getBoard()[i][j].getCorrectRightIndex();
@@ -168,7 +156,36 @@ public class Item {
                                 int[] coor = puzzle.getIdxToCoordinate().get(right);
                                 if (!puzzle.getIsCorrected()[coor[0]][coor[1]]) {
                                     targets.add(right);
+                                } else {
+                                    targets.add(-1);
                                 }
+                            } else {
+                                targets.add(-1);
+                            }
+
+                            int bottom = puzzle.getBoard()[i][j].getCorrectBottomIndex();
+                            if (bottom != -1) {
+                                int[] coor = puzzle.getIdxToCoordinate().get(bottom);
+                                if (!puzzle.getIsCorrected()[coor[0]][coor[1]]) {
+                                    targets.add(bottom);
+                                } else {
+                                    targets.add(-1);
+                                }
+                            } else {
+                                targets.add(-1);
+                            }
+
+
+                            int left = puzzle.getBoard()[i][j].getCorrectLeftIndex();
+                            if (left != -1) {
+                                int[] coor = puzzle.getIdxToCoordinate().get(left);
+                                if (!puzzle.getIsCorrected()[coor[0]][coor[1]]) {
+                                    targets.add(left);
+                                } else {
+                                    targets.add(-1);
+                                }
+                            } else {
+                                targets.add(-1);
                             }
 
                             System.out.println("자석 효과 대상 : " + targets);

@@ -285,6 +285,10 @@ public class PuzzleBoard {
         for (int i = 0; i < pieceList.size(); i++) {
             //고유 인덱스를 통해 해당 piece 찾기
             int pieceIdx = pieceList.get(i);
+            if (pieceIdx == -1) {
+                continue;
+            }
+
             Piece x = board[idxToCoordinate.get(pieceIdx)[0]][idxToCoordinate.get(pieceIdx)[1]];
 
             //해당 조각이 이미 어느 집합에 소속되어 있다면
