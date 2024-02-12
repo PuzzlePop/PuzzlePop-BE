@@ -32,7 +32,8 @@ class PuzzleBoardTest {
             System.out.println();
         }
 
-        puzzle.addItem(ItemType.FRAME);
+        puzzle.addItem(ItemType.FIRE);
+        puzzle.addItem(ItemType.FIRE);
         List<Integer> list = new LinkedList<>();
         list.add(0);
         list.add(1);
@@ -51,6 +52,7 @@ class PuzzleBoardTest {
         puzzle.print();
 
         puzzle.useItem(1, puzzle);
+        puzzle.useItem(2, puzzle);
 
         puzzle.print();
 

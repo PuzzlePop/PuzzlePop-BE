@@ -346,7 +346,7 @@ public class PuzzleBoard {
         int c = idxToCoordinate.get(targetIdx)[1];
         if (!isCorrected[r][c])
             return null;
-
+        isCorrected[r][c] = false;
 
         for (Set<Piece> bundle : bundles) {
             for (Iterator<Piece> it = bundle.iterator(); it.hasNext();) {
@@ -365,15 +365,20 @@ public class PuzzleBoard {
 
     public void searchForGroupDisbandment() {
         visited = new boolean[lengthCnt][widthCnt];
+        bundles = new LinkedList<>();
 
         for (int i = 0; i < lengthCnt; i++) {
             for (int j = 0; j < widthCnt; j++) {
                 if (isCorrected[i][j] && !visited[i][j]) {
                     visited[i][j] = true;
-                    int cnt = dfsForSearch(i, j);
+                    Set<Piece> set = new HashSet<>();
+                    set.add(board[i][j]);
+                    set = dfsForSearch(i, j, set);
 
-                    if (cnt == 1) {
+                    if (set.size() == 1) {
                         deletePiece(board[i][j].getIndex());
+                    } else {
+                        bundles.add(set);
                     }
                 }
             }
@@ -383,9 +388,7 @@ public class PuzzleBoard {
 
     int[] dx = {1,-1,0,0};
     int[] dy = {0,0,-1,1};
-    public int dfsForSearch(int r, int c) {
-        int cnt = 1;
-
+    public Set dfsForSearch(int r, int c, Set<Piece> set) {
         for (int i = 0; i < 4; i++) {
             int nr = r + dx[i];
             int nc = c + dy[i];
@@ -393,12 +396,13 @@ public class PuzzleBoard {
             if (nr >= 0 && nc >= 0 && nr < lengthCnt && nc < widthCnt) {
                 if (isCorrected[nr][nc] && !visited[nr][nc]) {
                     visited[nr][nc] = true;
-                    cnt += dfsForSearch(nr, nc);
+                    set.add(board[nr][nc]);
+                    dfsForSearch(nr, nc, set);
                 }
             }
         }
 
-        return cnt;
+        return set;
     }
 
 
