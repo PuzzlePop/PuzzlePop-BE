@@ -238,7 +238,7 @@ public class RecordServiceImpl implements RecordService {
 
             return userRecordInfoDto;
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RecordException("error occurred during find record info");
         }
 
@@ -259,7 +259,7 @@ public class RecordServiceImpl implements RecordService {
             return playedGameCountRanking;
 
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RecordException("ERROR");
         }
 
