@@ -38,11 +38,11 @@ public class GameService {
     @PostConstruct
     //의존관게 주입완료되면 실행되는 코드
     private void init() {
-        gameRooms = new LinkedHashMap<>();
+        gameRooms = new HashMap<>();
         gameRooms = Collections.synchronizedMap(gameRooms);
         gson = new Gson();
 
-        sessionToGame = new LinkedHashMap<>();
+        sessionToGame = new HashMap<>();
         sessionToGame = Collections.synchronizedMap(sessionToGame);
     }
 

@@ -29,7 +29,7 @@ public class Game {
     private Date finishTime;
 
     private boolean isStarted = false;
-    private LinkedHashMap<String, User> sessionToUser;
+    private Map<String, User> sessionToUser;
     private Map<String, DropItem> dropRandomItem;
     private boolean isFinished = false;
     private boolean isSaved = false;
@@ -125,7 +125,7 @@ public class Game {
         int roomSize = room.getRoomSize();
         String gameType = room.getGameType();
 
-        LinkedHashMap<String, User> map = new LinkedHashMap<>();
+        Map<String, User> map = new HashMap<>();
         Map<String, DropItem> dropItemMap = new HashMap<>();
 
         Game game = new Game();
