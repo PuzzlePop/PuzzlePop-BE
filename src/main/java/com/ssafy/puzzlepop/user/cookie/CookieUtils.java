@@ -61,7 +61,8 @@ public interface CookieUtils {
 
         Cookie cookie = new Cookie(cookieName, cookieContents);
         cookie.setPath("/");
-        cookie.setHttpOnly(true);
+//        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
         cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
     }

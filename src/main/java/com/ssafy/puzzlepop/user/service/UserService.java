@@ -51,8 +51,8 @@ public class UserService extends DefaultOAuth2UserService {
         String locale = oAuth2User.getAttribute("locale");
         boolean bgm = true;
         boolean soundEffect = true;
-        int playingGameID = -1;
-        int gold = 0;
+        Integer playingGameID = 0;
+        Integer gold = 0;
         String onlineStatus = "online";
 
         Optional<User> existData = userRepository.findByEmail(email);
@@ -201,12 +201,10 @@ public class UserService extends DefaultOAuth2UserService {
         return new UserDto(user);
     }
 
-    public UserDto getUserByEmail(String email) {
+    public List<UserDto> getUsersByEmail(String email) {
         // 해당 email을 가진 유저를 반환
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new UserNotFoundException("User not found with email: " + email)
-        );
-        return new UserDto(user);
+        List<User> users = userRepository.findAllByEmailContaining(email);
+        return users.stream().map(UserDto::new).collect(Collectors.toList());
     }
 
     public UserDto getUserByIdAndEmail(Long id, String email) {
@@ -218,13 +216,9 @@ public class UserService extends DefaultOAuth2UserService {
     }
 
     public List<UserDto> getUsersByNickname(String nickname) {
-        // 해당 닉네임을 가진 유저들 목록 반환
-        List<User> users = userRepository.findAllByNickname(nickname);
-//        .orElseThrow(
-//                () -> new UserRuntimeException("Users not found with nickname: " + nickname)
-//        );
+        // 해당 닉네임을 포함한 유저들 목록 반환
+        List<User> users = userRepository.findAllByNicknameContaining(nickname);
         return users.stream().map(UserDto::new).collect(Collectors.toList());
-//        return new users.stream().map(UserDto::new).collect(Collectors.toList());
     }
 
     public Long createUser(UserDto requestDto) {

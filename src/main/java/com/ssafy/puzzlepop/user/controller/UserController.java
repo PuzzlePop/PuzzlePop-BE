@@ -4,7 +4,6 @@ import com.ssafy.puzzlepop.user.domain.UserDto;
 import com.ssafy.puzzlepop.user.exception.UserNotFoundException;
 import com.ssafy.puzzlepop.user.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,24 +18,11 @@ public class UserController {
     private final UserService userService;
 
 
-
-//    @PostMapping("/user")
-//    public ResponseEntity<?> createUser(@RequestBody UserDto requestDto) {
-//        try {
-//            Long id = userService.createUser(requestDto);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(id);
-//        } catch (UserNotFoundException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
-
     @GetMapping("/user")
-    public ResponseEntity<?> getUserByEmail(@RequestBody UserDto requestDto) {
+    public ResponseEntity<?> getUserByEmail(@RequestParam Long id) {
         try {
-            UserDto responseDto = userService.getUserByEmail(requestDto.getEmail());
-            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+            UserDto responseDto = userService.getUserById(id);
+            return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -86,10 +72,7 @@ public class UserController {
     public ResponseEntity<?> findAllUsers() {
         try {
             List<UserDto> responseDtos = userService.getAllUsers();
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Location", "http://localhost:5173/");
-            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
+            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -98,10 +81,10 @@ public class UserController {
     }
 
     @GetMapping("/user/search/email")
-    public ResponseEntity<?> findUserByEmail(@RequestBody UserDto requestDto) {
+    public ResponseEntity<?> findUsersByEmail(@RequestParam String email) {
         try{
-            UserDto responseDto = userService.getUserByEmail(requestDto.getEmail());
-            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+            List<UserDto> responseDtos = userService.getUsersByEmail(email);
+            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -110,10 +93,10 @@ public class UserController {
     }
 
     @GetMapping("/user/search/nickname")
-    public ResponseEntity<?> findUsersByNickname(@RequestBody UserDto requestDto) {
+    public ResponseEntity<?> findUsersByNickname(@RequestParam String nickname) {
         try {
-            List<UserDto> responseDtos = userService.getUsersByNickname(requestDto.getNickname());
-            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
+            List<UserDto> responseDtos = userService.getUsersByNickname(nickname);
+            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {

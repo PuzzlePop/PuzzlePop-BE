@@ -1,10 +1,12 @@
 package com.ssafy.puzzlepop.user.jwtUtils;
 
+import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
+@Getter
 public class JwtAuthenticationResult extends AbstractAuthenticationToken {
 
     private Object principal;
@@ -33,10 +35,5 @@ public class JwtAuthenticationResult extends AbstractAuthenticationToken {
     @Override
     public Object getPrincipal() {
         return principal;
-    }
-
-
-    public void setPrincipal(Object principal) {
-        this.principal = principal;
     }
 }

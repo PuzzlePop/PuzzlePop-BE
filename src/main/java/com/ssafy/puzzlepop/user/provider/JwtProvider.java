@@ -3,8 +3,10 @@ package com.ssafy.puzzlepop.user.provider;
 import com.ssafy.puzzlepop.user.domain.PrincipalDetails;
 import com.ssafy.puzzlepop.user.domain.TokenDto;
 import com.ssafy.puzzlepop.user.domain.User;
+import com.ssafy.puzzlepop.user.domain.UserDto;
 import com.ssafy.puzzlepop.user.exception.InvalidTokenException;
 import com.ssafy.puzzlepop.user.filter.TokenAuthenticationProcessingFilter;
+import com.ssafy.puzzlepop.user.jwtUtils.JwtAuthenticationResult;
 import com.ssafy.puzzlepop.user.service.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -20,7 +22,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.*;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,7 +35,7 @@ public class JwtProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationProcessingFilter.class);
 
-    private final UserService customUserDetailsService;
+    private final UserService userService;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -59,9 +63,7 @@ public class JwtProvider {
 
     public String createRefreshToken(Authentication authentication) {
 
-        String token = this.generateToken(authentication, refreshTokenValidTime);
-//        refreshTokenRepository.save(new RefreshToken(token));
-        return token;
+        return generateToken(authentication, refreshTokenValidTime);
     }
 
     public String generateToken(Authentication authentication, Long expiration) {
@@ -82,7 +84,7 @@ public class JwtProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setSubject(uid)
                 .claim("provider", provider)
@@ -92,11 +94,25 @@ public class JwtProvider {
                 .setExpiration(expiryDate)
                 .signWith(key)
                 .compact();
+
+        UserDto userDto = userService.getUserById(user.getId());
+
+        if (expiration == accessTokenValidTime){
+            userDto.setAccessToken(token);
+        } else {
+            userDto.setRefreshToken(token);
+            userDto.setCreatedDate(now);
+            userDto.setExpiredDate(expiryDate);
+        }
+
+        userService.updateUser(userDto);
+
+        return token;
     }
 
 
     public boolean validate(String token) {
-        System.out.println("validating token...");
+        System.out.println("validating token..." + token );
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             System.out.println("validation complete");
@@ -120,23 +136,7 @@ public class JwtProvider {
 
     /* web request 에 대한 인증 정보를 반환함. */
     @SuppressWarnings("unchecked")
-//    public JwtAuthenticationResult decode(String token) throws JwtException {
-//
-//        Claims claims = this.parseClaims(token);
-//        String uid = claims.getSubject();
-//        String provider = claims.get("provider", String.class);
-//        String email = claims.get("email", String.class);
-//        List<? extends GrantedAuthority> grantedAuthorities =
-//                (List<SimpleGrantedAuthority>) claims.get("authority", List.class).stream()
-//                        .map(authority-> new SimpleGrantedAuthority((String) authority))
-//                        .collect(Collectors.toList());
-//
-//        return new JwtAuthenticationResult(uid, provider, email, grantedAuthorities);
-//    }
-
-    public Map<String,String> decode(String token) throws JwtException {
-
-        Map<String, String> map = new HashMap<>();
+    public JwtAuthenticationResult decode(String token) throws JwtException {
 
         Claims claims = this.parseClaims(token);
         String uid = claims.getSubject();
@@ -147,10 +147,26 @@ public class JwtProvider {
                         .map(authority-> new SimpleGrantedAuthority((String) authority))
                         .collect(Collectors.toList());
 
-
-
-        return map;
+        return new JwtAuthenticationResult(uid, provider, email, grantedAuthorities);
     }
+
+//    public Map<String,String> decode(String token) throws JwtException {
+//
+//        Map<String, String> map = new HashMap<>();
+//
+//        Claims claims = this.parseClaims(token);
+//        String uid = claims.getSubject();
+//        String provider = claims.get("provider", String.class);
+//        String email = claims.get("email", String.class);
+//        List<? extends GrantedAuthority> grantedAuthorities =
+//                (List<SimpleGrantedAuthority>) claims.get("authority", List.class).stream()
+//                        .map(authority-> new SimpleGrantedAuthority((String) authority))
+//                        .collect(Collectors.toList());
+//
+//
+//
+//        return map;
+//    }
 
     private Claims parseClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
@@ -161,14 +177,14 @@ public class JwtProvider {
 
         try {
             Claims claims = this.parseClaims(refreshToken);
-            return this.createAccessTokenOnly(claims);
+            return this.createAccessTokenOnly(claims, refreshToken);
 
         } catch (JwtException e) {
             throw new InvalidTokenException("유효하지 않은 리프레시 토큰. 액세스토큰 재발급 불가");
         }
     }
 
-    private TokenDto createAccessTokenOnly(Claims claims) {
+    private TokenDto createAccessTokenOnly(Claims claims, String refreshToken) {
         Date now = new Date();
 
         String accessToken = Jwts.builder()
@@ -182,7 +198,7 @@ public class JwtProvider {
         return TokenDto.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
-                .refreshToken("")
+                .refreshToken(refreshToken)
                 .accessTokenExpireDate(accessTokenValidTime)
                 .build();
     }
