@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class User {
     private String id;
-//    private String sessionId;
+    private boolean isMember;
 
     @Override
     public boolean equals(Object obj) {

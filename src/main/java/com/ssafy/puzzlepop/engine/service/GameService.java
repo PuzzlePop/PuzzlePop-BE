@@ -475,15 +475,6 @@ public class GameService {
 
     }
 
-    public boolean enterGame(String gameId, String userId, String sessionId) {
-        Game game = gameRooms.get(gameId);
-        if (game.enterPlayer(new User(userId), sessionId)) {
-            return true;
-        }
-
-        return false;
-    }
-
     public int[] comboCheck(PuzzleBoard puzzle) {
         Date now = new Date();
         if (puzzle.getComboTimer().isEmpty()) {
