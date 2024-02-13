@@ -5,6 +5,8 @@ import com.ssafy.puzzlepop.engine.InGameMessage;
 import com.ssafy.puzzlepop.engine.domain.*;
 import com.ssafy.puzzlepop.gameinfo.domain.GameInfoDto;
 import com.ssafy.puzzlepop.gameinfo.service.GameInfoService;
+import com.ssafy.puzzlepop.record.domain.RecordCreateDto;
+import com.ssafy.puzzlepop.record.service.RecordService;
 import com.ssafy.puzzlepop.team.domain.TeamDto;
 import com.ssafy.puzzlepop.team.service.TeamService;
 import com.ssafy.puzzlepop.teamuser.domain.TeamUserRequestDto;
@@ -31,6 +33,7 @@ public class GameService {
     private final TeamService teamService;
     private final TeamUserService teamUserService;
     private final UserService userService;
+    private final RecordService recordService;
 
     @PostConstruct
     //의존관게 주입완료되면 실행되는 코드
@@ -393,71 +396,79 @@ public class GameService {
     private void save(Game game) {
         System.out.println("**************Game Save*****************");
 
-        // gameinfo 생성
-        GameInfoDto gameInfoDto = new GameInfoDto(
-                null,
-                game.getGameType(),
-                game.isFinished(),
+        try {
+            // gameinfo 생성
+            GameInfoDto gameInfoDto = new GameInfoDto(
+                    null,
+                    game.getGameType(),
+                    game.isFinished(),
 
-                game.getPlayers().size(),
-                game.getRoomSize(),
-                game.getRedPuzzle().getWidthCnt() * game.getRedPuzzle().getLengthCnt(),
+                    game.getPlayers().size(),
+                    game.getRoomSize(),
+                    game.getRedPuzzle().getWidthCnt() * game.getRedPuzzle().getLengthCnt(),
 
-                null,
-                null,
-                game.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
-                game.getFinishTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
-        );
-        Long gameInfoId = gameInfoService.createGameInfo(gameInfoDto);
+                    null,
+                    null,
+                    game.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                    game.getFinishTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+            );
+            Long gameInfoId = gameInfoService.createGameInfo(gameInfoDto);
 
-        if ("COOPERATION".equals(game.getGameType())) {
-            // team 1개 생성
-            Long teamId = teamService.createTeam(new TeamDto(null, gameInfoId, game.getRedPuzzle().getCorrectedCount()));
+            if ("COOPERATION".equals(game.getGameType())) {
+                // team 1개 생성
+                Long teamId = teamService.createTeam(new TeamDto(null, gameInfoId, game.getRedPuzzle().getCorrectedCount()));
 
-            // user * players.size() 만큼 생성
-            List<Long> userIdList = new ArrayList<>();
-            for (User u : game.getPlayers()) {
-                UserDto userDto = new UserDto();
-                userDto.setNickname(u.getId());
-                userIdList.add(userService.createUser(userDto));
+                // user * players.size() 만큼 생성
+                List<Long> userIdList = new ArrayList<>();
+                for (User u : game.getPlayers()) {
+                    UserDto userDto = new UserDto();
+                    userDto.setNickname(u.getId());
+                    userIdList.add(userService.createUser(userDto));
+                }
+
+                // team-user 생성 & record 생성
+                int matchedPieceCount = 0; // 유저별 카운팅 안 되는 상황이라 모두 더미값 0으로 통일
+                for (Long uid : userIdList) {
+                    teamUserService.createTeamUser(new TeamUserRequestDto(null, teamId, uid, matchedPieceCount));
+                    recordService.createRecord(new RecordCreateDto(uid, gameInfoId));
+                }
+
+            } else if ("BATTLE".equals(game.getGameType())) {
+                // team 2개 생성
+                Long redTeamId = teamService.createTeam(new TeamDto(null, gameInfoId, game.getRedPuzzle().getCorrectedCount()));
+                Long blueTeamId = teamService.createTeam(new TeamDto(null, gameInfoId, game.getBluePuzzle().getCorrectedCount()));
+
+                // user * playerse.size() 만큼 생성
+                List<Long> redTeamUserIdList = new ArrayList<>();
+                List<Long> blueTeamUserIdList = new ArrayList<>();
+                for (User u : game.getRedTeam().getPlayers()) {
+                    UserDto userDto = new UserDto();
+                    userDto.setNickname(u.getId());
+                    redTeamUserIdList.add(userService.createUser(userDto));
+                }
+                for (User u : game.getBlueTeam().getPlayers()) {
+                    UserDto userDto = new UserDto();
+                    userDto.setNickname(u.getId());
+                    blueTeamUserIdList.add(userService.createUser(userDto));
+                }
+
+                // user-team 생성 & record 생성
+                int matchedPieceCount = 0;
+                for(Long uid: redTeamUserIdList) {
+                    teamUserService.createTeamUser(new TeamUserRequestDto(null, redTeamId, uid, matchedPieceCount));
+                    recordService.createRecord(new RecordCreateDto(uid, gameInfoId));
+                }
+                for(Long uid: blueTeamUserIdList) {
+                    teamUserService.createTeamUser(new TeamUserRequestDto(null, blueTeamId, uid, matchedPieceCount));
+                    recordService.createRecord(new RecordCreateDto(uid, gameInfoId));
+                }
+
             }
-
-            // team-user 생성
-            int matchedPieceCount = 0; // 유저별 카운팅 안 되는 상황이라 모두 더미값 0으로 통일
-            for (Long uid : userIdList) {
-                teamUserService.createTeamUser(new TeamUserRequestDto(null, teamId, uid, matchedPieceCount));
-            }
-
-        } else if ("BATTLE".equals(game.getGameType())) {
-            // team 2개 생성, user n개 생성, user-team n개 생성
-
-            // team 2개 생성
-            Long redTeamId = teamService.createTeam(new TeamDto(null, gameInfoId, game.getRedPuzzle().getCorrectedCount()));
-            Long blueTeamId = teamService.createTeam(new TeamDto(null, gameInfoId, game.getBluePuzzle().getCorrectedCount()));
-
-            // user * playerse.size() 만큼 생성
-            List<Long> redTeamUserIdList = new ArrayList<>();
-            List<Long> blueTeamUserIdList = new ArrayList<>();
-            for (User u : game.getRedTeam().getPlayers()) {
-                UserDto userDto = new UserDto();
-                userDto.setNickname(u.getId());
-                redTeamUserIdList.add(userService.createUser(userDto));
-            }
-            for (User u : game.getBlueTeam().getPlayers()) {
-                UserDto userDto = new UserDto();
-                userDto.setNickname(u.getId());
-                blueTeamUserIdList.add(userService.createUser(userDto));
-            }
-
-            // user-team 생성
-            int matchedPieceCount = 0;
-            for(Long uid: redTeamUserIdList) {
-                teamUserService.createTeamUser(new TeamUserRequestDto(null, redTeamId, uid, matchedPieceCount));
-            }
-            for(Long uid: blueTeamUserIdList) {
-                teamUserService.createTeamUser(new TeamUserRequestDto(null, blueTeamId, uid, matchedPieceCount));
-            }
+        } catch(Exception e) {
+            
         }
+
+
     }
 
     public boolean enterGame(String gameId, String userId, String sessionId) {
