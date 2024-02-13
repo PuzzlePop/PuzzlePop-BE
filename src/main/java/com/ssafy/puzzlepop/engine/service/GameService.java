@@ -345,6 +345,7 @@ public class GameService {
                     res.setFinished(true);
 
                     save(game);
+                    game.setSaved(true);
                 }
             } else if (game.getGameType().equals("COOPERATION")) {
                 if (ourPuzzle.isCompleted()) {
@@ -355,6 +356,7 @@ public class GameService {
                     res.setFinished(true);
 
                     save(game);
+                    game.setSaved(true);
                 }
             }
         }
