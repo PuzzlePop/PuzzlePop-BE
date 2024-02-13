@@ -238,6 +238,7 @@ public class RecordServiceImpl implements RecordService {
 
             return userRecordInfoDto;
         } catch (Exception e) {
+//            e.printStackTrace();
             throw new RecordException("error occurred during find record info");
         }
 
@@ -250,15 +251,15 @@ public class RecordServiceImpl implements RecordService {
         try {
 
             List<RankingQueryDto> queryDtoList = recordRepository.countGamesByUserId();
+            System.out.println(queryDtoList);
             for (RankingQueryDto qd : queryDtoList) {
-                playedGameCountRanking.add(new PlayedGameCountRankingDto(new UserDto(), 1));
-//                playedGameCountRanking.add(new PlayedGameCountRankingDto(userService.getUserById(qd.getUserId(), qd.getQueriedCount()));
-                // TODO: UserService에 getUserById 추가 확인해서 주석 해제
+                playedGameCountRanking.add(new PlayedGameCountRankingDto(userService.getUserById(qd.getUserId()), (int) qd.getQueriedCount()));
             }
 
             return playedGameCountRanking;
 
         } catch (Exception e) {
+//            e.printStackTrace();
             throw new RecordException("ERROR");
         }
 
