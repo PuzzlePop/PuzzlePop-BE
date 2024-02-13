@@ -236,7 +236,7 @@ public class GameService {
             }
             //반사됨
             else if (mirror != -1 && shield == -1) {
-                yourPuzzle.useItem(mirror+1, yourPuzzle);
+                yourPuzzle.useItem(mirror + 1, yourPuzzle);
                 res.setMessage("MIRROR");
                 res.setTargets(ourColor);
                 res.setRandomItem(item);
@@ -259,12 +259,12 @@ public class GameService {
             else if (mirror == -1 && shield != -1) {
                 //아무일 없음
                 res.setMessage("SHIELD");
-                yourPuzzle.useItem(shield+1, yourPuzzle);
+                yourPuzzle.useItem(shield + 1, yourPuzzle);
             }
             //둘다 있을 때
             else {
                 //반사부터 적용됨
-                yourPuzzle.useItem(mirror+1, yourPuzzle);
+                yourPuzzle.useItem(mirror + 1, yourPuzzle);
                 res.setMessage("MIRROR");
                 res.setTargets(ourColor);
                 res.setRandomItem(item);
@@ -398,7 +398,10 @@ public class GameService {
     }
 
     private void save(Game game) throws Exception {
-        System.out.println("**************Game Save*****************");
+        // 저장된 적 있으면 return
+        if (game.isSaved()) return;
+
+        int matchedPieceCount = 0; // 유저별 카운팅 안 되는 상황이라 모두 더미값 0으로 통일
 
         try {
             // gameinfo 생성
@@ -423,18 +426,21 @@ public class GameService {
                 Long teamId = teamService.createTeam(new TeamDto(null, gameInfoId, game.getRedPuzzle().getCorrectedCount()));
 
                 // user * players.size() 만큼 생성
-                List<Long> userIdList = new ArrayList<>();
+//                List<Long> userIdList = new ArrayList<>();
                 for (User u : game.getPlayers()) {
-                    UserDto userDto = new UserDto();
-                    userDto.setNickname(u.getId());
-                    userIdList.add(userService.createUser(userDto));
-                }
+                    Long uid = (long) -1;
 
-                // team-user 생성 & record 생성
-                int matchedPieceCount = 0; // 유저별 카운팅 안 되는 상황이라 모두 더미값 0으로 통일
-                for (Long uid : userIdList) {
+                    if (u.isMember()) { // 회원
+                        uid = Long.parseLong(u.getId());
+                        recordService.createRecord(new RecordCreateDto(uid, gameInfoId)); // 회원인 경우에만 record 생성
+                    } else { // 비회원
+                        UserDto userDto = new UserDto();
+                        userDto.setGivenName(u.getId()); // 닉네임 대신 이름으로 바로 저장해버리기~
+                        uid = userService.createUser(userDto);
+                    }
+
+//                    userIdList.add(uid);
                     teamUserService.createTeamUser(new TeamUserRequestDto(null, teamId, uid, matchedPieceCount));
-                    recordService.createRecord(new RecordCreateDto(uid, gameInfoId));
                 }
 
             } else if ("BATTLE".equals(game.getGameType())) {
@@ -442,37 +448,41 @@ public class GameService {
                 Long redTeamId = teamService.createTeam(new TeamDto(null, gameInfoId, game.getRedPuzzle().getCorrectedCount()));
                 Long blueTeamId = teamService.createTeam(new TeamDto(null, gameInfoId, game.getBluePuzzle().getCorrectedCount()));
 
-                // user * playerse.size() 만큼 생성
-                List<Long> redTeamUserIdList = new ArrayList<>();
-                List<Long> blueTeamUserIdList = new ArrayList<>();
+                // user * players.size() 만큼 생성
+//                List<Long> redTeamUserIdList = new ArrayList<>();
+//                List<Long> blueTeamUserIdList = new ArrayList<>();
                 for (User u : game.getRedTeam().getPlayers()) {
-                    UserDto userDto = new UserDto();
-                    userDto.setNickname(u.getId());
-                    redTeamUserIdList.add(userService.createUser(userDto));
+                    Long uid;
+
+                    if (u.isMember()) { // 회원
+                        uid = Long.parseLong(u.getId());
+                        recordService.createRecord(new RecordCreateDto(uid, gameInfoId));
+                    } else { // 비회원
+                        UserDto userDto = new UserDto();
+                        userDto.setGivenName(u.getId());
+                        uid = userService.createUser(userDto);
+                    }
+
+                    teamUserService.createTeamUser(new TeamUserRequestDto(null, redTeamId, uid, matchedPieceCount));
                 }
                 for (User u : game.getBlueTeam().getPlayers()) {
-                    UserDto userDto = new UserDto();
-                    userDto.setNickname(u.getId());
-                    blueTeamUserIdList.add(userService.createUser(userDto));
-                }
+                    Long uid;
 
-                // user-team 생성 & record 생성
-                int matchedPieceCount = 0;
-                for (Long uid : redTeamUserIdList) {
-                    teamUserService.createTeamUser(new TeamUserRequestDto(null, redTeamId, uid, matchedPieceCount));
-                    recordService.createRecord(new RecordCreateDto(uid, gameInfoId));
-                }
-                for (Long uid : blueTeamUserIdList) {
+                    if (u.isMember()) {
+                        uid = Long.parseLong(u.getId());
+                        recordService.createRecord(new RecordCreateDto(uid, gameInfoId));
+                    } else {
+                        UserDto userDto = new UserDto();
+                        userDto.setGivenName(u.getId());
+                        uid = userService.createUser(userDto);
+                    }
+
                     teamUserService.createTeamUser(new TeamUserRequestDto(null, blueTeamId, uid, matchedPieceCount));
-                    recordService.createRecord(new RecordCreateDto(uid, gameInfoId));
                 }
-
             }
         } catch (Exception e) {
-             throw new Exception("error occurred during save game data");
+            throw new Exception("error occurred during save game data");
         }
-
-
     }
 
     public int[] comboCheck(PuzzleBoard puzzle) {

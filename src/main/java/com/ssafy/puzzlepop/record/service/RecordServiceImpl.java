@@ -276,7 +276,7 @@ public class RecordServiceImpl implements RecordService {
             int soloBattleWinCount = 0;
 
             List<Record> recordList = recordRepository.findByUserId(user.getId());
-            if (recordList == null) { // 한 판도 플레이하지 않은 유저
+            if (recordList == null || recordList.isEmpty()) { // 한 판도 플레이하지 않은 유저
                 // 랭킹에 포함되지 않음. 패스
                 continue;
             }
@@ -307,12 +307,14 @@ public class RecordServiceImpl implements RecordService {
         List<WinCountRankingDto> teamBattleWinCountRanking = new ArrayList<>();
 
         List<UserDto> userList = userService.getAllUsers();
+        System.out.println(userList);
         for (UserDto user : userList) {
             int playedTeamBattleGameCount = 0;
             int teamBattleWinCount = 0;
 
             List<Record> recordList = recordRepository.findByUserId(user.getId());
-            if (recordList == null) { // 한 판도 플레이하지 않은 유저
+
+            if (recordList == null || recordList.isEmpty()) { // 한 판도 플레이하지 않은 유저
                 // 랭킹에 포함되지 않음. 패스
                 continue;
             }
