@@ -20,14 +20,14 @@ public class ItemController {
     public ResponseEntity<?> readItem(@RequestParam Long id) {
         log.info("ItemController - readItem(): id = " + id);
         ItemDto responseDto = itemService.readItem(id);
-        return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @GetMapping("/item/list")
     public ResponseEntity<?> readAllItems() {
         log.info("ItemController - readAllItems()");
         List<ItemDto> responseDtos = itemService.readAllItem();
-        return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ public class ItemController {
             case "price" -> itemService.findAllByPrice(Integer.parseInt(value));
             default -> null;
         };
-        return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 
     @GetMapping("/item/random")
@@ -73,6 +73,6 @@ public class ItemController {
                                                       @RequestParam("limit") Integer limit) {
         log.info("ItemController - extractRandomItemsByType(): type = " + type + ", limit = " + limit);
         List<ItemDto> responseDtos = itemService.extractRandomItem(type, limit);
-        return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 }

@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Getter @Setter @ToString
 @AllArgsConstructor
@@ -27,4 +28,6 @@ public class ResponseMessage {
     private Map<Integer, double[]> deleted;
     private Item[] redItemList;
     private Item[] blueItemList;
+    private List<Set<Piece>> redBundles;
+    private List<Set<Piece>> blueBundles;
 }

@@ -1,4 +1,4 @@
-package com.ssafy.puzzlepop.gameinfo.advice;
+package com.ssafy.puzzlepop.gameinfo.handler;
 
 import com.ssafy.puzzlepop.gameinfo.exception.GameInfoNotFoundException;
 import com.ssafy.puzzlepop.gameinfo.exception.GameInfoValidationException;

@@ -84,7 +84,7 @@ public class MessageController {
 
 
     @MessageMapping("/game/message")
-    public void enter(InGameMessage message) {
+    public void enter(InGameMessage message) throws Exception {
         if (message.getType().equals(InGameMessage.MessageType.ENTER)) {
             Game game = gameService.findById(message.getRoomId());
 
@@ -137,6 +137,11 @@ public class MessageController {
                 res.setBlueItemList(game.getBluePuzzle().getItemList());
                 res.setRedProgressPercent((double) game.getRedPuzzle().getCorrectedCount() / (game.getRedPuzzle().getLengthCnt() * game.getRedPuzzle().getWidthCnt()) * 100);
                 res.setBlueProgressPercent((double) game.getBluePuzzle().getCorrectedCount() / (game.getBluePuzzle().getLengthCnt() * game.getBluePuzzle().getWidthCnt()) * 100);
+
+                res.setRedBundles(game.getRedPuzzle().getBundles());
+                if (game.getGameType().equals("BATTLE")) {
+                    res.setBlueBundles(game.getBluePuzzle().getBundles());
+                }
                 sendingOperations.convertAndSend("/topic/game/room/" + message.getRoomId(), res);
             }
         }

@@ -37,6 +37,7 @@ public class User {
     @ColumnDefault("true")
     private Boolean soundEffect;
 
+    @ColumnDefault("0")
     private Integer playingGameID;
     @ColumnDefault("0")
     private Integer gold;

@@ -21,10 +21,11 @@ public class FriendController {
     private final FriendService friendService;
     private final UserService userService;
 
-    @GetMapping("/friend")
-    public ResponseEntity<?> getFriendById1AndId2(@RequestBody FriendDto requestDto) {
+    @PostMapping("/friend/{id1}/{id2}")
+    public ResponseEntity<?> getFriendById1AndId2(@PathVariable("id1") Long id1,
+                                                  @PathVariable("id2") Long id2) {
         try {
-            FriendDto responseDto = friendService.getFriendById1AndId2(requestDto.getFromUserId(), requestDto.getToUserId());
+            FriendDto responseDto = friendService.getFriendById1AndId2(id1, id2);
             return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -69,11 +70,11 @@ public class FriendController {
         }
     }
 
-    @GetMapping("/friend/from")
+    @PostMapping("/friend/from")
     public ResponseEntity<?> getAllByFromUserIdAndRequestStatus(@RequestBody FriendDto requestDto) {
         try {
             List<FriendDto> responseDtos = friendService.getAllByFromUserIdAndRequestStatus(requestDto.getFromUserId(), requestDto.getRequestStatus());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -81,11 +82,11 @@ public class FriendController {
         }
     }
 
-    @GetMapping("/friend/to")
+    @PostMapping("/friend/to")
     public ResponseEntity<?> getAllByToUserIdAndRequestStatus(@RequestBody FriendDto requestDto) {
         try {
             List<FriendDto> responseDtos = friendService.getAllByToUserIdAndRequestStatus(requestDto.getToUserId(), requestDto.getRequestStatus());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -93,11 +94,11 @@ public class FriendController {
         }
     }
 
-    @GetMapping("/friend/list")
+    @PostMapping("/friend/list")
     public ResponseEntity<?> getAllByFromUserIdOrToUserId(@RequestBody UserDto requestDto) {
         try {
             List<FriendDto> responseDtos = friendService.getAllByFromUserIdOrToUserId(requestDto.getId());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -111,7 +112,7 @@ public class FriendController {
             List<Long> friendIds = friendService.getAllFriendIdByUserId(requestDto.getId());
             List<UserDto> responseDtos = friendIds.stream()
                     .map(userService::getUserById).collect(Collectors.toList());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {

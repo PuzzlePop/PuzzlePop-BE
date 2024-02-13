@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -40,22 +41,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-//        http.cors(cors -> cors.disable());
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
-        http
-                .csrf(AbstractHttpConfigurer::disable);
+        // http settings for cors
+        http.csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable);
 //                .sessionManagement();
 
-        http
-                .formLogin((login) -> login.disable());
-
-        http
+        http.formLogin((login) -> login.disable())
                 .httpBasic((basic) -> basic.disable());
 
-        http
-                .oauth2Login((oauth2) -> oauth2
+        http.oauth2Login((oauth2) -> oauth2
                         .loginPage("/login")
                         .authorizationEndpoint(auth -> auth
                                 .baseUri("/oauth2/authorization")
@@ -63,11 +57,9 @@ public class SecurityConfig {
                         .userInfoEndpoint((userInfoEndpointConfig) ->
                                 userInfoEndpointConfig.userService(userService))
                         .successHandler(oauth2AuthenticationSuccessHandler)
-                        .failureHandler(oauth2AuthenticationFailureHandler)
-                );
+                        .failureHandler(oauth2AuthenticationFailureHandler));
 
-        http
-                .logout((logout) -> logout
+        http.logout((logout) -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl(frontendUrl)
                         .invalidateHttpSession(true)
@@ -76,18 +68,14 @@ public class SecurityConfig {
                 );
 
 
-        http
-                .authorizeHttpRequests((authorize) -> authorize
-                                .anyRequest().permitAll()
-
+        http.authorizeHttpRequests((authorize) -> authorize
+                .anyRequest().permitAll());
 //                                .requestMatchers("/user/**").hasRole("USER")   // "/user" 경로는 "USER" 권한 필요
-//                                .requestMatchers("/**").permitAll()   // 나머지 모든 경로 허용
+//                                .requestMatchers("/","/login/**").permitAll()
 //                                .anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
-                );
 
-//        http
-//                .addFilterBefore(tokenAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class);
 
+        http.addFilterBefore(tokenAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
