@@ -22,7 +22,7 @@ public class UserController {
     public ResponseEntity<?> getUserByEmail(@RequestParam Long id) {
         try {
             UserDto responseDto = userService.getUserById(id);
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
+            return ResponseEntity.ok(responseDto);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
