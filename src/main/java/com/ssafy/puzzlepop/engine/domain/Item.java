@@ -41,6 +41,10 @@ public class Item {
         List<ItemType> list = new LinkedList<>();
         list.add(ItemType.HINT);
         list.add(ItemType.FRAME);
+        list.add(ItemType.HINT);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.HINT);
+        list.add(ItemType.FRAME);
         list.add(ItemType.MAGNET);
 
         return new Item(list.get(random.nextInt(list.size())));
