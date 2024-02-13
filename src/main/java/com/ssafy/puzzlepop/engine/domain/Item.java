@@ -126,6 +126,7 @@ public class Item {
 
                 System.out.println("액자 효과 대상 : " + targets);
                 puzzle.addPiece(targets);
+                puzzle.searchForGroupDisbandment();
                 break;
 
             case 5:
