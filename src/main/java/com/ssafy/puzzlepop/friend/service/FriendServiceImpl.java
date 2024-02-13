@@ -2,6 +2,7 @@ package com.ssafy.puzzlepop.friend.service;
 
 import com.ssafy.puzzlepop.friend.domain.Friend;
 import com.ssafy.puzzlepop.friend.domain.FriendDto;
+import com.ssafy.puzzlepop.friend.domain.FriendRequestRespondDto;
 import com.ssafy.puzzlepop.friend.domain.FriendUserInfoDto;
 import com.ssafy.puzzlepop.friend.exception.FriendNotFoundException;
 import com.ssafy.puzzlepop.friend.repository.FriendRepository;
@@ -71,32 +72,56 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public List<FriendUserInfoDto> getAcceptedFriendsByUserId(Long userId) {
+    public List<FriendUserInfoDto> getFriendsByUserIdAndStatus(Long userId, String status) {
         List<FriendUserInfoDto> filteredList = new ArrayList<>();
 
-        List<FriendDto> friendList = getAllByFromUserIdOrToUserId(userId);
-        for (FriendDto f : friendList) {
-            // 1. accepted 상태인지 확인
-            if (!"accepted".equals(f.getRequestStatus())) {
-                continue;
-            }
-
-            FriendUserInfoDto friendUserInfo = new FriendUserInfoDto();
-            friendUserInfo.setFriendId(f.getId());
-
-            // 2. 사용자 기준 from인지 to인지 판단해서 dto의 userInfo 세팅
-            if (userId.equals(f.getFromUserId())) {
-                friendUserInfo.setFriendUserInfo(userService.getUserById(f.getToUserId()));
-            } else if (userId.equals(f.getToUserId())) {
+        if ("requested".equals(status)) {
+            List<FriendDto> friendList = getAllByToUserIdAndRequestStatus(userId, status);
+            for (FriendDto f : friendList) {
+                FriendUserInfoDto friendUserInfo = new FriendUserInfoDto();
+                friendUserInfo.setFriendId(f.getId());
                 friendUserInfo.setFriendUserInfo(userService.getUserById(f.getFromUserId()));
-            } else {
-                continue;
-            }
 
-            // 3. 리스트에 만든 dto 담기
-            filteredList.add(friendUserInfo);
+                filteredList.add(friendUserInfo);
+            }
+        } else {
+            List<FriendDto> friendList = getAllByFromUserIdOrToUserId(userId);
+
+            for (FriendDto f : friendList) {
+                // 1. status와 일치하는 상태인지 확인
+                if (!status.equals(f.getRequestStatus())) {
+                    continue;
+                }
+
+                FriendUserInfoDto friendUserInfo = new FriendUserInfoDto();
+                friendUserInfo.setFriendId(f.getId());
+
+                // 2. 사용자 기준 from인지 to인지 판단해서 dto의 userInfo 세팅
+                if (userId.equals(f.getFromUserId())) {
+                    friendUserInfo.setFriendUserInfo(userService.getUserById(f.getToUserId()));
+                } else if (userId.equals(f.getToUserId())) {
+                    friendUserInfo.setFriendUserInfo(userService.getUserById(f.getFromUserId()));
+                } else {
+                    continue;
+                }
+
+                // 3. 리스트에 만든 dto 담기
+                filteredList.add(friendUserInfo);
+            }
         }
 
         return filteredList;
     }
+
+    @Override
+    public FriendDto updateRequestStatus(FriendRequestRespondDto respondDto) {
+        Friend friend = friendRepository.findById(respondDto.getFriendId()).orElseThrow(
+                () -> new FriendNotFoundException("Friend not found with id: " + respondDto.getFriendId()));
+
+        friend.setRequestStatus(respondDto.getRespondStatus());
+        friendRepository.save(friend);
+
+        return new FriendDto(friend);
+    }
+
 }
