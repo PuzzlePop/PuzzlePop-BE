@@ -52,6 +52,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 //        UserDto userDto = userService.getUserById(principalDetails.getUser().getId());
         CookieUtils.setCookie(response, "accessToken", accessToken, 18000);
         CookieUtils.setCookie(response, "refreshToken", refreshToken, 18000);
+        CookieUtils.setCookie(response, "userId", id.toString(), 18000);
 //
 //        //코드 내로 리디렉트 설정
         String redirectUrl = frontendUrl;  // 프론트 메인페이지로 이동
