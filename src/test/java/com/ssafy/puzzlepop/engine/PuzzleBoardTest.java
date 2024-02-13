@@ -32,24 +32,24 @@ class PuzzleBoardTest {
             System.out.println();
         }
 
-        puzzle.addItem(ItemType.FIRE);
-        puzzle.addItem(ItemType.FIRE);
-        List<Integer> list = new LinkedList<>();
-        list.add(0);
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        list.add(8);
-        list.add(9);
-        list.add(10);
-        list.add(11);
-        list.add(16);
-        list.add(17);
-        list.add(18);
-        list.add(19);
-        puzzle.addPiece(list);
+        puzzle.addItem(ItemType.MAGNET);
+        puzzle.addItem(ItemType.MAGNET);
+//        List<Integer> list = new LinkedList<>();
+//        list.add(0);
+//        list.add(1);
+//        list.add(2);
+//        list.add(3);
+//        list.add(8);
+//        list.add(9);
+//        list.add(10);
+//        list.add(11);
+//        list.add(16);
+//        list.add(17);
+//        list.add(18);
+//        list.add(19);
+//        puzzle.addPiece(list);
 
-        puzzle.print();
+//        puzzle.print();
 
         puzzle.useItem(1, puzzle);
         puzzle.useItem(2, puzzle);

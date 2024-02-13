@@ -343,25 +343,29 @@ public class GameService {
         }
 
         //게임 끝났는지 마지막에 확인
-        if (game.getGameType().equals("BATTLE")) {
-            if (ourPuzzle.isCompleted() || yourPuzzle.isCompleted()) {
-                //게임 정보 업데이트
-                game.setFinished(true);
-                game.setFinishTime(new Date());
+        if (!game.isSaved()) {
+            if (game.getGameType().equals("BATTLE")) {
+                if (ourPuzzle.isCompleted() || yourPuzzle.isCompleted()) {
+                    //게임 정보 업데이트
+                    game.setFinished(true);
+                    game.setFinishTime(new Date());
 
-                res.setFinished(true);
+                    res.setFinished(true);
 
-                save(game);
-            }
-        } else if (game.getGameType().equals("COOPERATION")) {
-            if (ourPuzzle.isCompleted()) {
-                //게임 정보 업데이트
-                game.setFinished(true);
-                game.setFinishTime(new Date());
+                    save(game);
+                    game.setSaved(true);
+                }
+            } else if (game.getGameType().equals("COOPERATION")) {
+                if (ourPuzzle.isCompleted()) {
+                    //게임 정보 업데이트
+                    game.setFinished(true);
+                    game.setFinishTime(new Date());
 
-                res.setFinished(true);
+                    res.setFinished(true);
 
-                save(game);
+                    save(game);
+                    game.setSaved(true);
+                }
             }
         }
 
