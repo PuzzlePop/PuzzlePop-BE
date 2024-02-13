@@ -84,7 +84,7 @@ public class MessageController {
 
 
     @MessageMapping("/game/message")
-    public void enter(InGameMessage message) {
+    public void enter(InGameMessage message) throws Exception {
         if (message.getType().equals(InGameMessage.MessageType.ENTER)) {
             Game game = gameService.findById(message.getRoomId());
 

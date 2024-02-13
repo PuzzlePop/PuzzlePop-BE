@@ -109,7 +109,7 @@ public class GameService {
         return game;
     }
 
-    public ResponseMessage playGame(InGameMessage inGameMessage) {
+    public ResponseMessage playGame(InGameMessage inGameMessage) throws Exception {
 
         String roomId = inGameMessage.getRoomId();
         String sender = inGameMessage.getSender();
@@ -397,7 +397,7 @@ public class GameService {
         return res;
     }
 
-    private void save(Game game) {
+    private void save(Game game) throws Exception {
         System.out.println("**************Game Save*****************");
 
         try {
@@ -458,18 +458,18 @@ public class GameService {
 
                 // user-team 생성 & record 생성
                 int matchedPieceCount = 0;
-                for(Long uid: redTeamUserIdList) {
+                for (Long uid : redTeamUserIdList) {
                     teamUserService.createTeamUser(new TeamUserRequestDto(null, redTeamId, uid, matchedPieceCount));
                     recordService.createRecord(new RecordCreateDto(uid, gameInfoId));
                 }
-                for(Long uid: blueTeamUserIdList) {
+                for (Long uid : blueTeamUserIdList) {
                     teamUserService.createTeamUser(new TeamUserRequestDto(null, blueTeamId, uid, matchedPieceCount));
                     recordService.createRecord(new RecordCreateDto(uid, gameInfoId));
                 }
 
             }
-        } catch(Exception e) {
-            
+        } catch (Exception e) {
+             throw new Exception("error occurred during save game data");
         }
 
 
