@@ -335,7 +335,7 @@ public class GameService {
         }
 
         //게임 끝났는지 마지막에 확인
-        if (!game.isStarted()) {
+        if (!game.isSaved()) {
             if (game.getGameType().equals("BATTLE")) {
                 if (ourPuzzle.isCompleted() || yourPuzzle.isCompleted()) {
                     //게임 정보 업데이트
