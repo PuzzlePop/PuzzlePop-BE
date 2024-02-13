@@ -236,7 +236,7 @@ public class GameService {
             }
             //반사됨
             else if (mirror != -1 && shield == -1) {
-                yourPuzzle.useItem(mirror, yourPuzzle);
+                yourPuzzle.useItem(mirror+1, yourPuzzle);
                 res.setMessage("MIRROR");
                 res.setTargets(ourColor);
                 res.setRandomItem(item);
@@ -259,12 +259,12 @@ public class GameService {
             else if (mirror == -1 && shield != -1) {
                 //아무일 없음
                 res.setMessage("SHIELD");
-                yourPuzzle.useItem(shield, yourPuzzle);
+                yourPuzzle.useItem(shield+1, yourPuzzle);
             }
             //둘다 있을 때
             else {
                 //반사부터 적용됨
-                yourPuzzle.useItem(mirror, yourPuzzle);
+                yourPuzzle.useItem(mirror+1, yourPuzzle);
                 res.setMessage("MIRROR");
                 res.setTargets(ourColor);
                 res.setRandomItem(item);
