@@ -32,6 +32,7 @@ public class Game {
     private LinkedHashMap<String, User> sessionToUser;
     private Map<String, DropItem> dropRandomItem;
     private boolean isFinished = false;
+    private boolean isSaved = false;
 
     public void changeTeam(User a, User b) {
         if (redTeam.isIn((a)) && blueTeam.isIn((b))) {
