@@ -32,14 +32,31 @@ public class Game {
     private LinkedHashMap<String, User> sessionToUser;
     private Map<String, DropItem> dropRandomItem;
     private boolean isFinished = false;
+    private boolean isSaved = false;
 
-    public void changeTeam(User user) {
-        if (redTeam.isIn((user))) {
-            redTeam.deletePlayer(user);
-            blueTeam.addPlayer(user);
-        } else {
-            blueTeam.deletePlayer(user);
-            redTeam.addPlayer(user);
+    public void changeTeam(User a, User b) {
+        if (redTeam.isIn((a)) && blueTeam.isIn((b))) {
+            redTeam.deletePlayer(a);
+            blueTeam.addPlayer(a);
+
+            blueTeam.deletePlayer(b);
+            redTeam.addPlayer(b);
+        } else if (a == null) {
+            if (redTeam.isIn(b)) {
+                redTeam.deletePlayer(b);
+                blueTeam.addPlayer(b);
+            } else if (blueTeam.isIn(b)) {
+                blueTeam.deletePlayer(b);
+                redTeam.addPlayer(b);
+            }
+        } else if (b == null) {
+            if (redTeam.isIn(a)) {
+                redTeam.deletePlayer(a);
+                blueTeam.addPlayer(a);
+            } else if (blueTeam.isIn(a)) {
+                blueTeam.deletePlayer(a);
+                redTeam.addPlayer(a);
+            }
         }
 
     }
@@ -179,8 +196,8 @@ public class Game {
 
         redPuzzle = new PuzzleBoard();
         bluePuzzle = new PuzzleBoard();
-        redPuzzle.init(picture);
-        bluePuzzle.init(picture);
+        redPuzzle.init(picture, gameType);
+        bluePuzzle.init(picture, gameType);
         players = new LinkedList<>();
         players.addAll(redTeam.getPlayers());
         players.addAll(blueTeam.getPlayers());

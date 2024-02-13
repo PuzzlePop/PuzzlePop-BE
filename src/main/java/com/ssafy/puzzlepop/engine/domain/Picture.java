@@ -15,6 +15,8 @@ public class Picture {
     private String name;
     private int width;
     private int length;
+    private int imgWidth;
+    private int imgHeight;
 
 
     private int pieceSize;
@@ -32,16 +34,16 @@ public class Picture {
 
         this.pieceSize = pieceSize;
         this.levelSize = new HashMap<>();
-        this.levelSize.put(1, 500);
-        this.levelSize.put(2, 600);
-        this.levelSize.put(3, 800);
+        this.levelSize.put(1, 400);
+        this.levelSize.put(2, 500);
+        this.levelSize.put(3, 600);
 
         int originHeight = this.getLength();
         int originWidth = this.getWidth();
-        int imgWidth = originHeight >= originWidth ? Math.round((this.levelSize.get(3)*originWidth) / originHeight / 100) * 100 : this.levelSize.get(3);
-        int imgHeight = originHeight >= originWidth ? this.levelSize.get(3) : Math.round((this.levelSize.get(3)*originHeight) /  originWidth/ 100) * 100;
-        this.widthPieceCnt = (int) Math.floor((double)imgWidth / (double)this.pieceSize);
-        this.lengthPieceCnt = (int) Math.floor((double) imgHeight / (double)this.pieceSize);
+        this.imgWidth = originHeight >= originWidth ? Math.round((this.levelSize.get(1)*originWidth) / originHeight / 100) * 100 : this.levelSize.get(1);
+        this.imgHeight = originHeight >= originWidth ? this.levelSize.get(1) : Math.round((this.levelSize.get(1)*originHeight) /  originWidth/ 100) * 100;
+        this.widthPieceCnt = (int) Math.floor((double)this.imgWidth / (double)this.pieceSize);
+        this.lengthPieceCnt = (int) Math.floor((double) this.imgHeight / (double)this.pieceSize);
     }
 
     //디폴트
@@ -51,18 +53,18 @@ public class Picture {
         p.length = 551;
         p.encodedString = "짱구.jpg";
 
-        p.pieceSize = 100;
+        p.pieceSize = 40;
         p.levelSize = new HashMap<>();
-        p.levelSize.put(1, 500);
-        p.levelSize.put(2, 600);
-        p.levelSize.put(3, 800);
+        p.levelSize.put(1, 400);
+        p.levelSize.put(2, 500);
+        p.levelSize.put(3, 600);
 
         int originHeight = p.getLength();
         int originWidth = p.getWidth();
-        int imgWidth = originHeight >= originWidth ? Math.round((p.levelSize.get(3)*originWidth) / originHeight / 100) * 100 : p.levelSize.get(3);
-        int imgHeight = originHeight >= originWidth ? p.levelSize.get(3) : Math.round((p.levelSize.get(3)*originHeight) /  originWidth/ 100) * 100;
-        p.widthPieceCnt = (int) Math.floor((double)imgWidth / (double)p.pieceSize);
-        p.lengthPieceCnt = (int) Math.floor((double) imgHeight / (double)p.pieceSize);
+        p.imgWidth = originHeight >= originWidth ? Math.round((p.levelSize.get(1)*originWidth) / originHeight / 100) * 100 : p.levelSize.get(1);
+        p.imgHeight = originHeight >= originWidth ? p.levelSize.get(1) : Math.round((p.levelSize.get(1)*originHeight) /  originWidth/ 100) * 100;
+        p.widthPieceCnt = (int) Math.floor((double)p.imgWidth / (double)p.pieceSize);
+        p.lengthPieceCnt = (int) Math.floor((double)p.imgHeight / (double)p.pieceSize);
 
         return p;
     }

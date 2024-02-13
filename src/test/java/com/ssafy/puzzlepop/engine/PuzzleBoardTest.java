@@ -1,16 +1,16 @@
 package com.ssafy.puzzlepop.engine;
 
-import com.ssafy.puzzlepop.engine.domain.Picture;
-import com.ssafy.puzzlepop.engine.domain.Piece;
-import com.ssafy.puzzlepop.engine.domain.PuzzleBoard;
+import com.ssafy.puzzlepop.engine.domain.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 class PuzzleBoardTest {
     @Test
-    @DisplayName("초기화 테스트")
+    @DisplayName("불지르기 테스트")
     void initTest() {
         Picture p = new Picture();
         p.setWidth(1000);
@@ -20,7 +20,7 @@ class PuzzleBoardTest {
         p.setWidthPieceCnt(8);
 
         PuzzleBoard puzzle = new PuzzleBoard();
-        puzzle.init(p);
+        puzzle.init(p, "COOPERATION");
         Piece[][] board = puzzle.getBoard();
 
         for (int i = 0; i < puzzle.getLengthCnt(); i++) {
@@ -31,6 +31,32 @@ class PuzzleBoardTest {
             }
             System.out.println();
         }
+
+        puzzle.addItem(ItemType.MAGNET);
+        puzzle.addItem(ItemType.MAGNET);
+//        List<Integer> list = new LinkedList<>();
+//        list.add(0);
+//        list.add(1);
+//        list.add(2);
+//        list.add(3);
+//        list.add(8);
+//        list.add(9);
+//        list.add(10);
+//        list.add(11);
+//        list.add(16);
+//        list.add(17);
+//        list.add(18);
+//        list.add(19);
+//        puzzle.addPiece(list);
+
+//        puzzle.print();
+
+        puzzle.useItem(1, puzzle);
+        puzzle.useItem(2, puzzle);
+
+        puzzle.print();
+
+
     }
 
 //    @Test

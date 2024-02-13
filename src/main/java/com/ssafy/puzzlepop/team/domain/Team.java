@@ -27,10 +27,11 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE)
     List<TeamUser> teamUsers;
 
-    public void update(TeamDto teamDto) {
+    public Team update(TeamDto teamDto) {
         this.id = teamDto.getId();
         this.gameId = teamDto.getGameId();
         this.matchedPieceCount = teamDto.getMatchedPieceCount();
+        return this;
     }
 
     public Long updateMatchedPieceCount(Integer count) {

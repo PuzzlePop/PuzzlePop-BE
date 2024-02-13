@@ -26,8 +26,8 @@ public class DropItem extends Item {
 
     public static DropItem randomCreate() {
         Random random = new Random();
-        int position_x = random.nextInt(2580);
-        int position_y = random.nextInt(1440);
+        int position_x = random.nextInt(1000);
+        int position_y = random.nextInt(750);
         String uuid = String.valueOf(UUID.randomUUID());
 
         //공격형 아이템만 추첨 리스트에 추가

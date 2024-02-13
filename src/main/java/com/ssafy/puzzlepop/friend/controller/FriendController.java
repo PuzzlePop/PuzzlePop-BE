@@ -74,7 +74,7 @@ public class FriendController {
     public ResponseEntity<?> getAllByFromUserIdAndRequestStatus(@RequestBody FriendDto requestDto) {
         try {
             List<FriendDto> responseDtos = friendService.getAllByFromUserIdAndRequestStatus(requestDto.getFromUserId(), requestDto.getRequestStatus());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -86,7 +86,7 @@ public class FriendController {
     public ResponseEntity<?> getAllByToUserIdAndRequestStatus(@RequestBody FriendDto requestDto) {
         try {
             List<FriendDto> responseDtos = friendService.getAllByToUserIdAndRequestStatus(requestDto.getToUserId(), requestDto.getRequestStatus());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -98,7 +98,7 @@ public class FriendController {
     public ResponseEntity<?> getAllByFromUserIdOrToUserId(@RequestBody UserDto requestDto) {
         try {
             List<FriendDto> responseDtos = friendService.getAllByFromUserIdOrToUserId(requestDto.getId());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -112,7 +112,7 @@ public class FriendController {
             List<Long> friendIds = friendService.getAllFriendIdByUserId(requestDto.getId());
             List<UserDto> responseDtos = friendIds.stream()
                     .map(userService::getUserById).collect(Collectors.toList());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {

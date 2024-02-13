@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @AllArgsConstructor
 public class UserController {
 
@@ -35,7 +36,7 @@ public class UserController {
     public ResponseEntity<?> getUserByEmail(@RequestBody UserDto requestDto) {
         try {
             UserDto responseDto = userService.getUserByEmail(requestDto.getEmail());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -88,7 +89,7 @@ public class UserController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Location", "http://localhost:5173/");
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -100,7 +101,7 @@ public class UserController {
     public ResponseEntity<?> findUserByEmail(@RequestBody UserDto requestDto) {
         try{
             UserDto responseDto = userService.getUserByEmail(requestDto.getEmail());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -112,7 +113,7 @@ public class UserController {
     public ResponseEntity<?> findUsersByNickname(@RequestBody UserDto requestDto) {
         try {
             List<UserDto> responseDtos = userService.getUsersByNickname(requestDto.getNickname());
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
