@@ -147,13 +147,13 @@ public class MessageController {
 
                 res.setMessage("GAME_START");
                 res.setTargets(game.getGameId());
-                sendingOperations.convertAndSend("/queue/game/room/quick/"+ player1.getId(), res);
-                sendingOperations.convertAndSend("/queue/game/room/quick/"+ player2.getId(), res);
+                sendingOperations.convertAndSend("/topic/game/room/quick/"+ player1.getId(), res);
+                sendingOperations.convertAndSend("/topic/game/room/quick/"+ player2.getId(), res);
                 
                 sendingOperations.convertAndSend("/topic/game/room/"+game.getGameId(), game);
             } else {
                 res.setMessage("WAITING");
-                sendingOperations.convertAndSend("/queue/game/room/quick/"+ message.getSender(), res);
+                sendingOperations.convertAndSend("/topic/game/room/quick/"+ message.getSender(), res);
             }
         }
 
