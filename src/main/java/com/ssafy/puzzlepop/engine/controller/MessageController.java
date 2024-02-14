@@ -117,15 +117,15 @@ public class MessageController {
             sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(), responseChatMessage);
         } else if (message.getType().equals(InGameMessage.MessageType.QUICK)) {
             User user = new User(message.getSender(), message.isMember(), sessionId);
+            ResponseMessage res = new ResponseMessage();
             if (waitingList.contains(user)) {
+                res.setMessage("WAITING");
+                sendingOperations.convertAndSend("/topic/game/room/quick/"+ message.getSender(), res);
                 return;
             }
 
             waitingList.add(user);
-            for (User u : waitingList) {
-                System.out.println(u);
-            }
-            ResponseMessage res = new ResponseMessage();
+
 
             if (waitingList.size() >= 2) {
                 User player1 = waitingList.poll();
