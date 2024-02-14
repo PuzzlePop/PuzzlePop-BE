@@ -18,8 +18,8 @@ public class UserController {
     private final UserService userService;
 
 
-    @GetMapping("/user")
-    public ResponseEntity<?> getUserByEmail(@RequestParam Long id) {
+    @PostMapping("/user")
+    public ResponseEntity<?> getUserByEmail(@RequestBody Long id) {
         try {
             UserDto responseDto = userService.getUserById(id);
             return ResponseEntity.ok(responseDto);
