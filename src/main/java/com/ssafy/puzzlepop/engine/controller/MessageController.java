@@ -147,7 +147,9 @@ public class MessageController {
 
                 res.setMessage("GAME_START");
                 res.setTargets(game.getGameId());
+                res.setTeam("RED");
                 sendingOperations.convertAndSend("/topic/game/room/quick/"+ player1.getId(), res);
+                res.setTeam("BLUE");
                 sendingOperations.convertAndSend("/topic/game/room/quick/"+ player2.getId(), res);
                 
                 sendingOperations.convertAndSend("/topic/game/room/"+game.getGameId(), game);
