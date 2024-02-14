@@ -21,8 +21,8 @@ public class GameSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-//        registry.addEndpoint("/game/{roomId}")
-        registry.addEndpoint("/game")
+        registry.addEndpoint("/game/{roomId}")
+//        registry.addEndpoint("/game")
                 .setAllowedOriginPatterns("*")
                 .addInterceptors(customHandshakeInterceptor);
     }
