@@ -44,7 +44,7 @@ public class UserService extends DefaultOAuth2UserService {
 //        String password = "OAuth2"; //Oauth2로 로그인 시, 패스워드는 의미없음.
         String role = "ROLE_USER";
 
-        String nickname = "닉네임";
+        String nickname = oAuth2User.getAttribute("name");
         String givenName = oAuth2User.getAttribute("given_name");
         String familyName = oAuth2User.getAttribute("family_name");
         String imgPath = oAuth2User.getAttribute("picture");
