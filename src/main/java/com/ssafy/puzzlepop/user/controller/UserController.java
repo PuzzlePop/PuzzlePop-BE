@@ -80,8 +80,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/user/search/email")
-    public ResponseEntity<?> findUsersByEmail(@RequestBody String email) {
+    @GetMapping("/user/search/email")
+    public ResponseEntity<?> findUsersByEmail(@RequestParam String email) {
         System.out.println(email);
         try{
             List<UserDto> responseDtos = userService.getUsersByEmail(email);
