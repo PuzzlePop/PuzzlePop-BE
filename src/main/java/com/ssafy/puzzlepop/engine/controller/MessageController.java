@@ -7,6 +7,7 @@ import com.ssafy.puzzlepop.engine.service.GameService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -116,6 +117,10 @@ public class MessageController {
             sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(), responseChatMessage);
         } else if (message.getType().equals(InGameMessage.MessageType.QUICK)) {
             waitingList.add(new User(message.getSender(), message.isMember(), sessionId));
+            for (User u : waitingList) {
+                System.out.println(u);
+            }
+            ResponseMessage res = new ResponseMessage();
 
             if (waitingList.size() >= 2) {
                 User player1 = waitingList.poll();
@@ -134,12 +139,16 @@ public class MessageController {
                 game.enterPlayer(player2, sessionId);
 
                 gameService.startGame(game.getGameId());
-                sendingOperations.convertAndSend("/queue/game/room/quick/"+ player1.getId(), game.getGameId());
-                sendingOperations.convertAndSend("/queue/game/room/quick/"+ player2.getId(), game.getGameId());
+
+                res.setMessage("GAME_START");
+                res.setTargets(game.getGameId());
+                sendingOperations.convertAndSend("/queue/game/room/quick/"+ player1.getId(), res);
+                sendingOperations.convertAndSend("/queue/game/room/quick/"+ player2.getId(), res);
                 
                 sendingOperations.convertAndSend("/topic/game/room/"+game.getGameId(), game);
             } else {
-                sendingOperations.convertAndSend("/queue/game/room/quick/"+ message.getSender(), "WAITING");
+                res.setMessage("WAITING");
+                sendingOperations.convertAndSend("/queue/game/room/quick/"+ message.getSender(), res);
             }
         }
 
