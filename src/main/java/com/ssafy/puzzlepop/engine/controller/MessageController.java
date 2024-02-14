@@ -117,6 +117,9 @@ public class MessageController {
             sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(), responseChatMessage);
         } else if (message.getType().equals(InGameMessage.MessageType.QUICK)) {
             waitingList.add(new User(message.getSender(), message.isMember(), sessionId));
+            for (User u : waitingList) {
+                System.out.println(u);
+            }
             ResponseMessage res = new ResponseMessage();
 
             if (waitingList.size() >= 2) {
