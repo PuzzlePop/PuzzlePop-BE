@@ -34,7 +34,7 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestBody UserDto requestDto) {
         try {
             Long id = userService.createUser(requestDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(id);
+            return ResponseEntity.ok(id);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -46,7 +46,7 @@ public class UserController {
     public ResponseEntity<?> updateUser(@RequestBody UserDto requestDto) {
         try {
             Long id = userService.updateUser(requestDto);
-            return ResponseEntity.status(HttpStatus.OK).body(id);
+            return ResponseEntity.ok(id);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@RequestBody UserDto requestDto) {
         try {
             userService.deleteUser(requestDto);
-            return ResponseEntity.status(HttpStatus.OK).body(requestDto.getId());
+            return ResponseEntity.ok(requestDto.getId());
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -72,7 +72,7 @@ public class UserController {
     public ResponseEntity<?> findAllUsers() {
         try {
             List<UserDto> responseDtos = userService.getAllUsers();
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.ok(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class UserController {
     public ResponseEntity<?> findUsersByEmail(@RequestParam String email) {
         try{
             List<UserDto> responseDtos = userService.getUsersByEmail(email);
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.ok(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -96,7 +96,7 @@ public class UserController {
     public ResponseEntity<?> findUsersByNickname(@RequestParam String nickname) {
         try {
             List<UserDto> responseDtos = userService.getUsersByNickname(nickname);
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDtos);
+            return ResponseEntity.ok(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
