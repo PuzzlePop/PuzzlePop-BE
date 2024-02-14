@@ -22,6 +22,8 @@ public class UserController {
 
     @GetMapping("/user")
     public ResponseEntity<?> getUserByEmail(@RequestParam Long id) {
+        System.out.println("/user GET : getUserByEmail");
+        System.out.println("id:"+id);
         try {
             UserDto responseDto = userService.getUserById(id);
             return ResponseEntity.status(HttpStatus.OK).body(responseDto);
@@ -84,6 +86,8 @@ public class UserController {
 
     @GetMapping("/user/search/email")
     public ResponseEntity<?> findUsersByEmail(@RequestParam String email) {
+        System.out.println("/user/search/email GET");
+        System.out.println("email: "+email);
         try{
             List<UserInfoDto> responseDtos = userService.getUsersByEmail(email);
             return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
@@ -96,8 +100,11 @@ public class UserController {
 
     @GetMapping("/user/search/nickname")
     public ResponseEntity<?> findUsersByNickname(@RequestParam String nickname) {
+        System.out.println("/user/search/nickname GET");
+        System.out.println("nickname: "+nickname);
         try {
             List<UserInfoDto> responseDtos = userService.getUsersByNickname(nickname);
+            System.out.println(responseDtos);
             return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
