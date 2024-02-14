@@ -90,9 +90,9 @@ public class MessageController {
 
             gameService.sessionToGame.put(sessionId, message.getRoomId());
 
-            if (game.enterPlayer(new User(message.getSender()), sessionId)) {
+            if (game.enterPlayer(new User(message.getSender(), message.isMember()), sessionId)) {
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
-                System.out.println(gameService.findById(message.getRoomId()).getGameName() + "에 " + message.getSender() + "님이 입장하셨습니다.");
+                System.out.println(gameService.findById(message.getRoomId()).getGameName() + "에 " + message.getSender() + " " + message.isMember() + "님이 입장하셨습니다.");
             } else {
                 System.out.println("방 입장 실패");
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(),new SocketError("room", "방 가득 참"));

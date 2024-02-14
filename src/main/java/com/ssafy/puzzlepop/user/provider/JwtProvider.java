@@ -112,25 +112,25 @@ public class JwtProvider {
 
 
     public boolean validate(String token) {
-        System.out.println("validating token..." + token );
+//        System.out.println("validating token..." + token );
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            System.out.println("validation complete");
+//            System.out.println("validation complete");
             return true;
         } catch (SecurityException ex) {
-            logger.error("Invalid JWT signature");
+//            logger.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
-            logger.error("Invalid JWT token");
+//            logger.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            logger.error("Expired JWT token");
+//            logger.error("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            logger.error("Unsupported JWT token");
+//            logger.error("Unsupported JWT token");
         } catch (SignatureException ex) {
-            logger.error("JWT signature does not match");
+//            logger.error("JWT signature does not match");
         } catch (IllegalArgumentException ex) {
-            logger.error("JWT claims string is empty.");
+//            logger.error("JWT claims string is empty.");
         }
-        System.out.println("validation failed");
+//        System.out.println("validation failed");
         return false;
     }
 

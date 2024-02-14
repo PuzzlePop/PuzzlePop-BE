@@ -238,6 +238,7 @@ public class RecordServiceImpl implements RecordService {
 
             return userRecordInfoDto;
         } catch (Exception e) {
+//            e.printStackTrace();
             throw new RecordException("error occurred during find record info");
         }
 
@@ -250,15 +251,15 @@ public class RecordServiceImpl implements RecordService {
         try {
 
             List<RankingQueryDto> queryDtoList = recordRepository.countGamesByUserId();
+            System.out.println(queryDtoList);
             for (RankingQueryDto qd : queryDtoList) {
-                playedGameCountRanking.add(new PlayedGameCountRankingDto(new UserDto(), 1));
-//                playedGameCountRanking.add(new PlayedGameCountRankingDto(userService.getUserById(qd.getUserId(), qd.getQueriedCount()));
-                // TODO: UserService에 getUserById 추가 확인해서 주석 해제
+                playedGameCountRanking.add(new PlayedGameCountRankingDto(userService.getUserById(qd.getUserId()), (int) qd.getQueriedCount()));
             }
 
             return playedGameCountRanking;
 
         } catch (Exception e) {
+//            e.printStackTrace();
             throw new RecordException("ERROR");
         }
 
@@ -275,7 +276,7 @@ public class RecordServiceImpl implements RecordService {
             int soloBattleWinCount = 0;
 
             List<Record> recordList = recordRepository.findByUserId(user.getId());
-            if (recordList == null) { // 한 판도 플레이하지 않은 유저
+            if (recordList == null || recordList.isEmpty()) { // 한 판도 플레이하지 않은 유저
                 // 랭킹에 포함되지 않음. 패스
                 continue;
             }
@@ -306,12 +307,14 @@ public class RecordServiceImpl implements RecordService {
         List<WinCountRankingDto> teamBattleWinCountRanking = new ArrayList<>();
 
         List<UserDto> userList = userService.getAllUsers();
+        System.out.println(userList);
         for (UserDto user : userList) {
             int playedTeamBattleGameCount = 0;
             int teamBattleWinCount = 0;
 
             List<Record> recordList = recordRepository.findByUserId(user.getId());
-            if (recordList == null) { // 한 판도 플레이하지 않은 유저
+
+            if (recordList == null || recordList.isEmpty()) { // 한 판도 플레이하지 않은 유저
                 // 랭킹에 포함되지 않음. 패스
                 continue;
             }
