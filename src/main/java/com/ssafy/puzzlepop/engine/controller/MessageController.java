@@ -31,6 +31,7 @@ public class MessageController {
     private final SimpMessageSendingOperations sendingOperations;
     private final int BATTLE_TIMER = 300;
     private String sessionId;
+    private final Queue<User> waitingList;
 
 
     //세션 아이디 설정
@@ -117,15 +118,8 @@ public class MessageController {
             waitingList.add(new User(message.getSender(), message.isMember(), sessionId));
 
             if (waitingList.size() >= 2) {
-                Random random = new Random();
-                int index1 = random.nextInt(waitingList.size());
-                int index2 = random.nextInt(waitingList.size() - 1);
-                if (index2 >= index1) {
-                    index2++;
-                }
-
-                User player1 = waitingList.remove(index1);
-                User player2 = waitingList.remove(index2);
+                User player1 = waitingList.poll();
+                User player2 = waitingList.poll();
 
                 Room room = new Room();
                 room.setName(UUID.randomUUID().toString());
@@ -144,6 +138,8 @@ public class MessageController {
                 sendingOperations.convertAndSend("/queue/game/room/quick/"+ player2.getId(), game.getGameId());
                 
                 sendingOperations.convertAndSend("/topic/game/room/"+game.getGameId(), game);
+            } else {
+                sendingOperations.convertAndSend("/queue/game/room/quick/"+ message.getSender(), "WAITING");
             }
         }
 
@@ -179,39 +175,6 @@ public class MessageController {
                 }
                 sendingOperations.convertAndSend("/topic/game/room/" + message.getRoomId(), res);
             }
-        }
-    }
-
-    private final List<User> waitingList;
-    @MessageMapping("/join")
-    public void join(User user) {
-        waitingList.add(user);
-    }
-
-    @Scheduled(fixedDelay = 5000) // 매 5초마다 실행
-    public void matchPlayers() {
-        if (waitingList.size() >= 2) {
-            Random random = new Random();
-            int index1 = random.nextInt(waitingList.size());
-            int index2 = random.nextInt(waitingList.size() - 1);
-            if (index2 >= index1) {
-                index2++;
-            }
-
-            User player1 = waitingList.remove(index1);
-            User player2 = waitingList.remove(index2);
-
-            Room room = new Room();
-            room.setName(UUID.randomUUID().toString());
-            room.setRoomSize(2);
-            room.setGameType("BATTLE");
-            room.setUserid(player1.getId());
-            Game game = gameService.createRoom(room);
-
-
-
-            sendingOperations.convertAndSend("/queue/game/room/quick/"+ player1.getId(), game.getGameId());
-            sendingOperations.convertAndSend("/queue/game/room/quick/"+ player2.getId(), game.getGameId());
         }
     }
 
