@@ -11,6 +11,7 @@ import com.ssafy.puzzlepop.team.service.TeamService;
 import com.ssafy.puzzlepop.teamuser.domain.TeamUserResponseDto;
 import com.ssafy.puzzlepop.teamuser.service.TeamUserService;
 import com.ssafy.puzzlepop.user.domain.UserDto;
+import com.ssafy.puzzlepop.user.domain.UserInfoDto;
 import com.ssafy.puzzlepop.user.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -270,8 +271,8 @@ public class RecordServiceImpl implements RecordService {
     public List<WinCountRankingDto> rankSoloBattleWinCount() throws RecordException {
         List<WinCountRankingDto> soloBattleWinCountRanking = new ArrayList<>();
 
-        List<UserDto> userList = userService.getAllUsers();
-        for (UserDto user : userList) {
+        List<UserInfoDto> userList = userService.getAllUsers();
+        for (UserInfoDto user : userList) {
             int playedSoloBattleGameCount = 0;
             int soloBattleWinCount = 0;
 
@@ -306,9 +307,9 @@ public class RecordServiceImpl implements RecordService {
     public List<WinCountRankingDto> rankTeamBattleWinCount() throws RecordException {
         List<WinCountRankingDto> teamBattleWinCountRanking = new ArrayList<>();
 
-        List<UserDto> userList = userService.getAllUsers();
+        List<UserInfoDto> userList = userService.getAllUsers();
         System.out.println(userList);
-        for (UserDto user : userList) {
+        for (UserInfoDto user : userList) {
             int playedTeamBattleGameCount = 0;
             int teamBattleWinCount = 0;
 
@@ -347,8 +348,8 @@ public class RecordServiceImpl implements RecordService {
         // 필요한 값 : 전체 유저에 대해 전체 게임 플레이 횟수 / 전체 이긴 횟수
         // 그에 따라 백분율 승률 계산하기
 
-        List<UserDto> userList = userService.getAllUsers();
-        for (UserDto user : userList) {
+        List<UserInfoDto> userList = userService.getAllUsers();
+        for (UserInfoDto user : userList) {
             int playedBattleGameCount = 0;
             int battleWinCount = 0;
 

@@ -3,6 +3,7 @@ package com.ssafy.puzzlepop.record.domain;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.ssafy.puzzlepop.user.domain.UserDto;
+import com.ssafy.puzzlepop.user.domain.UserInfoDto;
 import lombok.*;
 
 @Getter
@@ -13,7 +14,7 @@ import lombok.*;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class WinCountRankingDto implements Comparable<WinCountRankingDto> {
 
-    private UserDto user;
+    private UserInfoDto user;
     private int winCount;
     private int playedGameCount;
 
