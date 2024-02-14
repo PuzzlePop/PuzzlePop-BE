@@ -190,7 +190,7 @@ public class RecordServiceImpl implements RecordService {
 
             return recordDetailList;
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RecordException("ERROR");
         }
 
@@ -240,7 +240,7 @@ public class RecordServiceImpl implements RecordService {
 
             return userRecordInfoDto;
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RecordException("error occurred during find record info");
         }
 
@@ -309,7 +309,7 @@ public class RecordServiceImpl implements RecordService {
 
             return soloBattleWinCountRanking;
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RecordException("error occurred during rank solo battle win count");
         }
 
@@ -356,7 +356,7 @@ public class RecordServiceImpl implements RecordService {
 
             return teamBattleWinCountRanking;
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RecordException("error occurred during rank battle game win count");
         }
 
