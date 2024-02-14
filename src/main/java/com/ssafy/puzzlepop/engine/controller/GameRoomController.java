@@ -118,7 +118,7 @@ public class GameRoomController {
             }
 
             if (game.getRedTeam().getPlayers().contains(user) || game.getBlueTeam().getPlayers().contains(user)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("너 이미 안에 있는데?");
+                return ResponseEntity.ok(game);
             }
 
             if (game.getGameType().equals("BATTLE")) {
