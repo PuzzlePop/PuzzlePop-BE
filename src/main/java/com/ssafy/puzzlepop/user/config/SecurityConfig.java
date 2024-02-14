@@ -64,7 +64,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl(frontendUrl)
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
-                        .deleteCookies("accessToken", "refreshToken")
+                        .deleteCookies("accessToken", "refreshToken", "userId")
                 );
 
 
