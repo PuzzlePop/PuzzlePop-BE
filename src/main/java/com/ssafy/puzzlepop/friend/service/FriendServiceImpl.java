@@ -36,6 +36,9 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public FriendDto getFriendById1AndId2(Long id1, Long id2) {
         Friend friend = friendRepository.findFriendById1AndId2(id1, id2);
+        if (friend == null) {
+            return null;
+        }
         return new FriendDto(friend);
     }
 
@@ -51,7 +54,14 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public Long createFriend(FriendDto friendDto) {
+    public Long createFriend(FriendDto friendDto) throws Exception {
+
+        // from_user_id && to_user_id로 검색해서 뭔가 있으면 친구 요청 못 생성하게 해야 함
+        FriendDto existFriend = getFriendById1AndId2(friendDto.getFromUserId(), friendDto.getToUserId());
+        if (existFriend != null) {
+            // 이미 친구 관계이거나 요청 보낸 상태임
+            return null;
+        }
         Friend friend = friendRepository.save(friendDto.toEtity());
         return friend.getId();
     }

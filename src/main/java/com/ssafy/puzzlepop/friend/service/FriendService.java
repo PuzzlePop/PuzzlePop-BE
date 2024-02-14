@@ -14,7 +14,7 @@ public interface FriendService {
     FriendDto getFriendById1AndId2(@Param("id1") Long id1, @Param("id2") Long id2);
     List<FriendDto> getAllByFromUserIdOrToUserId(Long userId);
     List<Long> getAllFriendIdByUserId(Long userId);
-    Long createFriend(FriendDto friendDto);
+    Long createFriend(FriendDto friendDto) throws Exception;
     Long updateFriend(FriendDto friendDto);
     void deleteFriend(FriendDto friendDto);
 

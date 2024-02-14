@@ -29,7 +29,7 @@ public class FriendController {
                                                   @PathVariable("id2") Long id2) {
         try {
             FriendDto responseDto = friendService.getFriendById1AndId2(id1, id2);
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseDto);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -39,12 +39,18 @@ public class FriendController {
 
     @PostMapping("/friend")
     public ResponseEntity<?> createFriend(@RequestBody FriendDto requestDto) {
+        System.out.println("create:" + requestDto);
         try {
             Long id = friendService.createFriend(requestDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(id);
+            if (id == null) {
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).body(id);
+            }
         } catch (FriendNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
