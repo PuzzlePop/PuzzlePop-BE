@@ -51,7 +51,9 @@ public class GameRoomController {
     @PostMapping("/room")
     @ResponseBody
     public Game createRoom(@RequestBody Room room) {
-        return gameService.createRoom(room);
+        Game game = gameService.createRoom(room);
+        System.out.println(game.getGameId() + "생성됨");
+        return game;
     }
 
 
@@ -90,6 +92,8 @@ public class GameRoomController {
         byte[] bytes = baos.toByteArray();
         return Base64.getEncoder().encodeToString(bytes);
     }
+
+
 
     //게임 대기실 입장
     @PostMapping("/room/{roomId}")
