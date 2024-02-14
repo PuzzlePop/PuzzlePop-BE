@@ -51,7 +51,9 @@ public class GameRoomController {
     @PostMapping("/room")
     @ResponseBody
     public Game createRoom(@RequestBody Room room) {
-        return gameService.createRoom(room);
+        Game game = gameService.createRoom(room);
+        System.out.println(game.getGameId() + "생성됨");
+        return game;
     }
 
 
