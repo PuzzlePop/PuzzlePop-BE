@@ -91,7 +91,7 @@ public class MessageController {
 
             gameService.sessionToGame.put(sessionId, message.getRoomId());
 
-            if (game.enterPlayer(new User(message.getSender(), message.isMember()), sessionId)) {
+            if (game.enterPlayer(new User(message.getSender(), message.isMember(), sessionId), sessionId)) {
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
                 System.out.println(gameService.findById(message.getRoomId()).getGameName() + "에 " + message.getSender() + " " + message.isMember() + "님이 입장하셨습니다.");
             } else {
@@ -113,7 +113,41 @@ public class MessageController {
 
             responseChatMessage.setTime(new Date());
             sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(), responseChatMessage);
-        } else {
+        } else if (message.getType().equals(InGameMessage.MessageType.QUICK)) {
+            waitingList.add(new User(message.getSender(), message.isMember(), sessionId));
+
+            if (waitingList.size() >= 2) {
+                Random random = new Random();
+                int index1 = random.nextInt(waitingList.size());
+                int index2 = random.nextInt(waitingList.size() - 1);
+                if (index2 >= index1) {
+                    index2++;
+                }
+
+                User player1 = waitingList.remove(index1);
+                User player2 = waitingList.remove(index2);
+
+                Room room = new Room();
+                room.setName(UUID.randomUUID().toString());
+                room.setRoomSize(2);
+                room.setGameType("BATTLE");
+                room.setUserid(player1.getId());
+                gameService.sessionToGame.put(sessionId, player1.getId());
+                gameService.sessionToGame.put(sessionId, player2.getId());
+
+                Game game = gameService.createRoom(room);
+                game.enterPlayer(player1, sessionId);
+                game.enterPlayer(player2, sessionId);
+
+                gameService.startGame(game.getGameId());
+                sendingOperations.convertAndSend("/queue/game/room/quick/"+ player1.getId(), game.getGameId());
+                sendingOperations.convertAndSend("/queue/game/room/quick/"+ player2.getId(), game.getGameId());
+                
+                sendingOperations.convertAndSend("/topic/game/room/"+game.getGameId(), game);
+            }
+        }
+
+        else {
             if (message.getMessage().equals("GAME_START")) {
                 System.out.println("GAME_START");
                 Game game = gameService.startGame(message.getRoomId());
@@ -145,6 +179,39 @@ public class MessageController {
                 }
                 sendingOperations.convertAndSend("/topic/game/room/" + message.getRoomId(), res);
             }
+        }
+    }
+
+    private final List<User> waitingList;
+    @MessageMapping("/join")
+    public void join(User user) {
+        waitingList.add(user);
+    }
+
+    @Scheduled(fixedDelay = 5000) // 매 5초마다 실행
+    public void matchPlayers() {
+        if (waitingList.size() >= 2) {
+            Random random = new Random();
+            int index1 = random.nextInt(waitingList.size());
+            int index2 = random.nextInt(waitingList.size() - 1);
+            if (index2 >= index1) {
+                index2++;
+            }
+
+            User player1 = waitingList.remove(index1);
+            User player2 = waitingList.remove(index2);
+
+            Room room = new Room();
+            room.setName(UUID.randomUUID().toString());
+            room.setRoomSize(2);
+            room.setGameType("BATTLE");
+            room.setUserid(player1.getId());
+            Game game = gameService.createRoom(room);
+
+
+
+            sendingOperations.convertAndSend("/queue/game/room/quick/"+ player1.getId(), game.getGameId());
+            sendingOperations.convertAndSend("/queue/game/room/quick/"+ player2.getId(), game.getGameId());
         }
     }
 

@@ -11,6 +11,7 @@ import lombok.Setter;
 public class User {
     private String id;
     private boolean isMember;
+    private String sessionId;
 
     @Override
     public boolean equals(Object obj) {

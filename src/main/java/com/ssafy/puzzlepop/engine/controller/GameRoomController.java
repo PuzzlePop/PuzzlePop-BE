@@ -91,6 +91,8 @@ public class GameRoomController {
         return Base64.getEncoder().encodeToString(bytes);
     }
 
+
+
     //게임 대기실 입장
     @PostMapping("/room/{roomId}")
     @ResponseBody

@@ -504,4 +504,8 @@ public class GameService {
             return null;
         }
     }
+
+    public Game quickMatching(User user) {
+        return null;
+    }
 }
