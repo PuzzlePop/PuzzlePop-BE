@@ -23,8 +23,7 @@ public class GameSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/game/{roomId}")
                 .setAllowedOriginPatterns("*")
-                .addInterceptors(customHandshakeInterceptor)
-                .withSockJS();
+                .addInterceptors(customHandshakeInterceptor).withSockJS();
     }
 
     @Override
