@@ -118,22 +118,22 @@ public class GameRoomController {
                     return ResponseEntity.ok(game);
                 }
 
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Game is started");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 시작된 방입니다.");
             }
 
             if (game.getRedTeam().getPlayers().contains(user) || game.getBlueTeam().getPlayers().contains(user)) {
-                return ResponseEntity.ok(game);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 접근입니다.");
             }
 
             if (game.getGameType().equals("BATTLE")) {
                 if (game.getRedTeam().getPlayers().size() + game.getBlueTeam().getPlayers().size() == game.getRoomSize()) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Room is fulled");
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("정원이 가득찬 방입니다.");
                 }
 
                 return ResponseEntity.ok(game);
             } else {
                 if (game.getRedTeam().getPlayers().size() == game.getRoomSize()) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Room is fulled");
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("정원이 가득찬 방입니다.");
                 }
 
                 return ResponseEntity.ok(game);
