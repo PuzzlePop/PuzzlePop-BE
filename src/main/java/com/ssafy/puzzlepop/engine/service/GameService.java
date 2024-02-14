@@ -291,6 +291,7 @@ public class GameService {
                 int[] p = ourPuzzle.getIdxToCoordinate().get(now.getIndex());
                 if (ourPuzzle.getBoard()[p[0]][p[1]].isLocked()) {
                     res.setMessage("BLOCKED");
+                    res.setTargets(targets);
                     res.setTeam(ourColor);
                     return res;
                 }
@@ -298,7 +299,6 @@ public class GameService {
                 ourPuzzle.getBoard()[p[0]][p[1]].setLocked(true);
             }
 
-            System.out.println(targets + " 피스 잠금");
             res.setMessage("LOCKED");
             res.setTargets(targets);
 

@@ -3,6 +3,7 @@ package com.ssafy.puzzlepop.user.service;
 import com.ssafy.puzzlepop.user.domain.PrincipalDetails;
 import com.ssafy.puzzlepop.user.domain.User;
 import com.ssafy.puzzlepop.user.domain.UserDto;
+import com.ssafy.puzzlepop.user.domain.UserInfoDto;
 import com.ssafy.puzzlepop.user.exception.UserNotFoundException;
 import com.ssafy.puzzlepop.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,7 +46,7 @@ public class UserService extends DefaultOAuth2UserService {
 //        String password = "OAuth2"; //Oauth2로 로그인 시, 패스워드는 의미없음.
         String role = "ROLE_USER";
 
-        String nickname = "닉네임";
+        String nickname = oAuth2User.getAttribute("name");
         String givenName = oAuth2User.getAttribute("given_name");
         String familyName = oAuth2User.getAttribute("family_name");
         String imgPath = oAuth2User.getAttribute("picture");
@@ -187,10 +189,14 @@ public class UserService extends DefaultOAuth2UserService {
 //        /////////////////////////////////////////
 
 
-    public List<UserDto> getAllUsers() {
+    public List<UserInfoDto> getAllUsers() {
         // 전체 유저들 목록 반환
         List<User> users = userRepository.findAll();
-        return users.stream().map(UserDto::new).collect(Collectors.toList());
+        List<UserInfoDto> userInfoDtoList = new ArrayList<>();
+        for(User user: users) {
+            userInfoDtoList.add(new UserInfoDto(user.getId(), user.getEmail(), user.getNickname(), user.getImgPath(), user.getLocale(), user.getFamilyName(), user.getGivenName(), user.getPlayingGameID(), user.getOnlineStatus()));
+        }
+        return userInfoDtoList;
     }
 
     public UserDto getUserById(Long id) {
@@ -201,10 +207,15 @@ public class UserService extends DefaultOAuth2UserService {
         return new UserDto(user);
     }
 
-    public List<UserDto> getUsersByEmail(String email) {
+    public List<UserInfoDto> getUsersByEmail(String email) {
         // 해당 email을 가진 유저를 반환
         List<User> users = userRepository.findAllByEmailContaining(email);
-        return users.stream().map(UserDto::new).collect(Collectors.toList());
+//        List<User> users = userRepository.findByEmail(email);
+        List<UserInfoDto> userInfoDtoList = new ArrayList<>();
+        for(User user: users) {
+            userInfoDtoList.add(new UserInfoDto(user.getId(), user.getEmail(), user.getNickname(), user.getImgPath(), user.getLocale(), user.getFamilyName(), user.getGivenName(), user.getPlayingGameID(), user.getOnlineStatus()));
+        }
+        return userInfoDtoList;
     }
 
     public UserDto getUserByIdAndEmail(Long id, String email) {
@@ -215,10 +226,14 @@ public class UserService extends DefaultOAuth2UserService {
         return new UserDto(user);
     }
 
-    public List<UserDto> getUsersByNickname(String nickname) {
+    public List<UserInfoDto> getUsersByNickname(String nickname) {
         // 해당 닉네임을 포함한 유저들 목록 반환
         List<User> users = userRepository.findAllByNicknameContaining(nickname);
-        return users.stream().map(UserDto::new).collect(Collectors.toList());
+        List<UserInfoDto> userInfoDtoList = new ArrayList<>();
+        for(User user: users) {
+            userInfoDtoList.add(new UserInfoDto(user.getId(), user.getEmail(), user.getNickname(), user.getImgPath(), user.getLocale(), user.getFamilyName(), user.getGivenName(), user.getPlayingGameID(), user.getOnlineStatus()));
+        }
+        return userInfoDtoList;
     }
 
     public Long createUser(UserDto requestDto) {

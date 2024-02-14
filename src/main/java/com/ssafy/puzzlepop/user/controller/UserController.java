@@ -1,8 +1,10 @@
 package com.ssafy.puzzlepop.user.controller;
 
 import com.ssafy.puzzlepop.user.domain.UserDto;
+import com.ssafy.puzzlepop.user.domain.UserInfoDto;
 import com.ssafy.puzzlepop.user.exception.UserNotFoundException;
 import com.ssafy.puzzlepop.user.service.UserService;
+import jdk.security.jarsigner.JarSigner;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,7 @@ public class UserController {
     public ResponseEntity<?> getUserByEmail(@RequestParam Long id) {
         try {
             UserDto responseDto = userService.getUserById(id);
-            return ResponseEntity.ok(responseDto);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -34,7 +36,7 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestBody UserDto requestDto) {
         try {
             Long id = userService.createUser(requestDto);
-            return ResponseEntity.ok(id);
+            return ResponseEntity.status(HttpStatus.OK).body(id);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -46,7 +48,7 @@ public class UserController {
     public ResponseEntity<?> updateUser(@RequestBody UserDto requestDto) {
         try {
             Long id = userService.updateUser(requestDto);
-            return ResponseEntity.ok(id);
+            return ResponseEntity.status(HttpStatus.OK).body(id);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -58,7 +60,7 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@RequestBody UserDto requestDto) {
         try {
             userService.deleteUser(requestDto);
-            return ResponseEntity.ok(requestDto.getId());
+            return ResponseEntity.status(HttpStatus.OK).body(requestDto.getId());
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -71,8 +73,8 @@ public class UserController {
     @GetMapping("/user/list")
     public ResponseEntity<?> findAllUsers() {
         try {
-            List<UserDto> responseDtos = userService.getAllUsers();
-            return ResponseEntity.ok(responseDtos);
+            List<UserInfoDto> responseDtos = userService.getAllUsers();
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -82,10 +84,9 @@ public class UserController {
 
     @GetMapping("/user/search/email")
     public ResponseEntity<?> findUsersByEmail(@RequestParam String email) {
-        System.out.println(email);
         try{
-            List<UserDto> responseDtos = userService.getUsersByEmail(email);
-            return ResponseEntity.ok(responseDtos);
+            List<UserInfoDto> responseDtos = userService.getUsersByEmail(email);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
@@ -96,8 +97,8 @@ public class UserController {
     @GetMapping("/user/search/nickname")
     public ResponseEntity<?> findUsersByNickname(@RequestParam String nickname) {
         try {
-            List<UserDto> responseDtos = userService.getUsersByNickname(nickname);
-            return ResponseEntity.ok(responseDtos);
+            List<UserInfoDto> responseDtos = userService.getUsersByNickname(nickname);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {

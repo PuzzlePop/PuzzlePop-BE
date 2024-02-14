@@ -22,20 +22,21 @@ public class CustomHandshakeInterceptor implements HandshakeInterceptor {
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        System.out.println("CustomHandshakeInterceptor.beforeHandshake");
-        String userId = extractUserIdFromRequest(request); // 요청에서 유저 세션 추출
-
-        String gameId = gameService.sessionToGame.get(userId);
-        Game game = gameService.findById(gameId);
-        if (game == null) {
-            return true;
-        }
-
-        if (game.isStarted() && !game.isFinished()) {
-            return false;
-        } else {
-            return true;
-        }
+//        System.out.println("CustomHandshakeInterceptor.beforeHandshake");
+//        String userId = extractUserIdFromRequest(request); // 요청에서 유저 세션 추출
+//
+//        String gameId = gameService.sessionToGame.get(userId);
+//        Game game = gameService.findById(gameId);
+//        if (game == null) {
+//            return true;
+//        }
+//
+//        if (game.isStarted() && !game.isFinished()) {
+//            return false;
+//        } else {
+//            return true;
+//        }
+        return true;
     }
 
 
