@@ -116,7 +116,12 @@ public class MessageController {
             responseChatMessage.setTime(new Date());
             sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(), responseChatMessage);
         } else if (message.getType().equals(InGameMessage.MessageType.QUICK)) {
-            waitingList.add(new User(message.getSender(), message.isMember(), sessionId));
+            User user = new User(message.getSender(), message.isMember(), sessionId);
+            if (waitingList.contains(user)) {
+                return;
+            }
+
+            waitingList.add(user);
             for (User u : waitingList) {
                 System.out.println(u);
             }
