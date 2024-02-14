@@ -122,7 +122,7 @@ public class GameRoomController {
             }
 
             if (game.getRedTeam().getPlayers().contains(user) || game.getBlueTeam().getPlayers().contains(user)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 접근입니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("다른 닉네임을 사용해주세요.");
             }
 
             if (game.getGameType().equals("BATTLE")) {
