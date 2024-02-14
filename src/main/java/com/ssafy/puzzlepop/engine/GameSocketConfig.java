@@ -24,7 +24,7 @@ public class GameSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/game/{roomId}")
 //        registry.addEndpoint("/game")
                 .setAllowedOriginPatterns("*")
-                .addInterceptors(customHandshakeInterceptor);
+                .addInterceptors(customHandshakeInterceptor).withSockJS();
     }
 
     @Override
