@@ -31,7 +31,7 @@ public class MessageController {
     private final SimpMessageSendingOperations sendingOperations;
     private final int BATTLE_TIMER = 300;
     private String sessionId;
-    private final Queue<User> waitingList;
+    private final Queue<User> waitingList = new LinkedList<>();
 
 
     //세션 아이디 설정
