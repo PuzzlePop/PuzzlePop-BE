@@ -482,6 +482,7 @@ public class GameService {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw new Exception("error occurred during save game data");
         }
     }
