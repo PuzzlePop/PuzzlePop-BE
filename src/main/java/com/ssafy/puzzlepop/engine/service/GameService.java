@@ -259,6 +259,7 @@ public class GameService {
             else if (mirror == -1 && shield != -1) {
                 //아무일 없음
                 res.setMessage("SHIELD");
+                res.setTeam(yourColor);
                 yourPuzzle.useItem(shield + 1, yourPuzzle);
             }
             //둘다 있을 때
