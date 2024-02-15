@@ -17,6 +17,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
 import java.util.*;
@@ -395,6 +396,7 @@ public class GameService {
         return res;
     }
 
+    @Transactional
     public synchronized void save(Game game) throws Exception {
         System.out.println("game save called");
         // 저장된 적 있으면 return
