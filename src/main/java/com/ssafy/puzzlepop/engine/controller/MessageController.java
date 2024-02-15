@@ -99,6 +99,9 @@ public class MessageController {
         if (message.getType().equals(InGameMessage.MessageType.ENTER)) {
             Game game = gameService.findById(message.getRoomId());
 
+            if (game == null) {
+                return;
+            }
             gameService.sessionToGame.put(sessionId, message.getRoomId());
 
             if (game.enterPlayer(new User(message.getSender(), message.isMember(), sessionId), sessionId)) {
@@ -231,14 +234,16 @@ public class MessageController {
                     sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), timer);
                 } else {
                     if (allRoom.get(i).getGameType().equals("BATTLE")) {
+                        allRoom.get(i).setFinishTime(new Date());
+                        allRoom.get(i).setFinished(true);
+
                         gameService.save(allRoom.get(i));
                         allRoom.get(i).setSaved(true);
 
-                        allRoom.get(i).setFinished(true);
-                        allRoom.get(i).setFinishTime(new Date());
-
                         ResponseMessage res = new ResponseMessage();
                         res.setFinished(true);
+
+                        Thread.sleep(20);
                         sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), res);
                     }
                     sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), "너 게임 끝났어! 이 방 폭파됨");
