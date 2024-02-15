@@ -209,7 +209,7 @@ public class MessageController {
 
     //서버 타이머  제공
     @Scheduled(fixedRate = 1000)
-    public void sendServerTime() {
+    public void sendServerTime() throws Exception {
         List<Game> allRoom = gameService.findAllCooperationRoom();
         allRoom.addAll(gameService.findAllBattleRoom());
         for (int i = allRoom.size()-1; i >= 0 ; i--) {
@@ -223,6 +223,9 @@ public class MessageController {
                     timer.put("time", time);
                     sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), timer);
                 } else {
+                    if (allRoom.get(i).getGameType().equals("BATTLE")) {
+                        gameService.save(allRoom.get(i));
+                    }
                     sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), "너 게임 끝났어! 이 방 폭파됨");
                     gameService.deleteRoom(allRoom.get(i).getGameId());
                 }

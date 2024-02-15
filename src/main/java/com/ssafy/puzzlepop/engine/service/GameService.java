@@ -398,7 +398,7 @@ public class GameService {
         return res;
     }
 
-    private synchronized void save(Game game) throws Exception {
+    public synchronized void save(Game game) throws Exception {
         // 저장된 적 있으면 return
         if (game.isSaved()) return;
 
