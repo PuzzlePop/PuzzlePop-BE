@@ -101,9 +101,6 @@ public class GameService {
 //    }
 
     public Game startGame(String roomId) {
-        System.out.println("GameService.startGame");
-        System.out.println("gameid = " + roomId);
-        System.out.println(gameRooms);
         Game game = findById(roomId);
         game.start();
         return game;
@@ -162,7 +159,7 @@ public class GameService {
             System.out.println("ADD_PIECE");
 
             ourPuzzle.addPiece(pieces);
-            ourPuzzle.print();
+//            ourPuzzle.print();
 
             res.setTeam(ourColor);
             res.setMessage("ADD_PIECE");
@@ -179,7 +176,7 @@ public class GameService {
                 res.setCombo(comboPieces);
                 res.setComboCnt(comboCnt[0]);
             }
-            ourPuzzle.print();
+//            ourPuzzle.print();
         } else if (message.equals("USE_ITEM")) {
             //도움형 아이템 3가지만 나옴
             Item item = ourPuzzle.getItemList()[Integer.parseInt(targets) - 1]; // index는 0부터 시작

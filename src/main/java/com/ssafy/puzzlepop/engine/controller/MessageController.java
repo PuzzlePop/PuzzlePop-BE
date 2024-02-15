@@ -46,14 +46,14 @@ public class MessageController {
     //세션 아이디 설정
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
-        System.out.println("MessageController.handleWebSocketConnectListener");
-        System.out.println(event.getMessage().getHeaders().get("simpSessionId"));
+//        System.out.println("MessageController.handleWebSocketConnectListener");
+//        System.out.println(event.getMessage().getHeaders().get("simpSessionId"));
         sessionId = (String) event.getMessage().getHeaders().get("simpSessionId");
     }
 
     @EventListener
     public void handleDisconnectEvent(SessionDisconnectEvent event) throws InterruptedException {
-        System.out.println("MessageController.handleDisconnectEvent");
+//        System.out.println("MessageController.handleDisconnectEvent");
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
         String gameId = gameService.sessionToGame.get(sessionId);
@@ -105,7 +105,6 @@ public class MessageController {
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
                 System.out.println(gameService.findById(message.getRoomId()).getGameName() + "에 " + message.getSender() + " " + message.isMember() + "님이 입장하셨습니다.");
             } else {
-                System.out.println("방 입장 실패");
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(),new SocketError("room", "방 가득 참"));
                 System.out.println(gameService.findById(message.getRoomId()).getGameName() + "에 " + message.getSender() + "님이 입장하지 못했습니다.");
             }
@@ -187,6 +186,10 @@ public class MessageController {
                 game.changeTeam(userA, userB);
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
             } else {
+                if (gameService.findById(message.getRoomId()) == null) {
+                    return;
+                }
+
                 if (!gameService.findById(message.getRoomId()).isStarted()) {
                     System.out.println("게임 시작 안했음! 명령 무시함");
                     return;

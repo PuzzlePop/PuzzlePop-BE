@@ -206,8 +206,8 @@ public class Game {
         isStarted = true;
 
         System.out.println("------------------게임 시작-------------------");
-        redPuzzle.print();
-        bluePuzzle.print();
+//        redPuzzle.print();
+//        bluePuzzle.print();
     }
 
     //초 단위 경과 시간
