@@ -198,6 +198,10 @@ public class MessageController {
                 res.setRedProgressPercent((double) game.getRedPuzzle().getCorrectedCount() / (game.getRedPuzzle().getLengthCnt() * game.getRedPuzzle().getWidthCnt()) * 100);
                 res.setBlueProgressPercent((double) game.getBluePuzzle().getCorrectedCount() / (game.getBluePuzzle().getLengthCnt() * game.getBluePuzzle().getWidthCnt()) * 100);
 
+                if (game.isFinished()) {
+                    res.setFinished(true);
+                }
+
                 res.setRedBundles(game.getRedPuzzle().getBundles());
                 if (game.getGameType().equals("BATTLE")) {
                     res.setBlueBundles(game.getBluePuzzle().getBundles());
