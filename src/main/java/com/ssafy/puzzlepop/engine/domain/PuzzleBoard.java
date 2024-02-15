@@ -277,7 +277,7 @@ public class PuzzleBoard {
 
     //퍼즐 조각 결합 짜기
     //파라미터 정보(pieceList) : 게임 관련 소켓에서 결합하는 조각들을 하나의 리스트로 만들어서 파라미터로 입력
-    public synchronized void addPiece(List<Integer> pieceList) {
+    public void addPiece(List<Integer> pieceList) {
         //이번 결합으로 생기는 조각 뭉탱이들
         Set<Piece> set = new HashSet<>();
 
@@ -408,7 +408,7 @@ public class PuzzleBoard {
 
     //콤보 효과 작동
     //파라미터 : 콤보가 터질 조각 뭉탱이
-    public synchronized List<int[]> combo(List<Integer> pieceList, int comboCnt) {
+    public List<int[]> combo(List<Integer> pieceList, int comboCnt) {
         //4방 탐색용
         //상 우 하 좌
         int[] dx = {-1,0,1,0};
