@@ -229,7 +229,10 @@ public class MessageController {
 
                         allRoom.get(i).setFinished(true);
                         allRoom.get(i).setFinishTime(new Date());
-                        sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), allRoom.get(i));
+
+                        ResponseMessage res = new ResponseMessage();
+                        res.setFinished(true);
+                        sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), res);
                     }
                     sendingOperations.convertAndSend("/topic/game/room/" + allRoom.get(i).getGameId(), "너 게임 끝났어! 이 방 폭파됨");
                     gameService.deleteRoom(allRoom.get(i).getGameId());
