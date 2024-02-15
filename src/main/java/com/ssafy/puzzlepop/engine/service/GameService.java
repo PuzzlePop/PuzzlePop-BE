@@ -396,7 +396,6 @@ public class GameService {
         return res;
     }
 
-    @Transactional
     public synchronized void save(Game game) throws Exception {
         System.out.println("game save called");
         // 저장된 적 있으면 return
