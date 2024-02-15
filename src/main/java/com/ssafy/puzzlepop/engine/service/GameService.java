@@ -399,6 +399,7 @@ public class GameService {
     }
 
     public synchronized void save(Game game) throws Exception {
+        System.out.println("game save called");
         // 저장된 적 있으면 return
         if (game.isSaved()) return;
 
