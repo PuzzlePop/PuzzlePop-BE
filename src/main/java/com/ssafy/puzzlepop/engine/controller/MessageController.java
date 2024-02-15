@@ -4,6 +4,8 @@ import com.ssafy.puzzlepop.engine.InGameMessage;
 import com.ssafy.puzzlepop.engine.SocketError;
 import com.ssafy.puzzlepop.engine.domain.*;
 import com.ssafy.puzzlepop.engine.service.GameService;
+import com.ssafy.puzzlepop.image.domain.ImageDto;
+import com.ssafy.puzzlepop.image.service.ImageService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.*;
+
+import static com.ssafy.puzzlepop.engine.controller.GameRoomController.encodeImageToBase64;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,6 +37,7 @@ import java.util.*;
 public class MessageController {
     private final GameService gameService;
     private final SimpMessageSendingOperations sendingOperations;
+    private final ImageService imageService;
     private final int BATTLE_TIMER = 300;
     private String sessionId;
     private final Queue<User> waitingList = new LinkedList<>();
@@ -115,7 +123,12 @@ public class MessageController {
 
             responseChatMessage.setTime(new Date());
             sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(), responseChatMessage);
-        } else if (message.getType().equals(InGameMessage.MessageType.QUICK)) {
+        } else if (message.getType().equals(InGameMessage.MessageType.IMAGE)) {
+            Game game = gameService.findById(message.getRoomId());
+            sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
+        }
+
+        else if (message.getType().equals(InGameMessage.MessageType.QUICK)) {
             User user = new User(message.getSender(), message.isMember(), sessionId);
             ResponseMessage res = new ResponseMessage();
             if (waitingList.contains(user)) {

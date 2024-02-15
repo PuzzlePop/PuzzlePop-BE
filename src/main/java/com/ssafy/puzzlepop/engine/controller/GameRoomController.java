@@ -52,7 +52,6 @@ public class GameRoomController {
     @ResponseBody
     public Game createRoom(@RequestBody Room room) {
         Game game = gameService.createRoom(room);
-        System.out.println(game.getGameId() + "생성됨");
         return game;
     }
 
@@ -82,7 +81,6 @@ public class GameRoomController {
 
         Game game = gameService.findById(gameId);
         game.updatePicture(p);
-        System.out.println(p);
         return ResponseEntity.ok(p);
     }
 
