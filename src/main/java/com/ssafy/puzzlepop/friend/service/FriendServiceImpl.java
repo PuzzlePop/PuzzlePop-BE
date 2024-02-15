@@ -55,7 +55,10 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public Long createFriend(FriendDto friendDto) throws Exception {
-
+        // 나 자신에겐 요청 못 걸게 해야 함 ㅠ
+        if(friendDto.getFromUserId().equals(friendDto.getToUserId())) {
+            return null;
+        }
         // from_user_id && to_user_id로 검색해서 뭔가 있으면 친구 요청 못 생성하게 해야 함
         FriendDto existFriend = getFriendById1AndId2(friendDto.getFromUserId(), friendDto.getToUserId());
         if (existFriend != null) {
