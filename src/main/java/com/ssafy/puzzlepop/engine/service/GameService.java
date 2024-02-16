@@ -78,9 +78,6 @@ public class GameService {
     }
 
     public Game findById(String roomId) {
-        if (gameRooms.get(roomId) == null) {
-            System.out.println("game이 없음.......");
-        }
         return gameRooms.get(roomId);
     }
 
