@@ -18,7 +18,7 @@ public class PuzzleBoard {
     private int pieceSize; //조각 크기
     private int widthCnt; //조각 수에 따른 가로 조각 개수
     private int lengthCnt; //조각 수에 따른 세로 조각 개수
-    private List<Set<Piece>> bundles = new LinkedList<>(); //조합된 퍼즐 뭉탱이들
+    private List<Set<Piece>> bundles = Collections.synchronizedList(new LinkedList<>()); //조합된 퍼즐 뭉탱이들
     private boolean[][] isCorrected; //조합된 퍼즐인지 확인하는 2차원 배열
     private int correctedCount; //현재까지 맞춘 개수
     private boolean isCompleted = false;
