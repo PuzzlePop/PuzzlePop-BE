@@ -260,7 +260,7 @@ public class PuzzleBoard {
                 //랜덤 아이템 확률 부여
                 Random random = new Random();
                 int possibility = random.nextInt(100);
-                if (possibility <= 10) {
+                if (possibility <= 30) {
                     if (gameType.equals("COOPERATION")) {
                         board[i][j].setItem(Item.randomCreateForCooperation());
                     } else if (gameType.equals("BATTLE")) {

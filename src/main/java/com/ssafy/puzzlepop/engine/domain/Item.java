@@ -37,15 +37,17 @@ public class Item {
     public static Item randomCreateForCooperation() {
         Random random = new Random();
 
-        //공격형 아이템만 추첨 리스트에 추가
         List<ItemType> list = new LinkedList<>();
         list.add(ItemType.HINT);
-        list.add(ItemType.FRAME);
-        list.add(ItemType.HINT);
-        list.add(ItemType.FRAME);
-        list.add(ItemType.HINT);
-        list.add(ItemType.FRAME);
         list.add(ItemType.MAGNET);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
 
         return new Item(list.get(random.nextInt(list.size())));
     }
@@ -53,13 +55,21 @@ public class Item {
     public static Item randomCreateForBattle() {
         Random random = new Random();
 
-        //공격형 아이템만 추첨 리스트에 추가
         List<ItemType> list = new LinkedList<>();
         list.add(ItemType.HINT);
         list.add(ItemType.FRAME);
         list.add(ItemType.MAGNET);
         list.add(ItemType.MIRROR);
         list.add(ItemType.SHIELD);
+
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
 
         return new Item(list.get(random.nextInt(list.size())));
     }
