@@ -46,8 +46,10 @@ public class ImageServiceImpl implements ImageService {
 //        }
 
         // 이미지 저장
-        Path basePath = Paths.get(System.getProperty("user.dir"));
+        Path basePath = Paths.get(System.getProperty("user.home")).resolve("puzzlepop");
         Path savePath = basePath.getParent().resolve("uploads/image");
+//        Path basePath = Paths.get(System.getProperty("user.dir"));
+//        Path savePath = basePath.getParent().resolve("uploads/image");
 //        Path absolutePath = Paths.get(RELATIVE_PATH).toAbsolutePath();
 //        String absolutePathString = absolutePath.toString();
         String absolutePathString = savePath.toString();
