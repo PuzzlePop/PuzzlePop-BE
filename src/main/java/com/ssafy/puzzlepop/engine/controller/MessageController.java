@@ -188,6 +188,8 @@ public class MessageController {
                 User userB = game.getBlueTeam().getPlayer(message.getTargets());
                 game.changeTeam(userA, userB);
                 sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), game);
+            } else if (message.getMessage().equals("CURSOR")) {
+                sendingOperations.convertAndSend("/topic/game/room/"+message.getRoomId(), message);
             } else {
                 if (gameService.findById(message.getRoomId()) == null) {
                     return;
