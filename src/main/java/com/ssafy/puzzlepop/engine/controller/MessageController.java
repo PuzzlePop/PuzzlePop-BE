@@ -38,7 +38,7 @@ public class MessageController {
     private final GameService gameService;
     private final SimpMessageSendingOperations sendingOperations;
     private final ImageService imageService;
-    private final int BATTLE_TIMER = 300;
+    private final int BATTLE_TIMER = 303;
     private String sessionId;
     private final Queue<User> waitingList = new LinkedList<>();
 
