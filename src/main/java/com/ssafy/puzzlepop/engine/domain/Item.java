@@ -69,14 +69,7 @@ public class Item {
         list.add(ItemType.FRAME);
         list.add(ItemType.FRAME);
         list.add(ItemType.FRAME);
-        list.add(ItemType.FRAME);
-        list.add(ItemType.FRAME);
-        list.add(ItemType.FRAME);
-        list.add(ItemType.FRAME);
-        list.add(ItemType.FRAME);
-        list.add(ItemType.FRAME);
-        list.add(ItemType.FRAME);
-        list.add(ItemType.FRAME);
+
 
         return new Item(list.get(random.nextInt(list.size())));
     }
