@@ -46,7 +46,7 @@ public class ImageServiceImpl implements ImageService {
 //        }
 
         // 이미지 저장
-        Path basePath = Paths.get(System.getProperty("user.home")).resolve("puzzlepop");
+        Path basePath = Paths.get("/home/ubuntu/puzzlepop");
         Path savePath = basePath.getParent().resolve("uploads/image");
 //        Path basePath = Paths.get(System.getProperty("user.dir"));
 //        Path savePath = basePath.getParent().resolve("uploads/image");
