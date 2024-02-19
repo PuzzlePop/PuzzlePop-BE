@@ -57,11 +57,18 @@ public class Item {
 
         List<ItemType> list = new LinkedList<>();
         list.add(ItemType.HINT);
-        list.add(ItemType.FRAME);
         list.add(ItemType.MAGNET);
         list.add(ItemType.MIRROR);
         list.add(ItemType.SHIELD);
 
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
+        list.add(ItemType.FRAME);
         list.add(ItemType.FRAME);
         list.add(ItemType.FRAME);
         list.add(ItemType.FRAME);
