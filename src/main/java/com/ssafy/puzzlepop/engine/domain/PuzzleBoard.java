@@ -270,7 +270,7 @@ public class PuzzleBoard {
             }
         }
 
-
+        addItem(ItemType.FRAME);
         correctedCount = 0;
         return board;
     }
