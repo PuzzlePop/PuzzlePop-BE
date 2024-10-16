@@ -397,7 +397,7 @@ public class PuzzleBoard {
                 if (isCorrected[nr][nc] && !visited[nr][nc]) {
                     visited[nr][nc] = true;
                     set.add(board[nr][nc]);
-                    dfsForSearch(nr, nc, set);
+                    set = dfsForSearch(nr, nc, set);
                 }
             }
         }
